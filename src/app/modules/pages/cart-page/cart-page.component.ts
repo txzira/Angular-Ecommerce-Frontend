@@ -52,18 +52,18 @@ export class CartPageComponent implements OnInit {
   onRemoveQuantity(item: CartItem): void {
     this.cartService.removeQuantity(item);
   }
-  onCheckout(): void {
-    this.httpClient
-      .post('http://localhost:3000/checkout', {
-        items: this.cart?.items,
-      })
-      .subscribe(async (res: any) => {
-        let stripe = await loadStripe(
-          'pk_test_51JpGR9IZK4v7qkytzmvxTLa0C4AtaOLAaxGxWKBxc5CL1US3qFCf9pWfUPnc6OhkxL2Xv5s97uSjQAgv73KyDTWI006SYC716Q'
-        );
-        stripe?.redirectToCheckout({
-          sessionId: res.id,
-        });
-      });
-  }
+  // onCheckout(): void {
+  //   this.httpClient
+  //     .post('http://localhost:3000/checkout', {
+  //       items: this.cart?.items,
+  //     })
+  //     .subscribe(async (res: any) => {
+  //       let stripe = await loadStripe(
+  //         'pk_test_51JpGR9IZK4v7qkytzmvxTLa0C4AtaOLAaxGxWKBxc5CL1US3qFCf9pWfUPnc6OhkxL2Xv5s97uSjQAgv73KyDTWI006SYC716Q'
+  //       );
+  //       stripe?.redirectToCheckout({
+  //         sessionId: res.id,
+  //       });
+  //     });
+  // }
 }

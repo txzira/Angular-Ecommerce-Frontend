@@ -166,8 +166,6 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
               //disable payment button
               this.disablePaymentButton = true;
             }
-            console.log(event);
-            console.log(this.disablePaymentButton);
           });
 
           payment.mount('#payment-element');
