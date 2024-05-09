@@ -8,7 +8,7 @@ import {
   ProductVariant,
 } from '../../../models/product.model';
 
-import env from 'src/environment/environment';
+import env from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

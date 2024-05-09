@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import env from 'src/environment/environment';
+import env from 'src/environments/environment';
 import { Brand } from '../../../models/brand.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
