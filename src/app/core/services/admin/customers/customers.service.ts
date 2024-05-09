@@ -9,9 +9,12 @@ import env from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AdminCustomersService {
-  private ADMIN_CUSTOMERS_URL = !env.production
+  // private ADMIN_CUSTOMERS_URL = !env.production
+  //   ? 'http://localhost:4000/admin/customers'
+  //   : `${env.express_server_url}/admin/customers`;
+  private ADMIN_CUSTOMERS_URL = process.env['production']
     ? 'http://localhost:4000/admin/customers'
-    : `${env.express_server_url}/admin/customers`;
+    : `${process.env['express_server_url']}/admin/customers`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
