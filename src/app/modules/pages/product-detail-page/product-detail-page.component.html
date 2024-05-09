@@ -1,0 +1,102 @@
+<div class="w-3/4 mx-auto">
+  <mat-card class="content-box">
+    <a routerLink="/products" class="flex items-center gap-2"
+      ><button><mat-icon>arrow_back</mat-icon></button>BACK TO STORE</a
+    >
+
+    <div class="flex flex-row" *ngIf="product">
+      <div class="flex flex-col w-1/2 items-center justify-center">
+        <div class="w-[500px] h-[500px]">
+          <img
+            mat-card-image
+            class="max-h-full max-w-full"
+            [src]="displayImage"
+            [alt]="'Image of ' + product.name"
+          />
+        </div>
+        <div class="flex flex-row gap-4 py-3" *ngIf="!selectedProductVariant">
+          <button
+            class="w-14 h-14"
+            *ngFor="let image of product.images"
+            (click)="setDisplayImage(image.url)"
+          >
+            <img [src]="image.url" class="max-h-full max-w-full" />
+          </button>
+        </div>
+        <div class="flex flex-row gap-4 py-3" *ngIf="selectedProductVariant">
+          <button
+            class="w-14 h-14"
+            *ngFor="let image of selectedProductVariant.variantImages"
+            (click)="setDisplayImage(image.url)"
+          >
+            <img [src]="image.url" class="max-h-full max-w-full" />
+          </button>
+        </div>
+      </div>
+
+      <div class="w-1/2">
+        <div>
+          <h4 class="text" *ngIf="product.brand">{{ product.brand.name }}</h4>
+          <h2 class="!font-medium !text-2xl">{{ product.name }}</h2>
+          <p
+            class="font-medium"
+            *ngIf="!selectedProductVariant; else variantPrice"
+          >
+            {{ product.price | currency }}
+          </p>
+          <ng-template #variantPrice>
+            <p class="font-medium">
+              {{ selectedProductVariant?.price | currency }}
+            </p>
+          </ng-template>
+        </div>
+        <mat-card-content>
+          <div *ngFor="let selectedOption of selectedOptions | keyvalue">
+            {{ selectedOption.key }} :
+            {{ selectedOption.value }}
+          </div>
+          <div *ngFor="let option of options; index as i">
+            <p>{{ option.name }}:</p>
+            <mat-button-toggle-group class="">
+              <mat-button-toggle
+                class=""
+                [disabled]="disableOption(i, options[0], attribute)"
+                *ngFor="let attribute of option.attributes"
+                mat-stroked-button
+                [checked]="selectedOptions.get(option.id!) === attribute.id"
+                (click)="onSelectOption(option.id!, attribute.id!, i)"
+              >
+                {{ attribute.name }}
+              </mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+          <div class="flex items-center">
+            <button (click)="onRemoveQuantity()">
+              <mat-icon>remove</mat-icon>
+            </button>
+            <span>{{ productQuantity }}</span>
+            <button (click)="onAddQuantity()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+          <div>
+            <p>Description:</p>
+            <p class="whitespace-pre-line">
+              {{
+                product.description ? product.description : "No Description."
+              }}
+            </p>
+          </div>
+          <div>
+            {{ selectedProductVariant | json }}
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="onAddToCart()">
+            Add to Cart
+          </button>
+        </mat-card-actions>
+      </div>
+    </div>
+  </mat-card>
+</div>

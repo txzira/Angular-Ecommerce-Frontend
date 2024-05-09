@@ -1,0 +1,9 @@
+<mat-grid-list gutterSize="16" [cols]="columns" [rowHeight]="rowHeight">
+  <mat-grid-tile *ngFor="let product of products">
+    <app-product-card
+      class="w-full flex items-center justify-center"
+      [fullWidthMode]="columns === 1"
+      [product]="product"
+    ></app-product-card>
+  </mat-grid-tile>
+</mat-grid-list>

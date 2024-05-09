@@ -1,0 +1,3 @@
+interface ProductVariantAttribute {
+  id: number;
+}

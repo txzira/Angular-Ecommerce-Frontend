@@ -1,0 +1,220 @@
+<div class="w-3/4 mx-auto">
+  <div class="flex flex-row items-center">
+    <a href="/admin/products"
+      ><mat-icon class="!align-middle" fontIcon="arrow_back"></mat-icon
+      >Products</a
+    >
+  </div>
+  <h1 class="">Edit Product</h1>
+  <form
+    class="flex flex-row justify-between w-full"
+    *ngIf="product"
+    [formGroup]="editProductForm"
+  >
+    <div class="w-[15%] sticky top-5 h-min border rounded-xl p-3 shadow-md">
+      <ul>
+        <li class="p-2">
+          <a (click)="navigateToSection('details')">Details</a>
+        </li>
+        <li class="p-2">
+          <a (click)="navigateToSection('price')">Price</a>
+        </li>
+        <li class="p-2">
+          <a (click)="navigateToSection('variants')">Variants</a>
+        </li>
+        <li class="p-2">
+          <a (click)="navigateToSection('imageGallery')">Image Gallery</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="flex flex-col gap-5 w-[60%]">
+      <div
+        id="details"
+        class="w-full flex flex-col border rounded-xl p-3 shadow-md"
+      >
+        <h3
+          class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
+        >
+          DETAILS
+        </h3>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input
+            (keyup)="handleSlugFromName($event)"
+            matInput
+            formControlName="name"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Slug</mat-label>
+          <input (keyup)="handleSlug()" matInput formControlName="slug" />
+        </mat-form-field>
+        <div class="flex flex-row justify-between w-full">
+          <mat-form-field class="w-[48%]">
+            <mat-label>sku</mat-label>
+            <input matInput formControlName="sku" />
+          </mat-form-field>
+          <mat-form-field class="w-[48%]">
+            <mat-label>Stock</mat-label>
+            <input matInput formControlName="stock" type="number" />
+          </mat-form-field>
+        </div>
+        <div class="flex flex-row gap-10 items-center"></div>
+        <mat-form-field class="!block w-full">
+          <mat-label>Description</mat-label>
+          <textarea
+            class=""
+            rows="5"
+            matInput
+            formControlName="description"
+          ></textarea>
+        </mat-form-field>
+      </div>
+      <div
+        id="price"
+        class="w-full flex flex-col border rounded-xl p-3 shadow-md"
+      >
+        <h3
+          class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
+        >
+          PRICE
+        </h3>
+        <mat-form-field>
+          <mat-label>Price</mat-label>
+          <input matInput formControlName="price" type="number" />
+        </mat-form-field>
+      </div>
+      <div
+        id="variants"
+        class="w-full flex flex-col border rounded-xl p-3 shadow-md"
+      >
+        <div class="flex flex-row justify-between items-center pb-4">
+          <h3
+            class="!m-0 !text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
+          >
+            VARIANTS
+          </h3>
+          <button
+            class="px-2 py-1 shadow-md bg-green-500 text-white rounded-full text-xs"
+            (click)="openVariantsDialog()"
+          >
+            <div class="flex flex-row" *ngIf="!attributeGroups.length">
+              <mat-icon
+                inline="true"
+                class="!m-0 !flex !items-center"
+                fontIcon="add"
+              ></mat-icon>
+              <span class="tracking-widest">ADD</span>
+            </div>
+            <div class="flex flex-row" *ngIf="attributeGroups.length">
+              <span class="tracking-widest">EDIT</span>
+            </div>
+
+            <!-- <span class="tracking-widest">EDIT</span> -->
+          </button>
+        </div>
+        <div *ngIf="!attributeGroups.length">
+          <p>Different types of this product (e.g. size, color)</p>
+        </div>
+        <div
+          *ngIf="attributeGroups.length"
+          class="flex flex-col border shadow-md rounded-lg"
+        >
+          <div
+            class="flex flex-row items-center justify-between h-10 p-2 bg-blue-100 text-xs"
+          >
+            <div class="w-60">GROUP</div>
+            <div>OPTIONS</div>
+          </div>
+          <mat-divider></mat-divider>
+          <div
+            *ngFor="let attributeGroup of attributeGroups; let lastItem = last"
+            class="flex flex-col hover:bg-[whitesmoke] min-h-12"
+          >
+            <div class="flex flex-row justify-between items-center p-2 text-sm">
+              <div class="w-60">{{ attributeGroup.name }}</div>
+              <ul class="flex flex-row items-center gap-2">
+                <li
+                  class="flex items-center rounded-full border shadow-md px-2 py-1 bg-slate-600 text-white"
+                  *ngFor="let attribute of attributeGroup.attributes"
+                >
+                  {{ attribute.name }}
+                </li>
+              </ul>
+            </div>
+            <mat-divider *ngIf="!lastItem"></mat-divider>
+          </div>
+        </div>
+      </div>
+      <div
+        id="imageGallery"
+        class="w-full flex flex-col border rounded-xl p-3 shadow-md"
+      >
+        <h3
+          class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
+        >
+          IMAGE GALLERY
+        </h3>
+        <app-images-container
+          id="productImages"
+          (imagesEvent)="addImages($event)"
+          [images]="productImages"
+        ></app-images-container>
+
+        <div>{{ productImages | json }}</div>
+      </div>
+
+      {{ editProductForm.value | json }}
+    </div>
+    <div class="flex flex-col gap-5 sticky top-5 h-min w-[20%]">
+      <div class="flex flex-col border rounded-xl p-3 shadow-md">
+        <button
+          mat-raised-button
+          class="!bg-green-500 !text-white"
+          color="primary"
+          (click)="editProduct()"
+          [disabled]="editProductForm.invalid"
+        >
+          Save Changes
+        </button>
+        <mat-checkbox formControlName="active">Available</mat-checkbox>
+      </div>
+      <div class="flex flex-col border rounded-xl p-3 shadow-md">
+        <h3
+          class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
+        >
+          Brand
+        </h3>
+        <mat-form-field>
+          <mat-select formControlName="brand">
+            <mat-option value="">None</mat-option>
+            <mat-option *ngFor="let brand of brands" [value]="brand.id">{{
+              brand.name
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col border rounded-xl p-3 shadow-md">
+        <h3
+          class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
+        >
+          CATEGORIES
+        </h3>
+        <mat-form-field>
+          <mat-select
+            formControlName="categories"
+            placeholder="--Select--"
+            multiple
+          >
+            <mat-option
+              *ngFor="let category of categories"
+              [value]="category.id"
+              >{{ category.name }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,35 @@
+<mat-card
+  class="flex relative items-center p-3 pb-5 w-[300px]"
+  *ngIf="product"
+  [ngClass]="{ 'text-center': !fullWidthMode }"
+>
+  <div class="w-[90%]" [ngClass]="{ flex: fullWidthMode }">
+    <img
+      mat-card-image
+      class="mx-auto p-2"
+      [ngClass]="{ 'h-[200px]': !fullWidthMode, 'h-[360px]': fullWidthMode }"
+      [src]="product.images?.[0]?.url"
+      [routerLink]="'/products/' + this.product.id.toString()"
+      [queryParams]="queryParams"
+    />
+    <mat-card-actions>
+      <button *ngFor="let color of colors">
+        <img
+          name="option"
+          [src]="color.images![0].url"
+          [alt]="color.name"
+          class="w-7 h-7"
+        />
+        <!-- (mouseenter)="hoverImg(color.images![0].url, color.name)" -->
+      </button>
+    </mat-card-actions>
+    <div class="h-max">
+      <p class="truncate hover:whitespace-normal">
+        {{ product.name | uppercase }}
+      </p>
+      <p class="text-sm">
+        {{ product.price | currency }}
+      </p>
+    </div>
+  </div>
+</mat-card>

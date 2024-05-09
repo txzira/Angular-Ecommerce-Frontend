@@ -1,0 +1,43 @@
+<div *ngIf="!(user$ | async)">
+  <button
+    mat-button
+    class="text-xl tracking-[0.0125em] px-2"
+    routerLink="/auth/login"
+  >
+    Login
+  </button>
+</div>
+<div *ngIf="user$ | async as user">
+  <button
+    mat-button
+    [matMenuTriggerFor]="account"
+    class="text-xl tracking-[0.0125em]"
+  >
+    {{ user.name }}
+  </button>
+  <mat-menu #account="matMenu" class="w-full">
+    <button
+      mat-menu-item
+      class="!p-0 !w-full !block !text-center"
+      routerLink="/my-account"
+    >
+      My Account
+    </button>
+    <!-- <button
+      mat-menu-item
+      *ngIf="isAdmin$ | async"
+      class="!p-0 !w-full !block !text-center"
+      routerLink="/admin"
+    >
+      Admin
+    </button> -->
+    <button
+      mat-menu-item
+      type="button"
+      class="!p-0 !w-full !block !text-center"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+  </mat-menu>
+</div>

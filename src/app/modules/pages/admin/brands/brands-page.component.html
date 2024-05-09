@@ -1,0 +1,58 @@
+<div class="w-full h-full">
+  <div class="flex flex-row justify-between items-center">
+    <h1>Brands</h1>
+    <button
+      mat-raised-button
+      class="!rounded-2xl border px-2 py-1 !bg-green-500 flex flex-row items-center"
+      (click)="openAddBrandDialog()"
+    >
+      <span>ADD</span>
+      <mat-icon fontIcon="add"></mat-icon>
+    </button>
+  </div>
+  <div class="w-full">
+    <!-- table of brands -->
+    <mat-form-field class="!w-full">
+      <mat-label>
+        <div class="flex flex-row items-center">
+          <mat-icon fontIcon="search"></mat-icon>
+          <span>Search</span>
+        </div>
+      </mat-label>
+      <input matInput [formControl]="brandSearch" />
+    </mat-form-field>
+
+    <div class="mx-auto border rounded-xl shadow-lg min-h-[616px] relative">
+      <div
+        class="flex flex-row w-full h-14 items-center bg-black text-white rounded-tr-md rounded-tl-md"
+      >
+        <div class="w-32 mx-auto">Name</div>
+
+        <div class="w-30 mx-auto"></div>
+      </div>
+      <div
+        class="flex flex-row w-full h-14 items-center"
+        *ngFor="let brand of brands"
+      >
+        <div class="w-32 mx-auto">
+          {{ brand.name }}
+        </div>
+
+        <div class="w-30 mx-auto flex flex-row gap-2">
+          <button
+            class="flex justify-center bg-yellow-300 border rounded-lg p-1"
+            (click)="openEditBrandDialog(brand)"
+          >
+            <mat-icon fontIcon="edit"></mat-icon>
+          </button>
+          <button
+            class="flex justify-center bg-red-500 border rounded-lg p-1"
+            (click)="openDeleteBrandDialog(brand)"
+          >
+            <mat-icon fontIcon="delete"></mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

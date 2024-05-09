@@ -1,0 +1,33 @@
+<div class="w-full h-full">
+  <div class="">
+    <h1>Customers</h1>
+  </div>
+  <div class="w-full">
+    <!-- table of categories -->
+    <mat-form-field class="!w-full">
+      <mat-label>
+        <div class="flex flex-row items-center">
+          <mat-icon fontIcon="search"></mat-icon>
+          <span>Search</span>
+        </div>
+      </mat-label>
+      <input matInput [formControl]="customerSearch" />
+    </mat-form-field>
+  </div>
+  <div class="mx-auto border rounded-xl shadow-lg min-h-[616px] relative">
+    <div
+      class="flex flex-row w-full h-14 items-center bg-black text-white rounded-tr-md rounded-tl-md"
+    >
+      <div class="w-32 mx-auto">Name</div>
+      <div class="w-32 mx-auto">Slug</div>
+      <div class="w-80 mx-auto">Subcategories</div>
+      <div class="w-40 mx-auto"></div>
+    </div>
+    <div
+      class="flex flex-row w-full h-14 items-center"
+      *ngFor="let customer of customers"
+    >
+      <div>{{ customer.firstName }}</div>
+    </div>
+  </div>
+</div>

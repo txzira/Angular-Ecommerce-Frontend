@@ -1,0 +1,49 @@
+<div>
+  <div class="flex flex-row items-center">
+    <button>
+      <a href="/admin/categories"
+        ><mat-icon class="!align-middle" fontIcon="arrow_back"></mat-icon
+      ></a>
+    </button>
+    <h1 class="!m-0">Create Category</h1>
+  </div>
+  <form
+    class="flex flex-col"
+    [formGroup]="categoryForm"
+    #formDirective="ngForm"
+  >
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input
+        (keyup)="handleSlugFromName($event)"
+        matInput
+        formControlName="name"
+      />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Slug</mat-label>
+      <input matInput (keyup)="handleSlug()" formControlName="slug" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Parent Category</mat-label>
+      <mat-select formControlName="parentId" value="">
+        <mat-option value="">None</mat-option>
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    {{ categoryForm.value | json }}
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="addCategory(formDirective)"
+    >
+      Add Category
+    </button>
+  </form>
+</div>

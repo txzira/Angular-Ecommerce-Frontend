@@ -1,0 +1,62 @@
+<div class="flex flex-col w-full h-full overflow-x-hidden bg-white">
+  <div class="flex flex-col h-20 shadow-md sticky top-0 p-5 bg-white z-50">
+    <div class="flex flex-row items-center justify-between">
+      <h1 class="!m-0">
+        Edit Variant:
+        <span
+          *ngFor="
+            let productVariantAttribute of variant.productVariantAttributes;
+            let lastItem = last
+          "
+          >{{ productVariantAttribute.attribute.name
+          }}<span *ngIf="!lastItem">,</span>
+        </span>
+      </h1>
+      <button class="flex items-center">
+        <mat-icon class="scale-125" fontIcon="close"></mat-icon>
+      </button>
+    </div>
+  </div>
+  <form class="p-5 flex flex-col" [formGroup]="variantForm">
+    <h2>Select options for your variant</h2>
+    <div class="flex flex-row gap-4">
+      <mat-form-field
+        *ngFor="
+          let productVariantAttribute of variant.productVariantAttributes;
+          index as i
+        "
+      >
+        <mat-label>{{ productVariantAttribute.attributeGroup.name }}</mat-label>
+        <mat-select required [formControlName]="'attributeGroup' + (i + 1)">
+          <mat-option
+            [value]="attribute.id"
+            *ngFor="
+              let attribute of productVariantAttribute.attributeGroup.attributes
+            "
+            >{{ attribute.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <h2>Variant Details</h2>
+    <app-images-container></app-images-container>
+    <div class="flex flex-row">
+      <mat-form-field>
+        <mat-label>SKU</mat-label>
+        <input matInput formControlName="sku" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Quantity</mat-label>
+        <input matInput formControlName="quantity" />
+      </mat-form-field>
+    </div>
+    <mat-form-field>
+      <mat-label>Price</mat-label>
+      <input matInput formControlName="price" /> </mat-form-field
+    ><mat-form-field>
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+  </form>
+  {{ variant | json }}
+</div>

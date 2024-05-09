@@ -1,0 +1,81 @@
+<form [formGroup]="form">
+  <h1>{{ title }}</h1>
+  <mat-divider></mat-divider>
+  <div class="p-3">
+    <div class="flex flex-row justify-between">
+      <mat-form-field class="w-[35%]">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" placeholder="John" />
+      </mat-form-field>
+      <mat-form-field class="w-[27%]">
+        <mat-label>Middle Initial</mat-label>
+        <input
+          matInput
+          formControlName="middleName"
+          placeholder="N. (optional)"
+        />
+      </mat-form-field>
+      <mat-form-field class="w-[35%]">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" placeholder="Doe" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field class="w-full">
+      <mat-label>Country</mat-label>
+      <mat-select formControlName="country">
+        <mat-option value="US">United States</mat-option>
+        <!-- <mat-option value="CA">Canda</mat-option> -->
+      </mat-select>
+    </mat-form-field>
+    <div class="flex flex-row justify-between">
+      <mat-form-field class="w-2/3">
+        <mat-label>Address 1</mat-label>
+        <input
+          #inputField
+          matInput
+          formControlName="address1"
+          placeholder="Street Address"
+        />
+      </mat-form-field>
+      <mat-form-field class="w-[31%]">
+        <mat-label>Address 2</mat-label>
+        <input
+          matInput
+          formControlName="address2"
+          placeholder="Ex: Apt.1, Suite 2, etc. (optional)"
+        />
+      </mat-form-field>
+    </div>
+    <div class="flex flex-row justify-between">
+      <mat-form-field class="w-[49%]">
+        <mat-label>City</mat-label>
+        <input matInput formControlName="city" />
+      </mat-form-field>
+      <mat-form-field class="w-[49%]">
+        <mat-label>State</mat-label>
+        <mat-select matInput formControlName="state">
+          <mat-option
+            *ngFor="let state of statesList.states"
+            [value]="state.abbreviation"
+            >{{ state.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="flex flex-row justify-between">
+      <mat-form-field class="w-[49%]">
+        <mat-label>ZIP</mat-label>
+        <input matInput formControlName="postalCode" />
+      </mat-form-field>
+      <mat-form-field class="w-[49%]">
+        <mat-label>Phone</mat-label>
+        <input
+          matInput
+          formControlName="phone"
+          placeholder="Ex: 555-555-5555"
+        />
+      </mat-form-field>
+    </div>
+  </div>
+</form>

@@ -1,0 +1,17 @@
+<div class="flex justify-center w-[90%] mx-auto">
+  <div>
+    <h1>Unauthorized User.</h1>
+    <p *ngIf="!isLoggedIn">
+      Please <a href="/auth/login" class="text-blue-600 underline">login</a>.
+    </p>
+    <p *ngIf="isLoggedIn">
+      Please change account.
+      <button class="text-blue-600 underline" (click)="logout()">
+        Sign out</button
+      >.
+    </p>
+    <a href="/">
+      <button mat-raised-button color="primary">Home</button>
+    </a>
+  </div>
+</div>

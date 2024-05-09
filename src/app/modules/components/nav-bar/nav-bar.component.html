@@ -1,0 +1,32 @@
+<mat-toolbar
+  color="white"
+  class="flex max-w-7x1 h-16 mx-auto border-x justify-between !py-2"
+>
+  <div class="flex flex-row items-center">
+    <button
+      class="px-2 h-16 w-72"
+      routerLink="home"
+      (mouseover)="showLogoAnimation()"
+      (mouseout)="showStaticLogo()"
+    >
+      <img
+        id="logo"
+        class="max-h-full max-w-full"
+        src="/assets/images/pseudo-corp.png"
+        alt="Logo"
+      />
+    </button>
+    <button
+      class="text-xl tracking-[0.0125em] px-2"
+      mat-button
+      routerLink="products"
+    >
+      Products
+    </button>
+  </div>
+
+  <div class="flex flex-row items-center">
+    <app-nav-login-button></app-nav-login-button>
+    <app-nav-cart-button [cart]="cart"></app-nav-cart-button>
+  </div>
+</mat-toolbar>

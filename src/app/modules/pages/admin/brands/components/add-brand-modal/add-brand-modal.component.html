@@ -1,0 +1,19 @@
+<div>
+  <div class="flex flex-row items-center justify-between">
+    <h1 class="!m-0">Create Brand</h1>
+    <button (click)="closeModal()">
+      <mat-icon class="!align-middle" fontIcon="close"></mat-icon>
+    </button>
+  </div>
+  <form class="flex flex-col" [formGroup]="brandForm">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    {{ brandForm.value | json }}
+    <button mat-raised-button color="primary" (click)="addBrand()">
+      Add Brand
+    </button>
+  </form>
+</div>

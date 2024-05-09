@@ -1,0 +1,269 @@
+<div class="flex flex-col w-[1000px] h-full overflow-x-hidden">
+  <div class="flex flex-col h-20 shadow-md sticky top-0 p-5 bg-white z-50">
+    <div class="flex flex-row items-center justify-between">
+      <h1 class="!m-0">Edit Variants</h1>
+      <button class="flex items-center">
+        <mat-icon class="scale-125" fontIcon="close"></mat-icon>
+      </button>
+    </div>
+  </div>
+  <div
+    class="flex flex-col items-center justify-center w-full flex-grow"
+    *ngIf="!attributeGroups.length"
+  >
+    <div class="w-1/2 h-1/3 mx-auto border shadow-lg p-5 rounded-lg">
+      <p>
+        Set up variant groups to sell variations of the same product Variants
+        help you to sell products with slight differences, but are still the
+        same product. For example, you might sell a t-shirt in different colors,
+        or a plant pot in different sizes. You can configure variants to have
+        their own price, SKU, and stock inventory.
+      </p>
+      <p>
+        To get started, create groups and options for your variants. Groups
+        define the type of variant (e.g. color). Options are a choice your
+        customer can make within that group (e.g. blue).
+      </p>
+      <button
+        mat-raised-button
+        class="flex flex-row items-center !rounded-full !bg-green-500 !text-white"
+        (click)="addAttributeGroup()"
+      >
+        <mat-icon class="flex items-center" fontIcon="add"></mat-icon>
+        <span> Add Variant Group </span>
+      </button>
+    </div>
+  </div>
+
+  <div class="p-5 flex-grow" *ngIf="attributeGroups.length">
+    <div class="flex flex-row justify-between">
+      <h2>Group</h2>
+      <button
+        mat-raised-button
+        class="flex flex-row items-center !rounded-full !bg-green-500 !text-white"
+        (click)="addAttributeGroup()"
+      >
+        <mat-icon class="flex items-center" fontIcon="add"></mat-icon>
+        Add
+      </button>
+    </div>
+    <div class="border shadow-lg rounded-md">
+      <div class="flex flex-row items-center p-3 gap-4">
+        <div class="flex items-center w-72 h-10 tracking-wider">NAME</div>
+        <div class="flex items-center w-[420px] h-10 tracking-wider">
+          OPTIONS
+        </div>
+        <div
+          class="flex items-center flex-grow h-10 tracking-wider justify-end"
+        >
+          ACTIONS
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div
+        *ngFor="
+          let attributeGroup of attributeGroups;
+          index as groupIndex;
+          let lastItem = last
+        "
+        class="flex flex-col"
+      >
+        <div
+          [ngClass]="{
+            'pointer-events-none': attributeGroupsmarkedForDelete.has(
+              attributeGroup.id
+            )
+          }"
+          class="flex flex-row p-3 gap-4 hover:bg-[whitesmoke]"
+        >
+          <div
+            [ngClass]="{
+              'opacity-40': attributeGroupsmarkedForDelete.has(
+                attributeGroup.id
+              )
+            }"
+            class="flex items-center w-72 h-12 p-2 border rounded-md bg-white"
+          >
+            <input
+              class="focus:outline-none w-full"
+              placeholder="Group name (example: Size, Color, Material, etc.)"
+              [value]="attributeGroup.name"
+              (keyup)="changeAttributeGroupName($event, groupIndex)"
+            />
+          </div>
+          <div
+            [ngClass]="{
+              'opacity-40': attributeGroupsmarkedForDelete.has(
+                attributeGroup.id
+              )
+            }"
+            class="flex items-center w-[420px] border rounded-md min-h-12 bg-white"
+          >
+            <ul class="flex flex-wrap gap-x-5 gap-y-2 p-2">
+              <li
+                *ngFor="
+                  let attribute of attributeGroup.attributes;
+                  index as attributeIndex
+                "
+                class="border rounded-lg shadow-md flex flex-row items-center px-1"
+              >
+                <span>
+                  {{ attribute.name }}
+                </span>
+                <button
+                  class="flex items-center"
+                  (click)="deleteAttribute(groupIndex, attributeIndex)"
+                >
+                  <mat-icon fontIcon="cancel" class="scale-75"></mat-icon>
+                </button>
+              </li>
+              <input
+                class="min-w-72 focus:outline-none"
+                placeholder="Options (example: Red, Green, Blue, etc.)"
+                (keyup.enter)="addAttribute($event, groupIndex)"
+                (blur)="addAttribute($event, groupIndex)"
+              />
+            </ul>
+          </div>
+          <div
+            class="flex items-center flex-grow justify-end pointer-events-auto opacity-100"
+          >
+            <div *ngIf="!attributeGroupsmarkedForDelete.has(attributeGroup.id)">
+              <button [matMenuTriggerFor]="attributeGroupActionsMenu">
+                <mat-icon
+                  class="flex items-center"
+                  fontIcon="more_horiz"
+                ></mat-icon>
+              </button>
+              <mat-menu #attributeGroupActionsMenu="matMenu">
+                <button
+                  mat-menu-item
+                  (click)="openEditAttributeGroupDialog(attributeGroup)"
+                >
+                  Advanced
+                </button>
+                <button
+                  mat-menu-item
+                  class="!text-red-600"
+                  (click)="deleteAttributeGroup(groupIndex, attributeGroup.id!)"
+                >
+                  Delete
+                </button>
+              </mat-menu>
+            </div>
+            <button
+              *ngIf="attributeGroupsmarkedForDelete.has(attributeGroup.id)"
+              class="rounded-full border py-1 px-2"
+              (click)="cancelAttributeGroupDelete(attributeGroup.id!)"
+            >
+              CANCEL
+            </button>
+          </div>
+        </div>
+        <mat-divider class="w-full" *ngIf="!lastItem"></mat-divider>
+      </div>
+    </div>
+
+    <div>
+      {{ attributeGroups | json }}
+    </div>
+    <div>{{ attributesToDelete | json }}</div>
+  </div>
+  <div class="p-5 flex-grow">
+    <div class="flex flex-row justify-between">
+      <h2>Variants</h2>
+      <button
+        mat-raised-button
+        class="flex flex-row items-center !rounded-full !bg-green-500 !text-white"
+      >
+        <mat-icon class="flex items-center" fontIcon="add"></mat-icon>
+        Add
+      </button>
+    </div>
+    <div class="border shadow-lg rounded-md">
+      <div class="flex flex-row items-center p-3 gap-4">
+        <div class="flex items-center h-10 tracking-wider">IMAGE</div>
+        <div class="flex items-center h-10 tracking-wider w-96">OPTIONS</div>
+        <div class="flex items-center h-10 tracking-wider w-20">QUANTITY</div>
+        <div class="flex items-center h-10 tracking-wider w-20">PRICE</div>
+        <div class="flex items-center h-10 tracking-wider w-24">SKU</div>
+        <div
+          class="flex items-center flex-grow h-10 tracking-wider justify-end"
+        >
+          ACTIONS
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div
+        *ngFor="let variant of variants"
+        class="flex flex-row items-center p-3 gap-4"
+      >
+        <div class="flex items-center h-10 tracking-wider">IMAGE</div>
+        <div class="flex items-center h-10 tracking-wider w-96">
+          <div
+            class="flex flex-row items-center text-xs font-medium"
+            *ngFor="
+              let productVariantAttribute of variant.productVariantAttributes
+            "
+          >
+            <span class="px-2 py-1 bg-slate-600 text-white rounded-l-full">{{
+              productVariantAttribute.attributeGroup.name
+            }}</span>
+            <span
+              class="px-2 py-1 bg-[whitesmoke] text-slate-600 rounded-r-full"
+              >{{ productVariantAttribute.attribute.name }}</span
+            >
+          </div>
+        </div>
+        <div class="flex items-center h-10 tracking-wider w-20">
+          {{ variant.quantity }}
+        </div>
+        <div class="flex items-center h-10 tracking-wider w-20">
+          {{ variant.price | currency }}
+        </div>
+        <div class="flex items-center h-10 tracking-wider w-24">SKU</div>
+        <div
+          class="flex items-center flex-grow h-10 tracking-wider justify-end"
+        >
+          <div
+            class="flex items-center flex-grow justify-end pointer-events-auto opacity-100"
+          >
+            <div>
+              <button [matMenuTriggerFor]="variantActionsMenu">
+                <mat-icon
+                  class="flex items-center"
+                  fontIcon="more_horiz"
+                ></mat-icon>
+              </button>
+              <mat-menu #variantActionsMenu="matMenu">
+                <button mat-menu-item (click)="openEditVariantDialog(variant)">
+                  Advanced
+                </button>
+                <button mat-menu-item class="!text-red-600">Delete</button>
+              </mat-menu>
+            </div>
+            <!-- <button
+          class="rounded-full border py-1 px-2"
+        >
+          CANCEL
+        </button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="flex flex-row justify-end h-20 pr-5 py-5 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] items-center bottom-0 sticky gap-4 bg-white z-50"
+  >
+    <button mat-raised-button>Cancel</button>
+
+    <button
+      mat-raised-button
+      [disabled]="!attributeGroups.length"
+      (click)="saveAndGenerateVariants()"
+    >
+      Save and Generate Variants
+    </button>
+    <button mat-raised-button (click)="saveChanges()">Save Changes</button>
+  </div>
+</div>

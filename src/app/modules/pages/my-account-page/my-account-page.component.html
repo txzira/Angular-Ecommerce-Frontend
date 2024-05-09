@@ -1,0 +1,230 @@
+<div class="w-full py-10">
+  <div *ngIf="accountInformation" class="w-[90%] mx-auto">
+    <div class="flex flex-col">
+      <h1 class="text-lg">Account Information</h1>
+      <div>
+        <h2>Email</h2>
+        <p>{{ accountInformation.email }}</p>
+      </div>
+      <div class="flex flex-row gap-8">
+        <div>
+          <h2>First Name</h2>
+          <p>{{ accountInformation.firstName }}</p>
+        </div>
+        <div>
+          <h2>Last Name</h2>
+          <p>{{ accountInformation.lastName }}</p>
+        </div>
+      </div>
+      <button
+        class="w-1/6"
+        mat-raised-button
+        color="warn"
+        type="button"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+    </div>
+    <form
+      [formGroup]="changePasswordForm"
+      *ngIf="!accountInformation.socialProvider"
+      (ngSubmit)="changePassword()"
+      #formDir="ngForm"
+    >
+      <h1>Change Password</h1>
+      <div class="flex flex-col">
+        <mat-form-field class="w-[400px]">
+          <mat-label>Old Password</mat-label>
+          <input matInput type="password" formControlName="oldPassword" />
+          <mat-error
+            *ngIf="
+              changePasswordForm.controls['oldPassword']?.hasError('required')
+            "
+          >
+            Required.
+          </mat-error>
+        </mat-form-field>
+
+        <div class="flex flex-row gap-10">
+          <div class="w-[400px]">
+            <mat-form-field class="w-full" subscriptSizing="dynamic">
+              <mat-label>New Password</mat-label>
+              <input matInput type="password" formControlName="newPassword" />
+              <mat-error
+                *ngIf="changePasswordForm.get('newPassword')?.errors"
+                class="flex flex-col"
+              >
+                <ul style="list-style-type: circle">
+                  <li
+                    *ngIf="
+                      changePasswordForm.controls['newPassword']?.hasError(
+                        'required'
+                      )
+                    "
+                  >
+                    Required
+                  </li>
+                  <li
+                    *ngIf="
+                      changePasswordForm.controls['newPassword']?.hasError(
+                        'minlength'
+                      )
+                    "
+                  >
+                    Minimum password length must be at least 8 characters.
+                  </li>
+                  <li
+                    *ngIf="
+                      changePasswordForm
+                        .get('newPassword')
+                        ?.hasError('maxlength')
+                    "
+                  >
+                    Maximum password length must be no more than 32 characters.
+                  </li>
+                  <li
+                    *ngIf="
+                      changePasswordForm.controls['newPassword']?.hasError(
+                        'pattern'
+                      )
+                    "
+                  >
+                    <ul>
+                      <li
+                        *ngIf="!changePasswordForm.get('newPassword')?.errors?.['passwordStrength'].hasUpperCase"
+                      >
+                        Password must contain an uppercase letter.
+                      </li>
+                      <li
+                        *ngIf="!changePasswordForm.get('newPassword')?.errors?.['passwordStrength'].hasLowerCase"
+                      >
+                        Password must contain a lowercase letter.
+                      </li>
+                      <li
+                        *ngIf="!changePasswordForm.get('newPassword')?.errors?.['passwordStrength'].hasNumeric"
+                      >
+                        Password must contain a number.
+                      </li>
+                      <li
+                        *ngIf="!changePasswordForm.get('newPassword')?.errors?.['passwordStrength'].hasSymbol"
+                      >
+                        Password must contain a symbol (E.g. !&#64;#$%^&*( )[
+                        ]).
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="w-[400px]">
+            <mat-form-field class="w-full" subscriptSizing="dynamic">
+              <mat-label>Re-Type New Password</mat-label>
+              <input
+                matInput
+                type="password"
+                formControlName="retypedNewPassword"
+              />
+              <mat-error
+                *ngIf="
+                  changePasswordForm.controls['retypedNewPassword']?.errors
+                "
+              >
+                <ul style="list-style-type: circle">
+                  <li
+                    *ngIf="
+                      changePasswordForm.controls['newPassword']?.hasError(
+                        'required'
+                      )
+                    "
+                  >
+                    Required
+                  </li>
+                  <li
+                    *ngIf="
+                      changePasswordForm.controls[
+                        'retypedNewPassword'
+                      ]?.hasError('passwordsNotEquivalent')
+                    "
+                  >
+                    New password must match submitted password.
+                  </li>
+                </ul>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="changePasswordForm.invalid"
+      >
+        Save
+      </button>
+    </form>
+  </div>
+</div>
+<div class="w-[90%] mx-auto">
+  <!-- table -->
+  <div class="flex flex-row justify-between">
+    <h1>Order History</h1>
+    <div class="flex flex-row w-fit items-center gap-3">
+      <span class="whitespace-nowrap">Items Per Page:</span>
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-select
+          type="number"
+          [formControl]="itemsPerPage"
+          [value]="3"
+          (selectionChange)="changeItemsPerPage()"
+        >
+          <mat-option [value]="3">3</mat-option>
+          <mat-option [value]="10">10</mat-option>
+          <mat-option [value]="25">25</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="mx-auto border rounded-xl shadow-lg min-h-[616px] relative">
+    <div class="flex flex-row w-full h-14">
+      <div class="w-40 mx-auto">Email</div>
+      <div class="w-40 mx-auto">Date</div>
+      <div class="w-20 mx-auto">Total</div>
+      <div class="w-20 mx-auto">Status</div>
+      <div class="w-20 mx-auto">Details</div>
+    </div>
+    <div *ngFor="let order of ordersToShow" class="flex flex-row w-full h-12">
+      <div class="w-40 mx-auto overflow-x-auto">
+        {{ order.customerEmail }}
+      </div>
+      <div class="w-40 mx-auto">{{ order.date | date }}</div>
+      <div class="w-20 mx-auto">{{ order.amount | currency }}</div>
+      <div class="w-20 mx-auto">{{ order.status }}</div>
+      <div class="w-20 mx-auto">
+        <button (click)="openDialog(order)">details</button>
+      </div>
+    </div>
+    <!-- pagination controls -->
+    <div
+      class="flex flex-row justify-between items-center w-full h-12 px-10 absolute bottom-0"
+    >
+      <div>
+        <button mat-raised-button (click)="prevOrderPage()">&laquo;</button>
+      </div>
+      <div>
+        <span
+          >{{ accountOrders.length === 0 ? 0 : itemCursor + 1 }}-{{
+            nextItemCursor
+          }}</span
+        >
+        <span> of </span>
+        <span>{{ totalOrders }}</span>
+      </div>
+      <div>
+        <button mat-raised-button (click)="nextOrderPage()">&raquo;</button>
+      </div>
+    </div>
+  </div>
+</div>

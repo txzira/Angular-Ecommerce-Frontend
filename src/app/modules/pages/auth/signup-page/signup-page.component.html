@@ -1,0 +1,59 @@
+<div class="w-full h-full" *ngIf="!registrationResponse">
+  <div class="w-1/3 mx-auto">
+    <h1 class="mx-auto">Sign-Up</h1>
+    <form
+      [formGroup]="credentials"
+      class="flex flex-col"
+      (ngSubmit)="register()"
+    >
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input id="email" matInput formControlName="email" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>First Name</mat-label>
+        <input id="firstName" matInput formControlName="firstName" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Last Name</mat-label>
+        <input id="lastName" matInput formControlName="lastName" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input
+          id="password"
+          matInput
+          formControlName="password"
+          placeholder="*******"
+          type="password"
+        />
+      </mat-form-field>
+      <button type="submit" mat-raised-button color="primary">Signup</button>
+    </form>
+    <div class="py-5">
+      <mat-divider> </mat-divider>
+    </div>
+    <app-google-button></app-google-button>
+  </div>
+</div>
+<div class="w-full h-full" *ngIf="registrationResponse">
+  <div class="flex flex-col w-1/3 mx-auto">
+    {{ registrationResponse.message }}
+    <div *ngIf="!registrationResponse.success">
+      <button mat-raised-button (click)="back()"><-- Back</button>
+      <div>
+        Already have an account?
+        <button mat-raised-button color="primary">
+          <a href="/auth/login">Login</a>
+        </button>
+      </div>
+    </div>
+    <button
+      mat-raised-button
+      color="primary"
+      *ngIf="registrationResponse.success"
+    >
+      <a href="/auth/login">Login</a>
+    </button>
+  </div>
+</div>

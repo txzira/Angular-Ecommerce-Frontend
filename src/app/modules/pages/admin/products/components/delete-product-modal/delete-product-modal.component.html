@@ -1,0 +1,14 @@
+<div class="flex flex-col items-center w-[500px] h-[200px] justify-center p-2">
+  <p>Are you sure you want to delete product '{{ product.name }}' ?</p>
+  <p>
+    It is recommended to set a product to unavailable as deleting a product will
+    delete all data related to '{{ product.name }}'.
+  </p>
+  <p class="font-bold">This action is irreversible.</p>
+  <div class="flex flex-row gap-5">
+    <button mat-raised-button (click)="closeModal()">No</button>
+    <button mat-raised-button color="warn" (click)="deleteProduct()">
+      Yes
+    </button>
+  </div>
+</div>
