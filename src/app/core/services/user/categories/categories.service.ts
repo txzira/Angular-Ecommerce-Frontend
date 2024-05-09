@@ -8,13 +8,13 @@ import env from 'src/environments/environment';
   providedIn: 'root',
 })
 export class CategoriesService {
-  // private CATEGORIES_URL = !env.production
-  //   ? 'http://localhost:4000/categories'
-  //   : `${env.express_server_url}/categories`;
-
-  private CATEGORIES_URL = process.env['production']
+  private CATEGORIES_URL = !env.production
     ? 'http://localhost:4000/categories'
-    : `${process.env['express_server_url']}/categories`;
+    : `${env.express_server_url}/categories`;
+
+  // private CATEGORIES_URL = process.env['production']
+  //   ? 'http://localhost:4000/categories'
+  //   : `${process.env['express_server_url']}/categories`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

@@ -14,12 +14,13 @@ import env from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AdminProductsService {
-  // private ADMIN_PRODUCTS_URL = !env.production
-  // ? 'http://localhost:4000/admin/products'
-  // : `${env.express_server_url}/admin/products`;
-  private ADMIN_PRODUCTS_URL = process.env['production']
+  private ADMIN_PRODUCTS_URL = !env.production
     ? 'http://localhost:4000/admin/products'
-    : `${process.env['express_server_url']}/admin/products`;
+    : `${env.express_server_url}/admin/products`;
+
+  // private ADMIN_PRODUCTS_URL = process.env['production']
+  //   ? 'http://localhost:4000/admin/products'
+  //   : `${process.env['express_server_url']}/admin/products`;
 
   constructor(private httpClient: HttpClient) {}
   private httpOptions = {

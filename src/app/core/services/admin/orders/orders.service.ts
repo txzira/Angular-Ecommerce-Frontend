@@ -8,12 +8,13 @@ import env from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AdminOrdersService {
-  // private ADMIN_ORDERS_URL = !env.production
-  //   ? 'http://localhost:4000/admin/orders'
-  //   : `${env.express_server_url}/admin/orders`;
-  private ADMIN_ORDERS_URL = process.env['production']
+  private ADMIN_ORDERS_URL = !env.production
     ? 'http://localhost:4000/admin/orders'
-    : `${process.env['express_server_url']}/admin/orders`;
+    : `${env.express_server_url}/admin/orders`;
+
+  // private ADMIN_ORDERS_URL = process.env['production']
+  //   ? 'http://localhost:4000/admin/orders'
+  //   : `${process.env['express_server_url']}/admin/orders`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

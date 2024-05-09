@@ -7,12 +7,13 @@ import env from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AccountService {
-  // private BACKEND_URL = !env.production
-  //   ? 'http://localhost:4000'
-  //   : `${env.express_server_url}/auth`;
-  private BACKEND_URL = process.env['production']
+  private BACKEND_URL = !env.production
     ? 'http://localhost:4000'
-    : `${process.env['express_server_url']}/auth`;
+    : `${env.express_server_url}/auth`;
+
+  // private BACKEND_URL = process.env['production']
+  //   ? 'http://localhost:4000'
+  //   : `${process.env['express_server_url']}/auth`;
 
   constructor(private http: HttpClient) {}
 

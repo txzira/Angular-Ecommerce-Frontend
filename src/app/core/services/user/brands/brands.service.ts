@@ -8,12 +8,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root',
 })
 export class BrandsService {
-  // private BRANDS_URL = !env.production
-  //   ? 'http://localhost:4000/brands'
-  //   : `${env.express_server_url}/brands`;
-  private BRANDS_URL = process.env['production']
+  private BRANDS_URL = !env.production
     ? 'http://localhost:4000/brands'
-    : `${process.env['express_server_url']}/brands`;
+    : `${env.express_server_url}/brands`;
+
+  // private BRANDS_URL = process.env['production']
+  //   ? 'http://localhost:4000/brands'
+  //   : `${process.env['express_server_url']}/brands`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

@@ -8,13 +8,13 @@ import env from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ProductsService {
-  // private PRODUCTS_URL = !env.production
-  //   ? 'http://localhost:4000/products'
-  //   : `${env.express_server_url}/products`;
-
-  private PRODUCTS_URL = process.env['production']
+  private PRODUCTS_URL = !env.production
     ? 'http://localhost:4000/products'
-    : `${process.env['express_server_url']}/products`;
+    : `${env.express_server_url}/products`;
+
+  // private PRODUCTS_URL = process.env['production']
+  //   ? 'http://localhost:4000/products'
+  //   : `${process.env['express_server_url']}/products`;
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 

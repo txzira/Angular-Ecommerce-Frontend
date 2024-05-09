@@ -9,13 +9,13 @@ import env from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AdminCategoriesService {
-  // private ADMIN_CATEGORIES_URL = !env.production
-  //   ? 'http://localhost:4000/admin/categories'
-  //   : `${env.express_server_url}/admin/categories`;
-
-  private ADMIN_CATEGORIES_URL = process.env['production']
+  private ADMIN_CATEGORIES_URL = !env.production
     ? 'http://localhost:4000/admin/categories'
-    : `${process.env['express_server_url']}/admin/categories`;
+    : `${env.express_server_url}/admin/categories`;
+
+  // private ADMIN_CATEGORIES_URL = process.env['production']
+  //   ? 'http://localhost:4000/admin/categories'
+  //   : `${process.env['express_server_url']}/admin/categories`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

@@ -7,13 +7,13 @@ import env from 'src/environments/environment';
   providedIn: 'root',
 })
 export class CheckoutService {
-  // private BASE_BACKEND_URL = !env.production
-  //   ? 'http://localhost:4000'
-  //   : `${env.express_server_url}`;
-
-  private BASE_BACKEND_URL = process.env['production']
+  private BASE_BACKEND_URL = !env.production
     ? 'http://localhost:4000'
-    : `${process.env['express_server_url']}`;
+    : `${env.express_server_url}`;
+
+  // private BASE_BACKEND_URL = process.env['production']
+  //   ? 'http://localhost:4000'
+  //   : `${process.env['express_server_url']}`;
 
   constructor(private http: HttpClient) {}
 

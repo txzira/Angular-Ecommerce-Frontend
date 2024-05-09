@@ -8,12 +8,13 @@ import env from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AuthService {
-  // private AUTH_URL = !env.production
-  //   ? 'http://localhost:4000/auth'
-  //   : `${env.express_server_url}/auth`;
-  private AUTH_URL = process.env['production']
+  private AUTH_URL = !env.production
     ? 'http://localhost:4000/auth'
-    : `${process.env['express_server_url']}/auth`;
+    : `${env.express_server_url}/auth`;
+
+  // private AUTH_URL = process.env['production']
+  //   ? 'http://localhost:4000/auth'
+  //   : `${process.env['express_server_url']}/auth`;
 
   constructor(private http: HttpClient) {}
 
