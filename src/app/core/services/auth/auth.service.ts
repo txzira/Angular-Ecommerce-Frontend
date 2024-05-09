@@ -39,7 +39,7 @@ export class AuthService {
       observe: 'response' as 'response',
     };
     return this.http.post<any>(
-      'http://localhost:4000/auth/login',
+      `${this.AUTH_URL}/auth/login`,
       {
         username: email,
         password: password,
