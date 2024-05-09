@@ -39,7 +39,7 @@ export class AuthService {
       observe: 'response' as 'response',
     };
     return this.http.post<any>(
-      `${this.AUTH_URL}/auth/login`,
+      `${this.AUTH_URL}/login`,
       {
         username: email,
         password: password,
