@@ -81,7 +81,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
             elements: this.elements,
             clientSecret: this.clientSecret,
             confirmParams: {
-              return_url: 'http://localhost:4200/',
+              return_url: 'https://txzira-ecommerce.netlify.app/',
               shipping: {
                 name: `${form.shipping.firstName} ${
                   form.shipping.middleName ? form.shipping.middleName + ' ' : ''
