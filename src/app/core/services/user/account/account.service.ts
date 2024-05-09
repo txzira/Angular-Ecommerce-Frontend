@@ -1,22 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import env from 'src/environment/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountService {
+  private BACKEND_URL = !env.production
+    ? 'http://localhost:4000'
+    : `${env.express_server_url}/auth`;
   constructor(private http: HttpClient) {}
 
   getAccountInformation(): Observable<any> {
-    return this.http.get<any>('http://localhost:4000/account-information');
+    return this.http.get<any>(`${this.BACKEND_URL}/account-information`);
   }
   getAccountOrders(): Observable<any> {
-    return this.http.get<any>('http://localhost:4000/account-orders');
+    return this.http.get<any>(`${this.BACKEND_URL}/account-orders`);
   }
   changeAccountPassword(oldPassword: any, newPassword: any): Observable<any> {
     return this.http.post<any>(
-      'http://localhost:4000/change-password',
+      `${this.BACKEND_URL}/change-password`,
       {
         oldPassword,
         newPassword,

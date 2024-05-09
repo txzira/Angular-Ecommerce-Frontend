@@ -10,7 +10,7 @@ import env from 'src/environment/environment';
 export class AdminBrandsService {
   private ADMIN_BRANDS_URL = !env.production
     ? 'http://localhost:4000/admin/brands'
-    : 'productionUrl';
+    : `${env.express_server_url}/admin/brands`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

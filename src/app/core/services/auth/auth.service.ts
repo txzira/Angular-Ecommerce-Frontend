@@ -2,19 +2,24 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SessionUser } from '../../models/user.model';
+import env from 'src/environment/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private AUTH_URL = !env.production
+    ? 'http://localhost:4000/auth'
+    : `${env.express_server_url}/auth`;
+
   constructor(private http: HttpClient) {}
 
   getUser(): Observable<SessionUser> {
-    return this.http.get<any>('http://localhost:4000/user');
+    return this.http.get<any>(`${this.AUTH_URL}/user`);
   }
 
   registerUser(credentials: any): Observable<any> {
-    return this.http.post<any>('http://localhost:4000/auth/register-user', {
+    return this.http.post<any>(`${this.AUTH_URL}/register-user`, {
       email: credentials.email,
       password: credentials.password,
       firstName: credentials.firstName,
@@ -45,28 +50,25 @@ export class AuthService {
       withCredentials: true,
       observe: 'response' as 'response',
     };
-    return this.http.get<any>(
-      'http://localhost:4000/auth/google/redirect',
-      httpOptions
-    );
+    return this.http.get<any>(`${this.AUTH_URL}/google/redirect`, httpOptions);
   }
 
   isAuthenticated(): Observable<any> {
-    return this.http.get('http://localhost:4000/auth/isauth');
+    return this.http.get(`${this.AUTH_URL}/isauth`);
   }
   isAdmin(): Observable<any> {
-    return this.http.get('http://localhost:4000/auth/isadmin');
+    return this.http.get(`${this.AUTH_URL}/isadmin`);
   }
 
   verifyEmail(token: string): Observable<any> {
-    return this.http.get('http://localhost:4000/auth/verify', {
+    return this.http.get(`${this.AUTH_URL}/verify`, {
       observe: 'response',
       params: { token },
     });
   }
 
   logout(): Observable<any> {
-    return this.http.get<any>('http://localhost:4000/auth/logout', {
+    return this.http.get<any>(`${this.AUTH_URL}/logout`, {
       withCredentials: true,
     });
   }

@@ -10,7 +10,7 @@ import env from 'src/environment/environment';
 export class CategoriesService {
   private CATEGORIES_URL = !env.production
     ? 'http://localhost:4000/categories'
-    : 'productionUrl';
+    : `${env.express_server_url}/categories`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -21,7 +21,7 @@ export class CategoriesService {
 
   getAllCategories(): Observable<Array<Category>> {
     return this.httpClient.get<Array<Category>>(
-      this.CATEGORIES_URL + '/get-categories'
+      `${this.CATEGORIES_URL}/get-categories`
     );
   }
   getParentCategories(): Observable<Array<Category>> {

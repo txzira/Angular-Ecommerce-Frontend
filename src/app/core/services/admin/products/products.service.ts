@@ -22,7 +22,7 @@ export class AdminProductsService {
   };
   private ADMIN_PRODUCTS_URL = !env.production
     ? 'http://localhost:4000/admin/products'
-    : 'productionUrl';
+    : `${env.express_server_url}/admin/products`;
   getAllProducts(): Observable<Product[]> {
     return this.httpClient.get<Product[]>(
       `${this.ADMIN_PRODUCTS_URL}/get-all-products`

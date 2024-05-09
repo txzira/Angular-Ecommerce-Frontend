@@ -11,7 +11,7 @@ import env from 'src/environment/environment';
 export class AdminCustomersService {
   private ADMIN_CUSTOMERS_URL = !env.production
     ? 'http://localhost:4000/admin/customers'
-    : 'productionUrl';
+    : `${env.express_server_url}/admin/customers`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

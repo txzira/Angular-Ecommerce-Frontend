@@ -11,7 +11,7 @@ import env from 'src/environment/environment';
 export class AdminCategoriesService {
   private ADMIN_CATEGORIES_URL = !env.production
     ? 'http://localhost:4000/admin/categories'
-    : 'productionUrl';
+    : `${env.express_server_url}/admin/categories`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

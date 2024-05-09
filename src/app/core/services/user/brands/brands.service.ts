@@ -10,7 +10,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class BrandsService {
   private BRANDS_URL = !env.production
     ? 'http://localhost:4000/brands'
-    : 'productionUrl';
+    : `${env.express_server_url}/brands`;
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -21,7 +21,7 @@ export class BrandsService {
 
   getAllBrands(): Observable<Array<Brand>> {
     return this.httpClient.get<Array<Brand>>(
-      this.BRANDS_URL + '/get-all-brands'
+      `${this.BRANDS_URL}/get-all-brands`
     );
   }
 }

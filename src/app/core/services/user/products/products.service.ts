@@ -10,7 +10,7 @@ import env from 'src/environment/environment';
 export class ProductsService {
   private PRODUCTS_URL = !env.production
     ? 'http://localhost:4000/products'
-    : 'productionUrl';
+    : `${env.express_server_url}/products`;
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 
