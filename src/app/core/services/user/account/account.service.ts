@@ -9,7 +9,7 @@ import env from 'src/environments/environment';
 export class AccountService {
   private BACKEND_URL = !env.production
     ? 'http://localhost:4000'
-    : `${env.express_server_url}/auth`;
+    : `${env.express_server_url}`;
 
   // private BACKEND_URL = process.env['production']
   //   ? 'http://localhost:4000'
