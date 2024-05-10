@@ -19,7 +19,11 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   getUser(): Observable<SessionUser> {
-    return this.http.get<any>(`${this.AUTH_URL}/user`);
+    return this.http.get<any>(`${this.AUTH_URL}/user`, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+
+      withCredentials: true,
+    });
   }
 
   registerUser(credentials: any): Observable<any> {
@@ -58,10 +62,18 @@ export class AuthService {
   }
 
   isAuthenticated(): Observable<any> {
-    return this.http.get(`${this.AUTH_URL}/isauth`);
+    return this.http.get(`${this.AUTH_URL}/isauth`, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+
+      withCredentials: true,
+    });
   }
   isAdmin(): Observable<any> {
-    return this.http.get(`${this.AUTH_URL}/isadmin`);
+    return this.http.get(`${this.AUTH_URL}/isadmin`, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+
+      withCredentials: true,
+    });
   }
 
   verifyEmail(token: string): Observable<any> {
