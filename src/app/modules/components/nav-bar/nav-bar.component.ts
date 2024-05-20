@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Cart } from '../../../core/models/cart.model';
+import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -8,7 +9,8 @@ import { Cart } from '../../../core/models/cart.model';
 export class NavBarComponent implements OnInit {
   @Input() cart!: Cart;
 
-  constructor() {}
+  constructor(public browserDetectorService: BrowserDetectorService) {}
+
   ngOnInit(): void {}
   showStaticLogo(): void {
     (document.getElementById('logo') as HTMLImageElement).src =

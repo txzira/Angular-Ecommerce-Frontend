@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 export class LoginRedirectPageComponent implements OnInit, OnDestroy {
   user: SessionUser | null = null;
   userSubscription: Subscription | undefined;
-  checkUserLoggedInSubscription: Subscription | undefined;
+
   constructor(
     private userService: UserService,
     private authService: AuthService,
@@ -28,12 +28,10 @@ export class LoginRedirectPageComponent implements OnInit, OnDestroy {
     // if user not logged inquery backend if user loggined and send name/email
     // else user logined do nothing
     if (!this.user) {
-      this.checkUserLoggedInSubscription = this.authService
-        .checkGoogleUserLoggedIn()
-        .subscribe((result) => {
-          this.userService.setUser(result.body.user);
-          this.router.navigateByUrl('/');
-        });
+      this.authService.checkGoogleUserLoggedIn().subscribe((result) => {
+        this.userService.setUser(result.body.user);
+        this.router.navigateByUrl('/');
+      });
     } else {
       this.router.navigateByUrl('/');
     }
@@ -41,6 +39,5 @@ export class LoginRedirectPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userSubscription?.unsubscribe();
-    this.checkUserLoggedInSubscription?.unsubscribe();
   }
 }

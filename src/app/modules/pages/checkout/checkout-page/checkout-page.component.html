@@ -110,10 +110,16 @@
         <span>Estimated Tax</span>
         <span>{{ 0 | currency }}</span>
       </p>
+      <p class="flex justify-between" *ngIf="minimumCharged">
+        <span>Minimum Charge</span>
+        <span>
+          {{ 1 | currency }}
+        </span>
+      </p>
       <mat-divider></mat-divider>
       <p class="font-semibold flex justify-between">
         <span>Total</span>
-        <span>{{ cartTotal | currency }}</span>
+        <span>{{ stripeOrderTotal | currency }}</span>
       </p>
     </div>
   </div>

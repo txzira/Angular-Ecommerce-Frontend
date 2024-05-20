@@ -92,8 +92,17 @@ export class AdminVariantsModalComponent implements OnInit {
   }
 
   saveAndGenerateVariants(): void {
+    const attributeGroupsToDelete = Array.from(
+      this.attributeGroupsmarkedForDelete
+    ).map((obj) => obj[0]);
+
     this.adminProductsService
-      .saveAndGenerateVariants(this.data.product.id)
+      .saveAndGenerateVariants(
+        this.data.product.id,
+        this.attributeGroups,
+        attributeGroupsToDelete,
+        this.attributesToDelete
+      )
       .subscribe((response) => {
         console.log(response);
       });

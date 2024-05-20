@@ -28,6 +28,6 @@ export class NavCartButtonComponent {
   }
 
   onClearCart(): void {
-    this.cartService.clearCart();
+    this.cartService.clearCartFromNav();
   }
 }

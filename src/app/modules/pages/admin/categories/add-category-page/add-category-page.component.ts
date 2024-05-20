@@ -28,8 +28,7 @@ export class AdminAddCategoryPageComponent implements OnInit {
     private fb: FormBuilder,
     private categoryService: CategoriesService,
     private adminCategoryService: AdminCategoriesService,
-    private snackBar: MatSnackBar,
-    private router: Router
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {

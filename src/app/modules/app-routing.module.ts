@@ -4,7 +4,7 @@ import { ProductsPageComponent } from './pages/products-page/products-page.compo
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { ProductDetailPageComponent } from './pages/product-detail-page/product-detail-page.component';
 import { CartPageComponent } from './pages/cart-page/cart-page.component';
-import { CheckoutPageComponent } from './pages/checkout-page/checkout-page.component';
+import { CheckoutPageComponent } from './pages/checkout/checkout-page/checkout-page.component';
 import { LoginPageComponent } from './pages/auth/login-page/login-page.component';
 import { SignupPageComponent } from './pages/auth/signup-page/signup-page.component';
 import { MyAccountPageComponent } from './pages/my-account-page/my-account-page.component';
@@ -30,6 +30,9 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { SiteLayoutComponent } from './_layout/site-layout/site-layout.component';
 import { AdminLayoutComponent } from './_layout/admin-layout/admin-layout.component';
 import { CommerceLayoutComponent } from './_layout/commerce-layout/commerce-layout.component';
+import { CategoryNavLayoutComponent } from './_layout/category-nav-layout/category-nav-layout.component';
+import { AboutUsPageComponent } from './pages/about-us-page/about-us-page.component';
+import { ContactPageComponent } from './pages/contact-page/contact-page.component';
 
 const routes: Routes = [
   {
@@ -47,13 +50,7 @@ const routes: Routes = [
 
           {
             path: 'products',
-            children: [
-              { path: '', component: ProductsPageComponent },
-              {
-                path: ':id',
-                component: ProductDetailPageComponent,
-              },
-            ],
+            children: [{ path: '', component: ProductsPageComponent }],
           },
           {
             path: 'categories',
@@ -122,11 +119,26 @@ const routes: Routes = [
         ],
       },
       {
+        path: '',
+        component: CategoryNavLayoutComponent,
+        children: [
+          {
+            path: 'products/:id',
+            component: ProductDetailPageComponent,
+          },
+          { path: 'about-us', component: AboutUsPageComponent },
+          {
+            path: 'contact',
+            component: ContactPageComponent,
+          },
+        ],
+      },
+      //Routes with only site layout
+      {
         path: 'my-account',
         component: MyAccountPageComponent,
         canActivate: [AuthGuard],
       },
-      //Routes with only site layout
       {
         path: 'auth',
         children: [

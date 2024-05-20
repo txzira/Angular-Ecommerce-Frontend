@@ -27,6 +27,11 @@ export class CartService {
   addToCart(item: CartItem): void {
     const items = [...this.cart.value.items];
     const itemInCart = items.find((_item) => _item.id === item.id);
+    const attributes = item.variant?.productVariantAttributes.map(
+      (productVariantAttribute) => {
+        return productVariantAttribute.attribute.name;
+      }
+    );
 
     if (itemInCart) {
       itemInCart.quantity += 1;
@@ -35,7 +40,25 @@ export class CartService {
     }
     this.cart.next({ items });
     this.localService.saveLocalStorageData('cart', JSON.stringify({ items }));
-    this._snackBar.open('1 item added to cart.', 'Ok', { duration: 3000 });
+    if (attributes) {
+      let variantName = '';
+      for (let i = 0; i < attributes.length; i++) {
+        if (i !== attributes.length - 1) {
+          variantName += attributes[i] + ' - ';
+        } else {
+          variantName += attributes[i];
+        }
+      }
+      this._snackBar.open(
+        `'${item.productName}: ${variantName}' added to cart.`,
+        'Ok',
+        { duration: 3000 }
+      );
+    } else {
+      this._snackBar.open(`'${item.productName}' added to cart.`, 'Ok', {
+        duration: 3000,
+      });
+    }
   }
 
   removeQuantity(item: CartItem): void {
@@ -69,12 +92,16 @@ export class CartService {
       .reduce((prev, current) => prev + current, 0);
   }
 
-  clearCart(): void {
+  clearCartFromNav(): void {
     this.cart.next({ items: [] });
     this.localService.clearLocalStorageData('cart');
     this._snackBar.open('Cart is cleared.', 'Ok', {
       duration: 3000,
     });
+  }
+  clearCartFromCheckout(): void {
+    this.cart.next({ items: [] });
+    this.localService.clearLocalStorageData('cart');
   }
 
   removeFromCart(item: CartItem, update = true): Array<CartItem> {

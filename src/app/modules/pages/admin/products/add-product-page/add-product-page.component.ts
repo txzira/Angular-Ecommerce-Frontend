@@ -6,6 +6,8 @@ import { Product } from 'src/app/core/models/product.model';
 import { BrandsService } from 'src/app/core/services/user/brands/brands.service';
 import { CategoriesService } from 'src/app/core/services/user/categories/categories.service';
 import { AdminProductsService } from 'src/app/core/services/admin/products/products.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-product',
@@ -37,7 +39,9 @@ export class AdminAddProductPageComponent implements OnInit {
     private adminProductsService: AdminProductsService,
     private fb: FormBuilder,
     private categoriesService: CategoriesService,
-    private brandsService: BrandsService
+    private brandsService: BrandsService,
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -59,7 +63,23 @@ export class AdminAddProductPageComponent implements OnInit {
 
     this.adminProductsService
       .addProduct(this.addProductForm.value, this.productImages)
-      .subscribe((_product) => (this.product = _product));
+      .subscribe({
+        next: (_product) => {
+          this.snackBar.open(
+            `\u2705${_product.name} added successfully.`,
+            'Ok',
+            {
+              duration: 3000,
+            }
+          );
+          this.router.navigate(['/admin/products']);
+        },
+        error: (error) => {
+          this.snackBar.open('\u274cFailed to add product.', 'Ok', {
+            duration: 3000,
+          });
+        },
+      });
   }
   addImages(
     _productImages: Array<{

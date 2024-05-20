@@ -39,4 +39,12 @@ export class ProductsPageComponent implements OnInit {
     );
     this.productsFilter.sort.subscribe((sort) => (this.sort = sort));
   }
+  getStyle() {
+    return {
+      display: 'grid',
+      'grid-template-columns': `repeat(${this.columns}, 1fr)`,
+      'justify-items': 'center',
+      'row-gap': '10em',
+    };
+  }
 }

@@ -1,15 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Stripe, StripeElements, loadStripe } from '@stripe/stripe-js';
 import { Subscription } from 'rxjs';
 import { Cart, CartItem } from 'src/app/core/models/cart.model';
 import { CartService } from 'src/app/core/services/user/cart/cart.service';
 import { CheckoutService } from 'src/app/core/services/user/checkout/checkout.service';
+import env from 'src/environments/environment';
 
 @Component({
   selector: 'app-checkout-page',
   templateUrl: './checkout-page.component.html',
-  styleUrls: ['./checkout-page.component.css'],
 })
 export class CheckoutPageComponent implements OnInit, OnDestroy {
   private stripe!: Stripe | null;
@@ -30,7 +32,9 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   constructor(
     private checkoutService: CheckoutService,
     private cartService: CartService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {
     this.cart = this.cartService.getCart();
     this.cartTotal = this.cartService.getTotal(this.cart.items);
@@ -72,16 +76,14 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       }
 
       if (this.stripe) {
-        this.orderSubscription = this.checkoutService
-          .createOrder({ ...form.shipping, email: form.email }, this.cart.items)
-          .subscribe();
-
         this.stripe
           .confirmPayment({
             elements: this.elements,
             clientSecret: this.clientSecret,
             confirmParams: {
-              return_url: 'https://txzira-ecommerce.netlify.app/',
+              return_url: env.production
+                ? 'https://txzira-ecommerce.netlify.app/'
+                : 'http://localhost:4200/',
               shipping: {
                 name: `${form.shipping.firstName} ${
                   form.shipping.middleName ? form.shipping.middleName + ' ' : ''
@@ -114,11 +116,31 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
                 },
               },
             },
+            redirect: 'if_required',
           })
           .then((result) => {
             if (result.error) {
               console.log(result.error);
               // deleted prisma created order/cart/cartItems
+            } else {
+              if (
+                result.paymentIntent.status === 'succeeded' ||
+                result.paymentIntent.status === 'processing'
+              ) {
+                this.checkoutService
+                  .createOrder(
+                    { ...form.shipping, email: form.email },
+                    this.cart.items
+                  )
+                  .subscribe();
+                this.cartService.clearCartFromCheckout();
+                this.router.navigate(['/']);
+              } else {
+                //failed
+                this.snackBar.open('\u274cPayment Failed.', 'Ok', {
+                  duration: 3000,
+                });
+              }
             }
           });
       } else {

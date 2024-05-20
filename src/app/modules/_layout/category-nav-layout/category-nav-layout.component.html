@@ -1,7 +1,7 @@
 <div class="w-full h-full">
   <mat-drawer-container
     [autosize]="true"
-    class="min-h-full h-full max-w-7x1 mx-auto border-x !shadow"
+    class="min-h-full h-full max-w-7x1 mx-auto border-x"
   >
     <mat-drawer mode="side" opened class="h-full !bg-[#78866b]">
       <app-category-nav></app-category-nav>
@@ -15,8 +15,6 @@
           url('/assets/images/mascots.png');
       "
     >
-      <app-products-header></app-products-header>
-
       <router-outlet></router-outlet>
     </mat-drawer-content>
   </mat-drawer-container>

@@ -21,7 +21,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CategoryNavComponent } from './components/category-nav/category-nav.component';
 import { ProductsHeaderComponent } from './components/products-header/products-header.component';
 import { NavCartButtonComponent } from './components/nav-bar/components/nav-cart-button/nav-cart-button.component';
-import { CheckoutPageComponent } from './pages/checkout-page/checkout-page.component';
+import { CheckoutPageComponent } from './pages/checkout/checkout-page/checkout-page.component';
 import { GooglePlacesAutocompleteComponent } from './components/google-places/google-places-autocomplete/google-places-autocomplete.component';
 import { FormsModule } from '@angular/forms';
 import { NavLoginButtonComponent } from './components/nav-bar/components/nav-login-button/nav-login-button.component';
@@ -58,6 +58,10 @@ import { AdminVariantsModalComponent } from './pages/admin/products/edit-product
 import { AdminEditVariantModalComponent } from './pages/admin/products/edit-product/components/edit-variant-modal/edit-variant-modal.component';
 import { AdminEditAttributeGroupModalComponent } from './pages/admin/products/edit-product/components/edit-attribute-group-modal/edit-attribute-group-modal.component';
 import { ImagesContainerComponent } from './pages/admin/products/components/images-container/images-container.component';
+import { CategoryNavLayoutComponent } from './_layout/category-nav-layout/category-nav-layout.component';
+import { OrderConfirmationPageComponent } from './pages/checkout/order-confirmation-page/order-confirmation-page.component';
+import { ContactPageComponent } from './pages/contact-page/contact-page.component';
+import { AboutUsPageComponent } from './pages/about-us-page/about-us-page.component';
 
 @NgModule({
   declarations: [
@@ -109,6 +113,10 @@ import { ImagesContainerComponent } from './pages/admin/products/components/imag
     AdminEditVariantModalComponent,
     AdminEditAttributeGroupModalComponent,
     ImagesContainerComponent,
+    CategoryNavLayoutComponent,
+    OrderConfirmationPageComponent,
+    ContactPageComponent,
+    AboutUsPageComponent,
   ],
   imports: [
     BrowserModule,

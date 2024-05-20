@@ -9,6 +9,7 @@ import { Attribute, Product } from 'src/app/core/models/product.model';
 export class ProductCardComponent implements OnInit {
   @Input() fullWidthMode = false;
   @Input() product: Product | undefined;
+  displayImage: string | undefined;
 
   colors!: Attribute[];
   queryParams: any;
@@ -18,6 +19,7 @@ export class ProductCardComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.product);
     if (this.product && this.product.attributeGroups) {
+      this.displayImage = this.product?.images?.[0]?.url;
       for (let i = 0; i < this.product.attributeGroups.length; i++) {
         if (
           this.product.attributeGroups[i].name.toLowerCase() === 'colors' ||
@@ -29,10 +31,10 @@ export class ProductCardComponent implements OnInit {
     }
   }
 
-  // hoverImg(imageUrl: string, color: string): void {
-  //   if (this.product && this.product.images) {
-  //     this.product.image.url = imageUrl;
-  //   }
-  //   this.queryParams = { color };
-  // }
+  hoverImg(imageUrl: string, color: string): void {
+    if (this.product && this.product.images) {
+      this.displayImage = imageUrl;
+    }
+    this.queryParams = { color };
+  }
 }

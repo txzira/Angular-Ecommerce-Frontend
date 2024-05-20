@@ -16,6 +16,7 @@ import { AdminProductsService } from 'src/app/core/services/admin/products/produ
 import { AdminVariantsModalComponent } from '../components/variants-modal/variants-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-product-page',
@@ -42,7 +43,8 @@ export class AdminEditProductPageComponent implements OnInit {
     private brandsService: BrandsService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -93,9 +95,23 @@ export class AdminEditProductPageComponent implements OnInit {
       .subscribe({
         next: (_product) => {
           this.product = _product;
+          this.snackBar.open(
+            `\u2705${_product.name} successfully edited.`,
+            'Ok.',
+            {
+              duration: 3000,
+            }
+          );
         },
         error: (response) => {
           console.log(response);
+          this.snackBar.open(
+            `\u274cFailed to edit ${this.product.name} .`,
+            'Ok.',
+            {
+              duration: 3000,
+            }
+          );
         },
       });
   }

@@ -111,10 +111,20 @@ export class AdminProductsService {
     );
   }
 
-  saveAndGenerateVariants(productId: string | null): Observable<any> {
+  saveAndGenerateVariants(
+    productId: string | null,
+    attributeGroups: any,
+    attributeGroupsToDelete: any,
+    attributesToDelete: any
+  ): Observable<any> {
     return this.httpClient.post<any>(
       `${this.ADMIN_PRODUCTS_URL}/save-and-generate-variants`,
-      { productId },
+      {
+        productId,
+        attributeGroups,
+        attributeGroupsToDelete,
+        attributesToDelete,
+      },
       this.httpOptions
     );
   }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { first } from 'rxjs';
 import { CartItem } from 'src/app/core/models/cart.model';
 import {
   Attribute,
@@ -19,9 +20,18 @@ export class ProductDetailPageComponent implements OnInit {
   product!: Product;
   selectedOptions: Map<number, number> = new Map();
   selectedProductVariant: ProductVariant | undefined;
-  displayImage: string | undefined;
-  options: Array<AttributeGroup> = [];
+  attributeGroups: Array<AttributeGroup> = [];
   productQuantity = 1;
+  displayImage: {
+    url: string | undefined;
+    index: number;
+    imageCount: number | undefined;
+  } = { url: '', index: 0, imageCount: 0 };
+
+  prodVariantsGroupedByFirstAttributeGroupAttributes: Map<
+    number,
+    Array<ProductVariant>
+  > = new Map();
 
   constructor(
     private route: ActivatedRoute,
@@ -34,15 +44,58 @@ export class ProductDetailPageComponent implements OnInit {
     if (id) {
       this.productsService.getProductById(id).subscribe((_product) => {
         this.product = _product;
-        this.displayImage = _product.images?.[0]?.url;
+        this.displayImage = {
+          url: _product.images?.[0]?.url,
+          index: 0,
+          imageCount: _product.images?.length,
+        };
+
         this.setColorAsFirstAttributeGroup();
+        // if (this.attributeGroups && this.attributeGroups.length) {
+        //   this.groupProdVariantsByFirstAttributeGroupAttributes(
+        //     this.attributeGroups[0],
+        //     _product.productVariants
+        //   );
+        // }
+
         this.setDefaultSelectedOptions(_product);
       });
     }
   }
 
-  setDisplayImage(url: string): void {
-    this.displayImage = url;
+  scrollImageLeft(): void {
+    if (this.displayImage.index! > 0) {
+      this.displayImage.index -= 1;
+    } else {
+      this.displayImage.index = this.displayImage.imageCount! - 1;
+    }
+    if (!this.selectedProductVariant) {
+      this.displayImage.url =
+        this.product.images?.[this.displayImage.index].url;
+    } else {
+      this.displayImage.url =
+        this.selectedProductVariant.variantImages[this.displayImage.index].url;
+    }
+  }
+  scrollImageRight(): void {
+    if (this.displayImage.index! < this.displayImage.imageCount! - 1) {
+      this.displayImage.index += 1;
+    } else {
+      this.displayImage.index = 0;
+    }
+    if (!this.selectedProductVariant) {
+      this.displayImage.url =
+        this.product.images?.[this.displayImage.index].url;
+    } else {
+      this.displayImage.url =
+        this.selectedProductVariant.variantImages[this.displayImage.index].url;
+    }
+  }
+
+  setDisplayImage(url: string, index: number): void {
+    // this.displayImage = url;
+    this.displayImage.url = url;
+    this.displayImage.index = index;
   }
 
   onAddQuantity() {
@@ -60,8 +113,12 @@ export class ProductDetailPageComponent implements OnInit {
   ): void {
     if (this.product) {
       if (attributeGroupIndex) {
+        //size or other attribute type was clicked
         this.setSelectedOption(attributeGroupId, attributeId);
       } else {
+        //color or style attribute was clicked
+        //Ex. use clicked color:blue color-attributeGroupId:1 blue-attributeId:14
+        //Find first availabale variant with combination (1,14)
         this.findFirstAvailProdVariant(attributeGroupId, attributeId);
       }
     }
@@ -70,16 +127,30 @@ export class ProductDetailPageComponent implements OnInit {
   disableOption(
     index: number,
     firstAttributeGroup: AttributeGroup,
-    value: Attribute
+    attribute: Attribute
   ): boolean {
     const optionMap = new Map();
-    optionMap.set(value.attributeGroupId, value.id);
-    optionMap.set(
-      firstAttributeGroup.id,
-      this.selectedOptions.get(firstAttributeGroup.id!)
-    );
+    if (this.attributeGroups.length > 1) {
+      optionMap.set(attribute.attributeGroupId, attribute.id);
 
-    if (!index) {
+      optionMap.set(
+        firstAttributeGroup.id,
+        this.selectedOptions.get(firstAttributeGroup.id!)
+      );
+    } else {
+      optionMap.set(attribute.attributeGroupId, attribute.id);
+    }
+    // this.prodVariantsGroupedByFirstAttributeGroupAttributes.get(
+    //   this.selectedOptions.get(firstAttributeGroup.id!)!
+    // )?.find(productVariant=>{
+    //   let flag=false;
+    //   for(let i =0;i<productVariant.productVariantAttributes.length;i++){
+    //     productVariant.productVariantAttributes
+
+    //   }
+    // })
+
+    if (!index && this.attributeGroups.length > 1) {
       return false;
     } else {
       if (this.product) {
@@ -89,7 +160,7 @@ export class ProductDetailPageComponent implements OnInit {
             optionMap
           );
         });
-        if (result) {
+        if (result && result.available && result.quantity > 0) {
           return false;
         } else {
           return true;
@@ -112,7 +183,7 @@ export class ProductDetailPageComponent implements OnInit {
           quantity: this.productQuantity,
           ...(this.selectedProductVariant.variantImages.length
             ? { image: this.selectedProductVariant.variantImages[0].url }
-            : this.product.images
+            : this.product.images && this.product.images.length
             ? { image: this.product.images?.[0].url }
             : { image: '' }),
           variant: {
@@ -141,9 +212,11 @@ export class ProductDetailPageComponent implements OnInit {
     attributeId: number
   ): void {
     if (this.product) {
+      this.setSelectedOption(attributeGroupId, attributeId);
+
       const firstAvailableProdVariant = this.product.productVariants.find(
         (productVariant) => {
-          if (productVariant.available) {
+          if (productVariant.available && productVariant.quantity > 0) {
             for (
               let i = 0;
               i < productVariant.productVariantAttributes.length;
@@ -163,8 +236,7 @@ export class ProductDetailPageComponent implements OnInit {
           return false;
         }
       );
-      if (firstAvailableProdVariant) {
-        this.setSelectedOption(attributeGroupId, attributeId);
+      if (firstAvailableProdVariant && firstAvailableProdVariant.quantity) {
         for (
           let i = 0;
           i < firstAvailableProdVariant.productVariantAttributes.length;
@@ -178,6 +250,17 @@ export class ProductDetailPageComponent implements OnInit {
               variantAttribute.attributeId
             );
         }
+      } else {
+        for (
+          let i = 0;
+          i < this.product.productVariants[0].productVariantAttributes.length;
+          i++
+        ) {
+          const variantAttribute =
+            this.product.productVariants[0].productVariantAttributes[i];
+          if (attributeGroupId !== variantAttribute.attibuteGroupId)
+            this.setSelectedOption(variantAttribute.attibuteGroupId, 0);
+        }
       }
     }
   }
@@ -186,12 +269,20 @@ export class ProductDetailPageComponent implements OnInit {
     if (this.product) {
       const attributeGroups = this.product.attributeGroups;
       for (let i = 0; i < attributeGroups.length; i++) {
-        if (attributeGroups[i].name.toLowerCase() === 'color') {
-          this.options.push(attributeGroups.splice(i, 1)[0]);
-          break;
+        if (
+          ['style', 'styles', 'color', 'colors'].includes(
+            attributeGroups[i].name.toLowerCase()
+          )
+        ) {
+          this.attributeGroups = [
+            attributeGroups.splice(i, 1)[0],
+            ...attributeGroups,
+          ];
+          return;
         }
       }
-      this.options = [...this.options, ...attributeGroups];
+      this.attributeGroups = attributeGroups;
+      return;
     }
   }
 
@@ -207,7 +298,7 @@ export class ProductDetailPageComponent implements OnInit {
     if (product.productVariants.length) {
       const productVariants = product.productVariants;
       for (let i = 0; i < productVariants.length; i++) {
-        if (productVariants[i].available) {
+        if (productVariants[i].available && productVariants[i].quantity) {
           productVariants[i].productVariantAttributes.map(
             (productVariantAttribute) => {
               this.setSelectedOption(
@@ -233,10 +324,37 @@ export class ProductDetailPageComponent implements OnInit {
         }
       );
       if (selectedProductVariant) {
-        selectedProductVariant.variantImages.length
-          ? this.setDisplayImage(selectedProductVariant.variantImages[0].url)
-          : null;
+        if (selectedProductVariant.variantImages.length) {
+          this.displayImage = {
+            url: selectedProductVariant.variantImages[0].url,
+            index: 0,
+            imageCount: selectedProductVariant.variantImages.length,
+          };
+        }
+
         return selectedProductVariant;
+      } else {
+        if (this.attributeGroups.length > 1) {
+          this.displayImage = {
+            url: undefined,
+            index: 0,
+            imageCount: undefined,
+          };
+        } else {
+          if (this.product.images && this.product.images.length) {
+            this.displayImage = {
+              url: this.product.images?.[0]?.url,
+              index: 0,
+              imageCount: this.product.images?.length,
+            };
+          } else {
+            this.displayImage = {
+              url: undefined,
+              index: 0,
+              imageCount: undefined,
+            };
+          }
+        }
       }
     }
     return;
@@ -255,7 +373,8 @@ export class ProductDetailPageComponent implements OnInit {
       if (
         selectedOptions.get(productVariantAttribute.attibuteGroupId) ===
           productVariantAttribute.attributeId &&
-        productVariant.available
+        productVariant.available &&
+        productVariant.quantity > 0
       ) {
         result = true;
       } else {
@@ -264,4 +383,40 @@ export class ProductDetailPageComponent implements OnInit {
     }
     return result;
   }
+
+  // private groupProdVariantsByFirstAttributeGroupAttributes(
+  //   firstAttributeGroup: AttributeGroup,
+  //   _productVariants: Array<ProductVariant>
+  // ): void {
+  //   const productVariants: Array<ProductVariant> = JSON.parse(
+  //     JSON.stringify(_productVariants)
+  //   );
+  //   if (
+  //     firstAttributeGroup.attributes &&
+  //     firstAttributeGroup.attributes.length
+  //   ) {
+  //     for (let i = 0; i < firstAttributeGroup.attributes.length; i++) {
+  //       //first attributeId in attributeGroup array
+  //       let tempProductVariants: Array<ProductVariant> = [];
+  //       for (let j = 0; j < productVariants.length; j++) {
+  //         for (
+  //           let k = 0;
+  //           k < productVariants[j].productVariantAttributes.length;
+  //           k++
+  //         ) {
+  //           if (
+  //             productVariants[j].productVariantAttributes[k].attributeId ===
+  //             firstAttributeGroup.attributes[i].id
+  //           ) {
+  //             tempProductVariants.push(productVariants[j]);
+  //           }
+  //         }
+  //       }
+  //       this.prodVariantsGroupedByFirstAttributeGroupAttributes.set(
+  //         firstAttributeGroup.attributes[i].id!,
+  //         tempProductVariants
+  //       );
+  //     }
+  //   }
+  // }
 }

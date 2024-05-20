@@ -1,102 +1,167 @@
-<div class="w-3/4 mx-auto">
-  <mat-card class="content-box">
-    <a routerLink="/products" class="flex items-center gap-2"
-      ><button><mat-icon>arrow_back</mat-icon></button>BACK TO STORE</a
-    >
+<div class="w-11/12 mx-auto">
+  <a routerLink="/products" class="flex items-center gap-2"
+    ><button><mat-icon>arrow_back</mat-icon></button>BACK TO STORE</a
+  >
 
-    <div class="flex flex-row" *ngIf="product">
-      <div class="flex flex-col w-1/2 items-center justify-center">
-        <div class="w-[500px] h-[500px]">
-          <img
-            mat-card-image
-            class="max-h-full max-w-full"
-            [src]="displayImage"
-            [alt]="'Image of ' + product.name"
-          />
-        </div>
-        <div class="flex flex-row gap-4 py-3" *ngIf="!selectedProductVariant">
+  <div class="flex flex-row justify-between" *ngIf="product">
+    <div class="flex flex-col w-[49%] h-auto items-center justify-center">
+      <div class="flex justify-center w-full h-[700px] relative group">
+        <img
+          mat-card-image
+          class="max-h-full max-w-full object-cover object-center self-center"
+          [src]="displayImage.url"
+          [alt]="'Image of ' + product.name"
+        />
+        <div
+          class="flex flex-row justify-between absolute w-full top-1/2 invisible group-hover:visible z-10"
+        >
           <button
-            class="w-14 h-14"
-            *ngFor="let image of product.images"
-            (click)="setDisplayImage(image.url)"
+            class="p-1 rounded-full bg-slate-300 flex items-center"
+            (click)="scrollImageLeft()"
           >
-            <img [src]="image.url" class="max-h-full max-w-full" />
+            <mat-icon>arrow_back</mat-icon>
           </button>
-        </div>
-        <div class="flex flex-row gap-4 py-3" *ngIf="selectedProductVariant">
           <button
-            class="w-14 h-14"
-            *ngFor="let image of selectedProductVariant.variantImages"
-            (click)="setDisplayImage(image.url)"
+            class="p-1 rounded-full bg-slate-300 flex items-center"
+            (click)="scrollImageRight()"
           >
-            <img [src]="image.url" class="max-h-full max-w-full" />
+            <mat-icon>arrow_forward</mat-icon>
           </button>
         </div>
       </div>
-
-      <div class="w-1/2">
+      <div class="flex flex-row gap-4 py-3" *ngIf="!selectedProductVariant">
+        <button
+          class="w-20 h-20 rounded-md"
+          [ngClass]="{
+            'border border-black': displayImage.index === index
+          }"
+          *ngFor="let image of product.images; index as index"
+          (click)="setDisplayImage(image.url, index)"
+        >
+          <img
+            [src]="image.url"
+            class="w-full h-full object-cover rounded-md"
+          />
+        </button>
+      </div>
+      <div *ngIf="selectedProductVariant">
+        <div
+          class="flex flex-row gap-4 py-3"
+          *ngIf="selectedProductVariant.variantImages.length"
+        >
+          <button
+            class="w-20 h-20 rounded-md"
+            [ngClass]="{
+              'border border-black': displayImage.index === index
+            }"
+            *ngFor="
+              let image of selectedProductVariant.variantImages;
+              index as index
+            "
+            (click)="setDisplayImage(image.url, index)"
+          >
+            <img
+              [src]="image.url"
+              class="h-full w-full object-cover rounded-md"
+            />
+          </button>
+        </div>
+        <div
+          class="flex flex-row gap-4 py-3"
+          *ngIf="!selectedProductVariant.variantImages.length"
+        >
+          <button
+            class="w-20 h-20 rounded-md"
+            [ngClass]="{
+              'border border-black': displayImage.index === index
+            }"
+            *ngFor="let image of product.images; index as index"
+            (click)="setDisplayImage(image.url, index)"
+          >
+            <img
+              [src]="image.url"
+              class="h-full w-full object-cover rounded-md"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="w-[49%]">
+      <div class="flex flex-col mx-auto w-2/3 gap-3">
         <div>
           <h4 class="text" *ngIf="product.brand">{{ product.brand.name }}</h4>
-          <h2 class="!font-medium !text-2xl">{{ product.name }}</h2>
+          <h2 class="!font-medium !text-3xl">{{ product.name }}</h2>
           <p
-            class="font-medium"
+            class="font-medium text-base"
             *ngIf="!selectedProductVariant; else variantPrice"
           >
             {{ product.price | currency }}
           </p>
           <ng-template #variantPrice>
-            <p class="font-medium">
+            <p class="font-medium text-base">
               {{ selectedProductVariant?.price | currency }}
             </p>
           </ng-template>
         </div>
-        <mat-card-content>
-          <div *ngFor="let selectedOption of selectedOptions | keyvalue">
-            {{ selectedOption.key }} :
-            {{ selectedOption.value }}
-          </div>
-          <div *ngFor="let option of options; index as i">
-            <p>{{ option.name }}:</p>
+        <mat-divider class="!border-t-slate-400"></mat-divider>
+        <div class="flex flex-col gap-5">
+          <div *ngFor="let attributeGroup of attributeGroups; index as i">
+            <p>{{ attributeGroup.name }}:</p>
             <mat-button-toggle-group class="">
               <mat-button-toggle
                 class=""
-                [disabled]="disableOption(i, options[0], attribute)"
-                *ngFor="let attribute of option.attributes"
+                *ngFor="let attribute of attributeGroup.attributes"
+                [disabled]="disableOption(i, attributeGroups[0], attribute)"
                 mat-stroked-button
-                [checked]="selectedOptions.get(option.id!) === attribute.id"
-                (click)="onSelectOption(option.id!, attribute.id!, i)"
+                [checked]="
+                  selectedOptions.get(attributeGroup.id!) === attribute.id
+                "
+                (click)="onSelectOption(attributeGroup.id!, attribute.id!, i)"
               >
                 {{ attribute.name }}
               </mat-button-toggle>
             </mat-button-toggle-group>
           </div>
-          <div class="flex items-center">
-            <button (click)="onRemoveQuantity()">
-              <mat-icon>remove</mat-icon>
+          <div class="flex flex-row items-center mx-auto justify-between">
+            <div class="flex flex-row items-center w-min h-10">
+              <button
+                class="flex items-center border border-slate-400 rounded-l-full w-full h-full px-2 hover:bg-[#3f51b5] hover:text-white"
+                (click)="onRemoveQuantity()"
+              >
+                <mat-icon class="">remove</mat-icon>
+              </button>
+              <span
+                class="flex items-center text-nowrap border-y border-slate-400 h-full px-2"
+                >Quantity: {{ productQuantity }}</span
+              >
+              <button
+                class="flex items-center border border-slate-400 rounded-r-full w-full h-full px-2 hover:bg-[#3f51b5] hover:text-white"
+                (click)="onAddQuantity()"
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+            <button
+              mat-raised-button
+              color="primary"
+              class="!h-10 !text-lg !rounded-full w-80"
+              (click)="onAddToCart()"
+            >
+              Add to Cart
             </button>
-            <span>{{ productQuantity }}</span>
-            <button (click)="onAddQuantity()">
-              <mat-icon>add</mat-icon>
-            </button>
           </div>
-          <div>
-            <p>Description:</p>
-            <p class="whitespace-pre-line">
-              {{
-                product.description ? product.description : "No Description."
-              }}
-            </p>
-          </div>
-          <div>
-            {{ selectedProductVariant | json }}
-          </div>
-        </mat-card-content>
-        <mat-card-actions>
-          <button mat-raised-button color="primary" (click)="onAddToCart()">
-            Add to Cart
-          </button>
-        </mat-card-actions>
+        </div>
+        <mat-divider class="!border-t-slate-400"></mat-divider>
+
+        <div>
+          <p class="text-xl">Description:</p>
+          <p
+            class="whitespace-pre-line leading-loose text-lg text-red-600 font-medium"
+          >
+            {{ product.description ? product.description : "No Description." }}
+          </p>
+        </div>
       </div>
     </div>
-  </mat-card>
+  </div>
 </div>
