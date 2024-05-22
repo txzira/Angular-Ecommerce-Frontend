@@ -10,7 +10,11 @@
   "
 >
   <div class="flex flex-row items-center">
-    <button class="flex items-center" *ngIf="browserDetectorService.isMobile()">
+    <button
+      class="flex items-center pr-4"
+      *ngIf="browserDetectorService.isMobile()"
+      (click)="onIsOpenUpdated()"
+    >
       <mat-icon>menu</mat-icon>
     </button>
     <button

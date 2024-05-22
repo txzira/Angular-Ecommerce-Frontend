@@ -18,7 +18,6 @@ import { SignupPageComponent } from './pages/auth/signup-page/signup-page.compon
 import { MyAccountPageComponent } from './pages/my-account-page/my-account-page.component';
 import { CartComponent } from './components/cart/cart.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CategoryNavComponent } from './components/category-nav/category-nav.component';
 import { ProductsHeaderComponent } from './components/products-header/products-header.component';
 import { NavCartButtonComponent } from './components/nav-bar/components/nav-cart-button/nav-cart-button.component';
 import { CheckoutPageComponent } from './pages/checkout/checkout-page/checkout-page.component';
@@ -76,7 +75,6 @@ import { AboutUsPageComponent } from './pages/about-us-page/about-us-page.compon
     SignupPageComponent,
     MyAccountPageComponent,
     CartComponent,
-    CategoryNavComponent,
     ProductsHeaderComponent,
     NavCartButtonComponent,
     CheckoutPageComponent,

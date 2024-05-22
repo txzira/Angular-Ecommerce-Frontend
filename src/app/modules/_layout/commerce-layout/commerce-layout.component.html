@@ -1,23 +1,4 @@
-<div class="w-full h-full">
-  <mat-drawer-container
-    [autosize]="true"
-    class="min-h-full h-full max-w-7x1 mx-auto border-x !shadow"
-  >
-    <mat-drawer mode="side" opened class="h-full !bg-[#78866b]">
-      <app-category-nav></app-category-nav>
-    </mat-drawer>
-    <mat-drawer-content
-      style="
-        background-image: linear-gradient(
-            rgba(250, 250, 250, 0.7),
-            rgba(250, 250, 250, 0.7)
-          ),
-          url('/assets/images/mascots.png');
-      "
-    >
-      <app-products-header></app-products-header>
-
-      <router-outlet></router-outlet>
-    </mat-drawer-content>
-  </mat-drawer-container>
-</div>
+<app-products-header
+  *ngIf="!broswerDetectorService.isMobile()"
+></app-products-header>
+<router-outlet></router-outlet>

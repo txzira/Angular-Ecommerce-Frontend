@@ -10,6 +10,8 @@ export interface Product {
   quantity: number;
   slug: string | undefined;
   active: boolean;
+  available: boolean;
+  managedStock: boolean;
   categories: Category[];
   images:
     | (Image & {

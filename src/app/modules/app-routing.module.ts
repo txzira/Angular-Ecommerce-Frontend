@@ -41,28 +41,6 @@ const routes: Routes = [
     component: SiteLayoutComponent,
     children: [
       {
-        //Layout for pages that show product
-        path: '',
-        component: CommerceLayoutComponent,
-        children: [
-          { path: '', redirectTo: 'products', pathMatch: 'full' },
-          { path: 'home', redirectTo: 'products' },
-
-          {
-            path: 'products',
-            children: [{ path: '', component: ProductsPageComponent }],
-          },
-          {
-            path: 'categories',
-            children: [
-              { path: '', component: CategoriesPageComponent },
-              { path: ':categoryName', component: CategoryPageComponent },
-            ],
-          },
-        ],
-      },
-
-      {
         //Admin  Layout
         path: 'admin',
         canActivate: [AuthGuard, AdminGuard],
@@ -130,6 +108,27 @@ const routes: Routes = [
           {
             path: 'contact',
             component: ContactPageComponent,
+          },
+          {
+            //Layout for pages that show product
+            path: '',
+            component: CommerceLayoutComponent,
+            children: [
+              { path: '', redirectTo: 'products', pathMatch: 'full' },
+              { path: 'home', redirectTo: 'products' },
+
+              {
+                path: 'products',
+                children: [{ path: '', component: ProductsPageComponent }],
+              },
+              {
+                path: 'categories',
+                children: [
+                  { path: '', component: CategoriesPageComponent },
+                  { path: ':categoryName', component: CategoryPageComponent },
+                ],
+              },
+            ],
           },
         ],
       },

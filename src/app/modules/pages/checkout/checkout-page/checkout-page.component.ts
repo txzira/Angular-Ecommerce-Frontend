@@ -28,6 +28,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   cartTotal: number = 0;
   stripeOrderTotal: number = 0;
   minimumCharged: boolean = false;
+  paymentError: any = null;
 
   constructor(
     private checkoutService: CheckoutService,
@@ -164,34 +165,42 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   private getClientSecret(items: CartItem[]): void {
     this.clientSecretSubscription = this.checkoutService
       .getClientSecret(items)
-      .subscribe((response) => {
-        if (this.stripe) {
-          this.elements = this.stripe.elements({
-            appearance: { theme: 'stripe' },
-            clientSecret: response.clientSecret,
-          });
+      .subscribe({
+        next: (response) => {
+          if (this.stripe) {
+            this.elements = this.stripe.elements({
+              appearance: { theme: 'stripe' },
+              clientSecret: response.clientSecret,
+            });
 
-          this.stripeOrderTotal = Number(response.orderTotal) / 100;
-          this.minimumCharged = response.minimumCharged;
-          console.log(this.minimumCharged);
+            this.stripeOrderTotal = Number(response.orderTotal) / 100;
+            this.minimumCharged = response.minimumCharged;
+            console.log(this.minimumCharged);
 
-          const payment = this.elements.create('payment', {
-            layout: 'tabs',
-            fields: { billingDetails: 'never' },
-          });
+            const payment = this.elements.create('payment', {
+              layout: 'tabs',
+              fields: { billingDetails: 'never' },
+            });
 
-          payment.on('change', (event) => {
-            if (!event.empty && event.complete) {
-              //enable payment button
-              this.disablePaymentButton = false;
-            } else {
-              //disable payment button
-              this.disablePaymentButton = true;
-            }
-          });
+            payment.on('change', (event) => {
+              if (!event.empty && event.complete) {
+                //enable payment button
+                this.disablePaymentButton = false;
+              } else {
+                //disable payment button
+                this.disablePaymentButton = true;
+              }
+            });
 
-          payment.mount('#payment-element');
-        }
+            payment.mount('#payment-element');
+          }
+        },
+        error: (response) => {
+          this.paymentError = {
+            message: response.error.message,
+            products: JSON.parse(response.error.products),
+          };
+        },
       });
   }
 }

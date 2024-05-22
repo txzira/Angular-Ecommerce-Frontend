@@ -28,10 +28,10 @@ export class ProductDetailPageComponent implements OnInit {
     imageCount: number | undefined;
   } = { url: '', index: 0, imageCount: 0 };
 
-  prodVariantsGroupedByFirstAttributeGroupAttributes: Map<
-    number,
-    Array<ProductVariant>
-  > = new Map();
+  // prodVariantsGroupedByFirstAttributeGroupAttributes: Map<
+  //   number,
+  //   Array<ProductVariant>
+  // > = new Map();
 
   constructor(
     private route: ActivatedRoute,
@@ -93,7 +93,6 @@ export class ProductDetailPageComponent implements OnInit {
   }
 
   setDisplayImage(url: string, index: number): void {
-    // this.displayImage = url;
     this.displayImage.url = url;
     this.displayImage.index = index;
   }
@@ -104,6 +103,40 @@ export class ProductDetailPageComponent implements OnInit {
 
   onRemoveQuantity() {
     if (this.productQuantity > 1) this.productQuantity -= 1;
+  }
+
+  checkIfSoldOut(): boolean {
+    //If product has variants
+    if (this.product.productVariants.length && this.selectedProductVariant) {
+      if (this.selectedProductVariant.available) {
+        if (this.product.managedStock) {
+          if (this.selectedProductVariant.quantity) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+      //else standalone product
+    } else {
+      if (this.product.available) {
+        if (this.product.managedStock) {
+          if (this.product.quantity) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    }
   }
 
   onSelectOption(

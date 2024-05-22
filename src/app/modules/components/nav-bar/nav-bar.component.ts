@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Cart } from '../../../core/models/cart.model';
 import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
+import { NavbarService } from 'src/app/core/services/navbar/navbar.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -9,7 +10,10 @@ import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detec
 export class NavBarComponent implements OnInit {
   @Input() cart!: Cart;
 
-  constructor(public browserDetectorService: BrowserDetectorService) {}
+  constructor(
+    public browserDetectorService: BrowserDetectorService,
+    private navBarService: NavbarService
+  ) {}
 
   ngOnInit(): void {}
   showStaticLogo(): void {
@@ -19,5 +23,8 @@ export class NavBarComponent implements OnInit {
   showLogoAnimation(): void {
     (document.getElementById('logo') as HTMLImageElement).src =
       '/assets/images/pseudo-corp2.gif';
+  }
+  onIsOpenUpdated() {
+    this.navBarService.changeIsOpen();
   }
 }

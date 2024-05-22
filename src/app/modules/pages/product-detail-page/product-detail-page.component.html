@@ -3,17 +3,42 @@
     ><button><mat-icon>arrow_back</mat-icon></button>BACK TO STORE</a
   >
 
-  <div class="flex flex-row justify-between" *ngIf="product">
-    <div class="flex flex-col w-[49%] h-auto items-center justify-center">
-      <div class="flex justify-center w-full h-[700px] relative group">
+  <div class="flex flex-col md:flex-row md:justify-between" *ngIf="product">
+    <div class="md:hidden">
+      <h4 class="text" *ngIf="product.brand">{{ product.brand.name }}</h4>
+      <h2 class="!font-medium !text-3xl">{{ product.name }}</h2>
+      <p
+        class="font-medium text-base"
+        *ngIf="!selectedProductVariant; else variantPrice"
+      >
+        {{ product.price | currency }}
+      </p>
+      <ng-template #variantPrice>
+        <p class="font-medium text-base">
+          {{ selectedProductVariant?.price | currency }}
+        </p>
+      </ng-template>
+    </div>
+    <div
+      class="flex flex-col w-full md:w-[49%] h-auto md:items-center md:justify-center"
+    >
+      <div
+        class="flex justify-center w-full h-[400px] md:h-[700px] relative group"
+      >
         <img
           mat-card-image
-          class="max-h-full max-w-full object-cover object-center self-center"
+          class="max-h-full max-w-full object-cover self-center"
           [src]="displayImage.url"
           [alt]="'Image of ' + product.name"
         />
         <div
-          class="flex flex-row justify-between absolute w-full top-1/2 invisible group-hover:visible z-10"
+          *ngIf="
+            (selectedProductVariant &&
+              selectedProductVariant.variantImages &&
+              selectedProductVariant.variantImages.length > 1) ||
+            (product.images && product.images.length > 1)
+          "
+          class="flex flex-row justify-between absolute w-full top-1/2 md:invisible group-hover:visible z-50"
         >
           <button
             class="p-1 rounded-full bg-slate-300 flex items-center"
@@ -86,9 +111,9 @@
         </div>
       </div>
     </div>
-    <div class="w-[49%]">
-      <div class="flex flex-col mx-auto w-2/3 gap-3">
-        <div>
+    <div class="md:w-[49%]">
+      <div class="flex flex-col mx-auto md:w-2/3 gap-3">
+        <div class="hidden md:block">
           <h4 class="text" *ngIf="product.brand">{{ product.brand.name }}</h4>
           <h2 class="!font-medium !text-3xl">{{ product.name }}</h2>
           <p
@@ -122,7 +147,7 @@
               </mat-button-toggle>
             </mat-button-toggle-group>
           </div>
-          <div class="flex flex-row items-center mx-auto justify-between">
+          <div class="flex flex-row items-center mx-auto justify-evenly w-full">
             <div class="flex flex-row items-center w-min h-10">
               <button
                 class="flex items-center border border-slate-400 rounded-l-full w-full h-full px-2 hover:bg-[#3f51b5] hover:text-white"
@@ -144,10 +169,11 @@
             <button
               mat-raised-button
               color="primary"
-              class="!h-10 !text-lg !rounded-full w-80"
+              class="!h-10 !text-lg !rounded-full max-w-[50%] w-[420px]"
+              [disabled]="checkIfSoldOut()"
               (click)="onAddToCart()"
             >
-              Add to Cart
+              {{ checkIfSoldOut() ? "Sold Out" : "Add to Cart" }}
             </button>
           </div>
         </div>

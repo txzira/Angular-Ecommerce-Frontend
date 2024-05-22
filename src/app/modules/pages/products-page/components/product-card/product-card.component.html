@@ -1,28 +1,35 @@
 <mat-card
-  class="flex relative items-center p-3 w-[300px] cursor-pointer !shadow-2xl"
+  class="flex items-center p-3 w-[300px] !h-[400px] cursor-pointer !shadow-2xl"
   *ngIf="product"
   [ngClass]="{ 'text-center': !fullWidthMode, flex: fullWidthMode }"
-  [routerLink]="'/products/' + this.product.id.toString()"
-  [queryParams]="queryParams"
 >
-  <img
-    mat-card-image
-    class="mx-auto p-2"
-    [ngClass]="{ 'h-[200px]': !fullWidthMode, 'h-[360px]': fullWidthMode }"
-    [src]="displayImage"
-  />
-  <mat-card-actions>
-    <button *ngFor="let color of colors">
+  <div
+    class="flex justify-center h-[75%] w-full"
+    [routerLink]="'/products/' + this.product.id.toString()"
+    [queryParams]="queryParams"
+  >
+    <img
+      mat-card-image
+      class="mx-auto !max-w-full !max-h-full self-center object-cover"
+      [src]="displayImage"
+    />
+  </div>
+
+  <mat-card-actions class="!min-h-8">
+    <button
+      *ngFor="let color of colors"
+      class="z-20"
+      (click)="hoverImg(color.images![0].url, color.name)"
+    >
       <img
         name="option"
         [src]="color.images?.[0]?.url"
         [alt]="color.name"
         class="w-7 h-7"
-        (mouseenter)="hoverImg(color.images![0].url, color.name)"
       />
     </button>
   </mat-card-actions>
-  <div class="h-max">
+  <div class="text-center h-[15%]">
     <p class="truncate hover:whitespace-normal">
       {{ product.name | uppercase }}
     </p>

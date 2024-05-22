@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { Category } from 'src/app/core/models/category.model';
 import { Product } from 'src/app/core/models/product.model';
 import { ProductsFilterService } from 'src/app/core/services/filters/products-filter.service';
+import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
 import { ProductsService } from 'src/app/core/services/user/products/products.service';
 
 const ROWS_HEIGHT: { [id: number]: number } = { 1: 400, 3: 335, 4: 350 };
@@ -16,29 +18,54 @@ export class ProductsPageComponent implements OnInit {
   columns!: number;
   rowHeight!: number;
   products: Array<Product> | undefined;
+  filteredProducts: Array<Product> | undefined;
+  productSearch = new FormControl('');
+
   sort!: string;
   itemsToShowCount!: string;
 
   constructor(
     private productsService: ProductsService,
-    private productsFilter: ProductsFilterService
+    private productsFilter: ProductsFilterService,
+    public browserDetectorService: BrowserDetectorService
   ) {}
 
   ngOnInit(): void {
     this.productsService.getAllActiveProducts().subscribe((_products) => {
       this.products = _products;
     });
-    this.productsFilter.columns.subscribe(
-      (columns) => (this.columns = columns)
-    );
-    this.productsFilter.rowHeight.subscribe(
-      (rowHeight) => (this.rowHeight = rowHeight)
-    );
-    this.productsFilter.itemsToShowCount.subscribe(
-      (itemsToShowCount) => (this.itemsToShowCount = itemsToShowCount)
-    );
-    this.productsFilter.sort.subscribe((sort) => (this.sort = sort));
+    if (!this.browserDetectorService.isMobile()) {
+      this.productsFilter.columns.subscribe(
+        (columns) => (this.columns = columns)
+      );
+      this.productsFilter.rowHeight.subscribe(
+        (rowHeight) => (this.rowHeight = rowHeight)
+      );
+      this.productsFilter.itemsToShowCount.subscribe(
+        (itemsToShowCount) => (this.itemsToShowCount = itemsToShowCount)
+      );
+      this.productsFilter.sort.subscribe((sort) => (this.sort = sort));
+    } else {
+      this.columns = 1;
+      this.rowHeight = 400;
+      this.sort = 'asc';
+      this.itemsToShowCount = '100';
+    }
   }
+
+  filterProducts(): void {
+    if (this.productSearch.value) {
+      this.filteredProducts = this.products?.filter((product) => {
+        console.log(this.productSearch.value);
+        return product.name
+          .toLowerCase()
+          .includes(this.productSearch.value!.toLowerCase());
+      });
+    } else {
+      this.filteredProducts = this.products;
+    }
+  }
+
   getStyle() {
     return {
       display: 'grid',

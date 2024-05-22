@@ -43,6 +43,15 @@
       <div>
         <h1>Payment</h1>
       </div>
+      <div *ngIf="paymentError">
+        <p>{{ paymentError.message }}</p>
+        <ul class="list-disc text-red-600">
+          <li *ngFor="let item of paymentError.products">
+            {{ item.productName
+            }}{{ item.isVariant ? ": " + item.variantName : null }}
+          </li>
+        </ul>
+      </div>
       <div id="payment-element">
         <!--Stripe.js injects the Payment Element-->
       </div>
