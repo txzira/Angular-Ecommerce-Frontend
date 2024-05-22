@@ -17,6 +17,6 @@ export class BrowserDetectorService {
   }
 
   isMobile(): boolean {
-    return window.navigator.maxTouchPoints > 1;
+    return window.navigator.maxTouchPoints > 0;
   }
 }
