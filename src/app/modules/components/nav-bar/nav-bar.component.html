@@ -12,7 +12,10 @@
   <div class="flex flex-row items-center">
     <button
       class="flex items-center pr-4"
-      *ngIf="browserDetectorService.isMobile()"
+      *ngIf="
+        browserDetectorService.isMobile() &&
+        !(router.url.includes('/auth') || router.url.includes('my-account'))
+      "
       (click)="onIsOpenUpdated()"
     >
       <mat-icon>menu</mat-icon>

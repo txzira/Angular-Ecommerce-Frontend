@@ -26,7 +26,7 @@ export class ProductsPageComponent implements OnInit {
 
   constructor(
     private productsService: ProductsService,
-    private productsFilter: ProductsFilterService,
+    private productsFilterService: ProductsFilterService,
     public browserDetectorService: BrowserDetectorService
   ) {}
 
@@ -35,16 +35,16 @@ export class ProductsPageComponent implements OnInit {
       this.products = _products;
     });
     if (!this.browserDetectorService.isMobile()) {
-      this.productsFilter.columns.subscribe(
+      this.productsFilterService.columns.subscribe(
         (columns) => (this.columns = columns)
       );
-      this.productsFilter.rowHeight.subscribe(
+      this.productsFilterService.rowHeight.subscribe(
         (rowHeight) => (this.rowHeight = rowHeight)
       );
-      this.productsFilter.itemsToShowCount.subscribe(
+      this.productsFilterService.itemsToShowCount.subscribe(
         (itemsToShowCount) => (this.itemsToShowCount = itemsToShowCount)
       );
-      this.productsFilter.sort.subscribe((sort) => (this.sort = sort));
+      this.productsFilterService.sort.subscribe((sort) => (this.sort = sort));
     } else {
       this.columns = 1;
       this.rowHeight = 400;
@@ -56,7 +56,6 @@ export class ProductsPageComponent implements OnInit {
   filterProducts(): void {
     if (this.productSearch.value) {
       this.filteredProducts = this.products?.filter((product) => {
-        console.log(this.productSearch.value);
         return product.name
           .toLowerCase()
           .includes(this.productSearch.value!.toLowerCase());

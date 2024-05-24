@@ -61,6 +61,7 @@ import { CategoryNavLayoutComponent } from './_layout/category-nav-layout/catego
 import { OrderConfirmationPageComponent } from './pages/checkout/order-confirmation-page/order-confirmation-page.component';
 import { ContactPageComponent } from './pages/contact-page/contact-page.component';
 import { AboutUsPageComponent } from './pages/about-us-page/about-us-page.component';
+import { CategoryNavComponent } from './_layout/components/category-nav/category-nav.component';
 
 @NgModule({
   declarations: [
@@ -115,6 +116,7 @@ import { AboutUsPageComponent } from './pages/about-us-page/about-us-page.compon
     OrderConfirmationPageComponent,
     ContactPageComponent,
     AboutUsPageComponent,
+    CategoryNavComponent,
   ],
   imports: [
     BrowserModule,

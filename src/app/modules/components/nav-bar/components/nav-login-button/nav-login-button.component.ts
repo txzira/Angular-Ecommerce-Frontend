@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
 import { UserService } from 'src/app/core/services/user/user/user.service';
 
 @Component({
@@ -13,7 +14,8 @@ export class NavLoginButtonComponent implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    public browserDetectorService: BrowserDetectorService
   ) {}
 
   logout(): void {

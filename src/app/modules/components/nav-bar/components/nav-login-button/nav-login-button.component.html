@@ -1,43 +1,65 @@
-<div *ngIf="!(user$ | async)">
-  <button
-    mat-button
-    class="text-xl tracking-[0.0125em] px-2"
-    routerLink="/auth/login"
-  >
-    Login
-  </button>
-</div>
-<div *ngIf="user$ | async as user">
-  <button
-    mat-button
-    [matMenuTriggerFor]="account"
-    class="text-xl tracking-[0.0125em]"
-  >
-    {{ user.name }}
-  </button>
-  <mat-menu #account="matMenu" class="w-full">
+<ng-container *ngIf="!browserDetectorService.isMobile()">
+  <div *ngIf="!(user$ | async)">
     <button
-      mat-menu-item
-      class="!p-0 !w-full !block !text-center"
+      mat-button
+      class="text-xl tracking-[0.0125em] px-2"
+      routerLink="/auth/login"
+    >
+      Login
+    </button>
+  </div>
+  <div *ngIf="user$ | async as user">
+    <button
+      mat-button
+      [matMenuTriggerFor]="account"
+      class="text-xl tracking-[0.0125em]"
+    >
+      {{ user.name }}
+    </button>
+    <mat-menu #account="matMenu" class="w-full">
+      <button
+        mat-menu-item
+        class="!p-0 !w-full !block !text-center"
+        routerLink="/my-account"
+      >
+        My Account
+      </button>
+      <button
+        mat-menu-item
+        type="button"
+        class="!p-0 !w-full !block !text-center"
+        (click)="logout()"
+      >
+        Logout
+      </button>
+    </mat-menu>
+  </div>
+</ng-container>
+<!-- isMobile -->
+<ng-container *ngIf="browserDetectorService.isMobile()">
+  <div *ngIf="!(user$ | async)">
+    <button
+      mat-button
+      class="text-xl tracking-[0.0125em] px-2"
+      routerLink="/auth/login"
+    >
+      Login
+    </button>
+  </div>
+  <div class="flex flex-col justify-start" *ngIf="user$ | async as user">
+    <button
+      type="button"
+      class="text-left hover:underline hover:text-orange-300 font-[futura-pt] !font-semibold tracking-[0.025em]"
       routerLink="/my-account"
     >
-      My Account
+      {{ user.name }}
     </button>
-    <!-- <button
-      mat-menu-item
-      *ngIf="isAdmin$ | async"
-      class="!p-0 !w-full !block !text-center"
-      routerLink="/admin"
-    >
-      Admin
-    </button> -->
     <button
-      mat-menu-item
       type="button"
-      class="!p-0 !w-full !block !text-center"
+      class="text-left hover:underline hover:text-orange-300 font-[futura-pt] !font-semibold tracking-[0.025em]"
       (click)="logout()"
     >
       Logout
     </button>
-  </mat-menu>
-</div>
+  </div>
+</ng-container>

@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Cart } from '../../../core/models/cart.model';
 import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
 import { NavbarService } from 'src/app/core/services/navbar/navbar.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-nav-bar',
@@ -11,8 +12,9 @@ export class NavBarComponent implements OnInit {
   @Input() cart!: Cart;
 
   constructor(
+    private navBarService: NavbarService,
     public browserDetectorService: BrowserDetectorService,
-    private navBarService: NavbarService
+    public router: Router
   ) {}
 
   ngOnInit(): void {}

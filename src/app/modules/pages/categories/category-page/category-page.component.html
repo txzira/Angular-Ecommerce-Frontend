@@ -1,4 +1,4 @@
-<mat-grid-list gutterSize="16" [cols]="columns" [rowHeight]="rowHeight">
+<!-- <mat-grid-list gutterSize="16" [cols]="columns" [rowHeight]="rowHeight">
   <mat-grid-tile *ngFor="let product of products">
     <app-product-card
       class="w-full"
@@ -6,4 +6,37 @@
       [product]="product"
     ></app-product-card>
   </mat-grid-tile>
-</mat-grid-list>
+</mat-grid-list> -->
+<div class="flex flex-col pb-5">
+  <h1 class="text-center">
+    {{ route.snapshot.paramMap.get("categoryName")?.toUpperCase() }}
+  </h1>
+  <div class="flex justify-end pr-5">
+    <mat-form-field>
+      <mat-label class="flex items-center">
+        <mat-icon class="flex items-center">search</mat-icon> Product
+      </mat-label>
+      <input
+        matInput
+        [formControl]="productSearch"
+        (keyup)="filterProducts()"
+      />
+    </mat-form-field>
+  </div>
+  <div [ngStyle]="getStyle()" *ngIf="!filteredProducts">
+    <app-product-card
+      *ngFor="let product of products"
+      class="gap-y"
+      [fullWidthMode]="columns === 1 || browserDetectorService.isMobile()"
+      [product]="product"
+    ></app-product-card>
+  </div>
+  <div [ngStyle]="getStyle()" *ngIf="filteredProducts">
+    <app-product-card
+      *ngFor="let product of filteredProducts"
+      class="gap-y"
+      [fullWidthMode]="columns === 1 || browserDetectorService.isMobile()"
+      [product]="product"
+    ></app-product-card>
+  </div>
+</div>
