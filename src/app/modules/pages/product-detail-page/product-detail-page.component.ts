@@ -40,9 +40,12 @@ export class ProductDetailPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.productsService.getProductById(id).subscribe((_product) => {
+    const slug = this.route.snapshot.paramMap.get('slug');
+    console.log(slug);
+    console.log(this.route.snapshot.paramMap);
+    if (slug) {
+      console.log(slug);
+      this.productsService.getProductBySlug(slug).subscribe((_product) => {
         this.product = _product;
         this.displayImage = {
           url: _product.images?.[0]?.url,

@@ -8,7 +8,7 @@ export interface Product {
   description: string | undefined;
   sku: string | undefined;
   quantity: number;
-  slug: string | undefined;
+  slug: string;
   active: boolean;
   available: boolean;
   managedStock: boolean;

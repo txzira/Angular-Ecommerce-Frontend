@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Stripe, StripeElements, loadStripe } from '@stripe/stripe-js';
 import { Subscription } from 'rxjs';
 import { Cart, CartItem } from 'src/app/core/models/cart.model';
+import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
 import { CartService } from 'src/app/core/services/user/cart/cart.service';
 import { CheckoutService } from 'src/app/core/services/user/checkout/checkout.service';
 import env from 'src/environments/environment';
@@ -20,22 +21,24 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   private clientSecret: any;
   private elements: StripeElements | undefined;
   checkoutForm!: FormGroup;
-  shippingForm!: any;
+
   billingForm: any | undefined;
-  shippingSameAsBilling = true;
+  shippingSameAsBilling = false;
   disablePaymentButton = true;
   cart!: Cart;
   cartTotal: number = 0;
   stripeOrderTotal: number = 0;
   minimumCharged: boolean = false;
   paymentError: any = null;
+  checkState = 'contact';
 
   constructor(
     private checkoutService: CheckoutService,
     private cartService: CartService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    public browserDetectorService: BrowserDetectorService
   ) {
     this.cart = this.cartService.getCart();
     this.cartTotal = this.cartService.getTotal(this.cart.items);
@@ -47,7 +50,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       'pk_test_51JpGR9IZK4v7qkytzmvxTLa0C4AtaOLAaxGxWKBxc5CL1US3qFCf9pWfUPnc6OhkxL2Xv5s97uSjQAgv73KyDTWI006SYC716Q'
     );
     this.checkoutForm = this.fb.group({
-      email: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
     });
   }
 
@@ -62,9 +65,27 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   toggleBillingAddress(): void {
     this.shippingSameAsBilling = !this.shippingSameAsBilling;
 
-    this.shippingSameAsBilling
-      ? this.checkoutForm.removeControl('billing')
-      : null;
+    if (this.shippingSameAsBilling) {
+      const shippingForm = this.checkoutForm.get('shipping');
+      this.checkoutForm.setControl(
+        'billing',
+        this.fb.group({
+          firstName: shippingForm?.get('firstName')?.value,
+          middleName: shippingForm?.get('middleName')?.value,
+          lastName: shippingForm?.get('lastName')?.value,
+          country: shippingForm?.get('country')?.value,
+          address1: shippingForm?.get('address1')?.value,
+          address2: shippingForm?.get('address2')?.value,
+          city: shippingForm?.get('city')?.value,
+          state: shippingForm?.get('state')?.value,
+          postalCode: shippingForm?.get('postalCode')?.value,
+        })
+      );
+    }
+  }
+
+  setCheckoutState(state: string) {
+    this.checkState = state;
   }
 
   submitPaymentForm(): void {
@@ -175,7 +196,6 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
 
             this.stripeOrderTotal = Number(response.orderTotal) / 100;
             this.minimumCharged = response.minimumCharged;
-            console.log(this.minimumCharged);
 
             const payment = this.elements.create('payment', {
               layout: 'tabs',

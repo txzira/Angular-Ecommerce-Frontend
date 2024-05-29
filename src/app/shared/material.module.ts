@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 
@@ -45,6 +46,7 @@ import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
     MatDividerModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatStepperModule,
     CdkDrag,
     CdkDropList,
   ],

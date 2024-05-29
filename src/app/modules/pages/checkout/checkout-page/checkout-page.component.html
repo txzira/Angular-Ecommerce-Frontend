@@ -1,135 +1,326 @@
-<div class="flex flex-row justify-between">
-  <form
-    [formGroup]="checkoutForm"
-    id="payment-form"
-    class="w-3/5 mx-auto"
-    (ngSubmit)="submitPaymentForm()"
-  >
-    <!-- Contact Form -->
-    <h1>Contact Information</h1>
-    <mat-divider></mat-divider>
-    <p>Required Fields *</p>
-    <mat-form-field class="p-3 w-full">
-      <mat-label>Email</mat-label>
-      <input matInput required="true" formControlName="email" name="email" />
-    </mat-form-field>
-
-    <!-- Shipping Address Form -->
-    <app-google-places-autocomplete
-      title="Shipping"
-      [checkoutForm]="checkoutForm"
-      (formEvent)="receiveShippingForm($event)"
-    ></app-google-places-autocomplete>
-
-    <div>
-      {{ shippingSameAsBilling }}
-    </div>
-
-    <div>{{ shippingForm | json }}</div>
-    <div>
-      <mat-checkbox
-        (change)="toggleBillingAddress()"
-        checked="shippingSameAsBilling"
-      >
-        Same as my Shipping Address
-      </mat-checkbox>
-      <!-- Billing Address Form -->
-      <app-google-places-autocomplete
-        *ngIf="!shippingSameAsBilling"
-        title="Billing"
-        [phoneRequired]="false"
-        (formEvent)="receiveBillingForm($event)"
-      ></app-google-places-autocomplete>
-      <div>
-        <h1>Payment</h1>
-      </div>
-      <div *ngIf="paymentError">
-        <p>{{ paymentError.message }}</p>
-        <ul class="list-disc text-red-600">
-          <li *ngFor="let item of paymentError.products">
-            {{ item.productName
-            }}{{ item.isVariant ? ": " + item.variantName : null }}
-          </li>
-        </ul>
-      </div>
-      <div id="payment-element">
-        <!--Stripe.js injects the Payment Element-->
-      </div>
-    </div>
-    <button
-      id="submit"
-      mat-raised-button
-      color="primary"
-      type="submit"
-      [disabled]="checkoutForm.invalid || disablePaymentButton"
+<ng-container *ngIf="!browserDetectorService.isMobile(); else mobile">
+  <div class="h-full flex flex-row justify-between overflow-y-scroll">
+    <form
+      [formGroup]="checkoutForm"
+      id="payment-form"
+      class="w-3/5 mx-auto"
+      (ngSubmit)="submitPaymentForm()"
     >
-      <div class="spinner hidden" id="spinner"></div>
-      Pay now
-    </button>
-    <div id="payment-message" class="hidden"></div>
-  </form>
-
-  <mat-divider [vertical]="true"></mat-divider>
-
-  <div class="w-1/5 mx-auto">
-    <div>
-      <h1 class="font-bold">Order Summary</h1>
+      <!-- Contact Form -->
+      <h1>Contact Information</h1>
       <mat-divider></mat-divider>
-      <div *ngFor="let item of cart.items" class="flex flex-row">
-        <div class="flex justify-center w-28 h-28">
-          <img
-            [src]="item.image"
-            alt="cart item image"
-            class="max-w-28 max-h-28"
-          />
+      <p>Required Fields *</p>
+      <mat-form-field class="p-3 w-full">
+        <mat-label>Email</mat-label>
+        <input matInput required="true" formControlName="email" name="email" />
+      </mat-form-field>
+
+      <!-- Shipping Address Form -->
+      <app-google-places-autocomplete
+        title="Shipping"
+        [checkoutForm]="checkoutForm"
+        (formEvent)="receiveShippingForm($event)"
+      ></app-google-places-autocomplete>
+
+      <div>
+        <mat-checkbox
+          (change)="toggleBillingAddress()"
+          checked="shippingSameAsBilling"
+        >
+          Same as my Shipping Address
+        </mat-checkbox>
+        <!-- Billing Address Form -->
+        <app-google-places-autocomplete
+          *ngIf="!shippingSameAsBilling"
+          title="Billing"
+          [phoneRequired]="false"
+          (formEvent)="receiveBillingForm($event)"
+        ></app-google-places-autocomplete>
+        <div>
+          <h1>Payment</h1>
         </div>
-        <div class="w-[calc(100%-112px)]">
-          <p class="font-semibold">{{ item.productName }}</p>
-          <!-- <p>{{ item.sku }}</p> -->
-          <p *ngIf="item.variant">
-            <span
-              *ngFor="
-                let attribute of item.variant.productVariantAttributes;
-                index as i
-              "
-            >
-              {{ attribute.attribute.name | uppercase }}
-              {{
-                i < item.variant.productVariantAttributes.length - 1 ? "-" : ""
-              }}
-            </span>
-          </p>
-          <p class="flex justify-between">
-            <span> Qty: {{ item.quantity }} </span>
-            <span class="font-semibold">
-              {{ item.price * item.quantity | currency }}
-            </span>
-          </p>
+        <div *ngIf="paymentError">
+          <p>{{ paymentError.message }}</p>
+          <ul class="list-disc text-red-600">
+            <li *ngFor="let item of paymentError.products">
+              {{ item.productName
+              }}{{ item.isVariant ? ": " + item.variantName : null }}
+            </li>
+          </ul>
+        </div>
+        <div id="payment-element">
+          <!--Stripe.js injects the Payment Element-->
         </div>
       </div>
-      <mat-divider></mat-divider>
-      <p class="flex justify-between">
-        <span>Subtotal</span>
-        <span>{{ cartTotal | currency }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span>Shipping</span> <span>{{ 0 | currency }}</span>
-      </p>
-      <p class="flex justify-between">
-        <span>Estimated Tax</span>
-        <span>{{ 0 | currency }}</span>
-      </p>
-      <p class="flex justify-between" *ngIf="minimumCharged">
-        <span>Minimum Charge</span>
-        <span>
-          {{ 1 | currency }}
-        </span>
-      </p>
-      <mat-divider></mat-divider>
-      <p class="font-semibold flex justify-between">
-        <span>Total</span>
-        <span>{{ stripeOrderTotal | currency }}</span>
-      </p>
+      <button
+        id="submit"
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="checkoutForm.invalid || disablePaymentButton"
+      >
+        <div class="spinner hidden" id="spinner"></div>
+        Pay now
+      </button>
+      <div id="payment-message" class="hidden"></div>
+    </form>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <div class="w-1/5 mx-auto">
+      <div>
+        <h1 class="font-bold">Order Summary</h1>
+        <mat-divider></mat-divider>
+        <div *ngFor="let item of cart.items" class="flex flex-row">
+          <div class="flex justify-center w-28 h-28">
+            <img
+              [src]="item.image"
+              alt="cart item image"
+              class="max-w-28 max-h-28"
+            />
+          </div>
+          <div class="w-[calc(100%-112px)]">
+            <p class="font-semibold">{{ item.productName }}</p>
+            <!-- <p>{{ item.sku }}</p> -->
+            <p *ngIf="item.variant">
+              <span
+                *ngFor="
+                  let attribute of item.variant.productVariantAttributes;
+                  index as i
+                "
+              >
+                {{ attribute.attribute.name | uppercase }}
+                {{
+                  i < item.variant.productVariantAttributes.length - 1
+                    ? "-"
+                    : ""
+                }}
+              </span>
+            </p>
+            <p class="flex justify-between">
+              <span> Qty: {{ item.quantity }} </span>
+              <span class="font-semibold">
+                {{ item.price * item.quantity | currency }}
+              </span>
+            </p>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <p class="flex justify-between">
+          <span>Subtotal</span>
+          <span>{{ cartTotal | currency }}</span>
+        </p>
+        <p class="flex justify-between">
+          <span>Shipping</span> <span>{{ 0 | currency }}</span>
+        </p>
+        <p class="flex justify-between">
+          <span>Estimated Tax</span>
+          <span>{{ 0 | currency }}</span>
+        </p>
+        <p class="flex justify-between" *ngIf="minimumCharged">
+          <span>Minimum Charge</span>
+          <span>
+            {{ 1 | currency }}
+          </span>
+        </p>
+        <mat-divider></mat-divider>
+        <p class="font-semibold flex justify-between">
+          <span>Total</span>
+          <span>{{ stripeOrderTotal | currency }}</span>
+        </p>
+      </div>
     </div>
   </div>
-</div>
+</ng-container>
+<ng-template #mobile>
+  <div class="w-full h-full py-3">
+    <form
+      [formGroup]="checkoutForm"
+      id="payment-form"
+      class="w-[95%] mx-auto overflow-y-scroll h-full"
+      (ngSubmit)="submitPaymentForm()"
+    >
+      <mat-stepper [formGroup]="checkoutForm" linear orientation="vertical">
+        <mat-step
+          formControlName="email"
+          [stepControl]="checkoutForm.get('email')!"
+          label="Contact Information"
+        >
+          <!-- Contact Form -->
+          <p>Required Fields *</p>
+          <mat-form-field class="p-3 w-full">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              required="true"
+              formControlName="email"
+              name="email"
+            />
+          </mat-form-field>
+          <div class="w-full flex justify-end">
+            <button
+              mat-button
+              matStepperNext
+              [disabled]="checkoutForm.get('email')!.invalid"
+            >
+              Next
+            </button>
+          </div>
+        </mat-step>
+        <mat-step
+          formGroupName="shipping"
+          [stepControl]="checkoutForm.get('shipping')!"
+          label="Shipping Address"
+        >
+          <!-- Shipping Address Form -->
+          <app-google-places-autocomplete
+            title=""
+            [checkoutForm]="checkoutForm"
+            (formEvent)="receiveShippingForm($event)"
+          ></app-google-places-autocomplete>
+
+          <div class="flex flex-row justify-between">
+            <button mat-button matStepperPrevious>Back</button>
+            <button
+              mat-button
+              matStepperNext
+              [disabled]="checkoutForm.get('shipping')!.invalid"
+            >
+              Next
+            </button>
+          </div>
+        </mat-step>
+        <mat-step
+          formGroupName="billing"
+          [stepControl]="checkoutForm.get('billing')!"
+          label="Billing Address"
+        >
+          <div>
+            <mat-checkbox
+              (change)="toggleBillingAddress()"
+              [checked]="shippingSameAsBilling"
+            >
+              Same as my Shipping Address
+            </mat-checkbox>
+            <!-- Billing Address Form -->
+            <app-google-places-autocomplete
+              *ngIf="!shippingSameAsBilling"
+              title=""
+              [phoneRequired]="false"
+              (formEvent)="receiveBillingForm($event)"
+            ></app-google-places-autocomplete>
+          </div>
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button
+              mat-button
+              matStepperNext
+              [disabled]="checkoutForm.get('billing')?.invalid"
+            >
+              Next
+            </button>
+          </div>
+        </mat-step>
+        <mat-step label="Payment" [completed]="!disablePaymentButton">
+          <div *ngIf="paymentError">
+            <p>{{ paymentError.message }}</p>
+            <ul class="list-disc text-red-600">
+              <li *ngFor="let item of paymentError.products">
+                {{ item.productName
+                }}{{ item.isVariant ? ": " + item.variantName : null }}
+              </li>
+            </ul>
+          </div>
+          <div id="payment-element">
+            <!--Stripe.js injects the Payment Element-->
+          </div>
+          <div class="flex flex-row justify-between">
+            <button mat-button matStepperPrevious>Back</button>
+            <button
+              mat-button
+              matStepperNext
+              type="button"
+              [disabled]="disablePaymentButton"
+            >
+              Next
+            </button>
+          </div>
+        </mat-step>
+        <mat-step label="Order Summary">
+          <div *ngFor="let item of cart.items" class="flex flex-row">
+            <div class="flex justify-center w-28 h-28">
+              <img
+                [src]="item.image"
+                alt="cart item image"
+                class="max-w-28 max-h-28"
+              />
+            </div>
+            <div class="w-[calc(100%-112px)]">
+              <p class="font-semibold truncate">{{ item.productName }}</p>
+              <p *ngIf="item.variant">
+                <span
+                  *ngFor="
+                    let attribute of item.variant.productVariantAttributes;
+                    index as i
+                  "
+                >
+                  {{ attribute.attribute.name | uppercase }}
+                  {{
+                    i < item.variant.productVariantAttributes.length - 1
+                      ? "-"
+                      : ""
+                  }}
+                </span>
+              </p>
+              <p class="flex justify-between">
+                <span> Qty: {{ item.quantity }} </span>
+                <span class="font-semibold">
+                  {{ item.price * item.quantity | currency }}
+                </span>
+              </p>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <p class="flex justify-between">
+            <span>Subtotal</span>
+            <span>{{ cartTotal | currency }}</span>
+          </p>
+          <p class="flex justify-between">
+            <span>Shipping</span> <span>{{ 0 | currency }}</span>
+          </p>
+          <p class="flex justify-between">
+            <span>Estimated Tax</span>
+            <span>{{ 0 | currency }}</span>
+          </p>
+          <p class="flex justify-between" *ngIf="minimumCharged">
+            <span>Minimum Charge</span>
+            <span>
+              {{ 1 | currency }}
+            </span>
+          </p>
+          <mat-divider></mat-divider>
+          <p class="font-semibold flex justify-between">
+            <span>Total</span>
+            <span>{{ stripeOrderTotal | currency }}</span>
+          </p>
+
+          <div class="flex flex-row justify-between">
+            <button mat-button matStepperPrevious>Back</button>
+
+            <button
+              id="submit"
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="checkoutForm.invalid || disablePaymentButton"
+            >
+              <div class="spinner hidden" id="spinner"></div>
+              Pay now
+            </button>
+          </div>
+          <div id="payment-message" class="hidden"></div>
+        </mat-step>
+      </mat-stepper>
+    </form>
+  </div>
+</ng-template>

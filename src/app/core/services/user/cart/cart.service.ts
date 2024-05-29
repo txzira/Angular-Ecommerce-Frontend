@@ -120,4 +120,9 @@ export class CartService {
     }
     return filteredItems;
   }
+  getItemsQuantity(cart: Cart) {
+    return cart.items
+      .map((item) => item.quantity)
+      .reduce((prev, current) => prev + current, 0);
+  }
 }

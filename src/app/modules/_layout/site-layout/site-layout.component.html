@@ -1,16 +1,14 @@
-<div>
-  <app-nav-bar [cart]="cart"></app-nav-bar>
-  <div
-    class="h-[calc(100vh-56px)] md:h-[calc(100vh-80px)]"
-    id="content-wrap"
-    style="
-      background-image: linear-gradient(
-          rgba(250, 250, 250, 0.7),
-          rgba(250, 250, 250, 0.7)
-        ),
-        url('/assets/images/mascots.png');
-    "
-  >
-    <router-outlet></router-outlet>
-  </div>
+<app-nav-bar [cart]="cart"></app-nav-bar>
+<div
+  class="h-[calc(100vh-56px)] md:h-[calc(100vh-80px)]"
+  id="content-wrap"
+  style="
+    background-image: linear-gradient(
+        rgba(250, 250, 250, 0.7),
+        rgba(250, 250, 250, 0.7)
+      ),
+      url('/assets/images/mascots.png');
+  "
+>
+  <router-outlet></router-outlet>
 </div>

@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { ProductsPageComponent } from './pages/products-page/products-page.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { ProductDetailPageComponent } from './pages/product-detail-page/product-detail-page.component';
-import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+
 import { ProductCardComponent } from './pages/products-page/components/product-card/product-card.component';
 import { CartPageComponent } from './pages/cart-page/cart-page.component';
 import { LoginPageComponent } from './pages/auth/login-page/login-page.component';
@@ -18,12 +18,12 @@ import { SignupPageComponent } from './pages/auth/signup-page/signup-page.compon
 import { MyAccountPageComponent } from './pages/my-account-page/my-account-page.component';
 import { CartComponent } from './components/cart/cart.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ProductsHeaderComponent } from './components/products-header/products-header.component';
-import { NavCartButtonComponent } from './components/nav-bar/components/nav-cart-button/nav-cart-button.component';
+import { ProductsHeaderComponent } from './_layout/components/products-header/products-header.component';
+
 import { CheckoutPageComponent } from './pages/checkout/checkout-page/checkout-page.component';
 import { GooglePlacesAutocompleteComponent } from './components/google-places/google-places-autocomplete/google-places-autocomplete.component';
 import { FormsModule } from '@angular/forms';
-import { NavLoginButtonComponent } from './components/nav-bar/components/nav-login-button/nav-login-button.component';
+
 import { AuthInterceptor } from '../core/interceptors/auth/auth.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { GoogleButtonComponent } from './components/google-button/google-button.component';
@@ -62,6 +62,9 @@ import { OrderConfirmationPageComponent } from './pages/checkout/order-confirmat
 import { ContactPageComponent } from './pages/contact-page/contact-page.component';
 import { AboutUsPageComponent } from './pages/about-us-page/about-us-page.component';
 import { CategoryNavComponent } from './_layout/components/category-nav/category-nav.component';
+import { NavCartButtonComponent } from './_layout/components/nav-bar/components/nav-cart-button/nav-cart-button.component';
+import { NavLoginButtonComponent } from './_layout/components/nav-bar/components/nav-login-button/nav-login-button.component';
+import { NavBarComponent } from './_layout/components/nav-bar/nav-bar.component';
 
 @NgModule({
   declarations: [

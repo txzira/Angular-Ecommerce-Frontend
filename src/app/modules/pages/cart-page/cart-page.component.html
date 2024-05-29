@@ -1,4 +1,4 @@
-<div class="w-full">
+<div class="w-full h-full flex flex-col">
   <ng-container *ngIf="!browserDetectorService.isMobile(); else mobileCart">
     <ng-container *ngIf="cart.items.length; else emptyCart">
       <div class="flex flex-col mx-auto w-11/12 bg-white">
@@ -121,75 +121,119 @@
   </ng-container>
   <ng-template #mobileCart>
     <ng-container *ngIf="cart.items.length; else emptyCart">
-      <div class="flex flex-col bg-white w-11/12 mx-auto">
-        <div class="flex flex-row items-center border-b">
-          <div>Product</div>
-          <div>Total</div>
+      <div
+        class="w-full flex flex-col justify-end items-center bg-white h-20 px-2"
+      >
+        <button routerLink="/home" class="mr-auto scale-125 pt-2">
+          <mat-icon class="flex items-center font-semibold"
+            >arrow_back</mat-icon
+          >
+        </button>
+        <div class="flex flex-row justify-between items-center w-full">
           <div>
-            <button
-              (click)="onClearCart()"
-              mat-raised-button
-              color="warn"
-              class=""
-            >
-              Clear Cart
+            <span class="text-2xl font-semibold">My Cart&nbsp;</span>
+            <span class="text-2xl">({{ itemsQuantity }})</span>
+          </div>
+          <div class="flex flex-row items-center">
+            <span>Clear Cart</span>
+            <button class="flex items-center" (click)="onClearCart()">
+              <mat-icon>remove_shopping_cart</mat-icon>
             </button>
           </div>
         </div>
+      </div>
+      <mat-divider class="w-full"></mat-divider>
+
+      <div
+        class="flex flex-col h-auto mx-auto w-[95%] gap-y-5 overflow-y-scroll py-3"
+      >
         <div
-          class="flex flex-row items-center min-h-20 border-b"
-          *ngFor="let cartItem of cart.items"
+          class="flex flex-row items-center py-2 h-32 w-full mx-auto rounded-lg bg-white relative px-2 shadow-md"
+          *ngFor="let cartItem of cart.items; let lastItem = last"
         >
-          <div class="flex flex-row w-3/6 h-full">
-            <div class="w-1/2 h-full">
+          <div class="flex flex-col h-full justify-center pr-2">
+            <button
+              class="flex items-center justify-center border border-slate-400 rounded-t-md active:bg-[#3f51b5] active:text-white"
+              (click)="onAddQuantity(cartItem)"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+            <span
+              class="flex items-center text-nowrap border-x border-slate-400 px-2"
+            >
+              {{ cartItem.quantity }}
+            </span>
+            <button
+              class="flex items-center justify-center border border-slate-400 rounded-b-md active:bg-[#3f51b5] active:text-white"
+              (click)="onRemoveQuantity(cartItem)"
+            >
+              <mat-icon>remove</mat-icon>
+            </button>
+          </div>
+          <div class="flex flex-row items-center w-3/4 h-full">
+            <div class="flex items-center justify-center w-28 h-28">
               <img
                 [src]="cartItem.image"
                 alt="product"
                 class="max-w-full max-h-full"
               />
             </div>
-            <div class="flex flex-col">
-              <div>
-                <p class="truncate max-w-xs block hover:overflow-visible">
-                  {{ cartItem.productName }}
-                </p>
-                <p *ngIf="cartItem.variant">
-                  <span
-                    *ngFor="
-                      let attribute of cartItem.variant
-                        .productVariantAttributes;
-                      index as i
-                    "
-                    >{{ attribute.attribute.name
-                    }}{{
-                      cartItem.variant.productVariantAttributes.length > 0 &&
-                      cartItem.variant.productVariantAttributes.length - 1 > i
-                        ? " - "
-                        : ""
-                    }}</span
-                  >
-                </p>
-              </div>
-              <div class="flex flex-row items-center h-5">
-                <button
-                  class="flex items-center border border-slate-400 rounded-l-full hover:bg-[#3f51b5] hover:text-white h-full"
-                  (click)="onRemoveQuantity(cartItem)"
-                >
-                  <mat-icon>remove</mat-icon>
-                </button>
+            <div class="flex flex-col w-[calc(100%-112px)]">
+              <p
+                class="truncate text-ellipsis max-w-xs block hover:overflow-visible !m-0"
+              >
+                {{ cartItem.productName }}
+              </p>
+              <p *ngIf="cartItem.variant" class="text-xs">
                 <span
-                  class="flex items-center text-nowrap border-y border-slate-400 px-2 h-full"
+                  *ngFor="
+                    let attribute of cartItem.variant.productVariantAttributes;
+                    index as i
+                  "
+                  >{{ attribute.attribute.name
+                  }}{{
+                    cartItem.variant.productVariantAttributes.length > 0 &&
+                    cartItem.variant.productVariantAttributes.length - 1 > i
+                      ? " - "
+                      : ""
+                  }}</span
                 >
-                  {{ cartItem.quantity }}
-                </span>
-                <button
-                  class="flex items-center border border-slate-400 rounded-r-full hover:bg-[#3f51b5] hover:text-white h-full"
-                  (click)="onAddQuantity(cartItem)"
-                >
-                  <mat-icon>add</mat-icon>
-                </button>
-              </div>
+              </p>
+              <p>{{ cartItem.price | currency }}</p>
             </div>
+          </div>
+          <button
+            (click)="onRemoveFromCart(cartItem)"
+            color="warn"
+            class="ml-auto mb-auto"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+      <mat-divider class="w-full"></mat-divider>
+      <div class="w-full flex flex-col bg-white px-2">
+        <div class="flex flex-col py-3">
+          <p class="flex flex-row justify-between text-xl font-semibold">
+            <span class="">Subtotal</span
+            ><span>{{ getTotal(cart.items) | currency }}</span>
+          </p>
+          <div class="flex flex-col w-full items-center gap-2">
+            <button
+              mat-raised-button
+              class="!rounded-full !w-2/3"
+              color="primary"
+              routerLink="/checkout"
+            >
+              Checkout
+            </button>
+            <!-- <button
+                mat-raised-button
+                class="!rounded-full !w-2/3"
+                routerLink="/home"
+              >
+                Continue Shopping
+              </button> -->
           </div>
         </div>
       </div>

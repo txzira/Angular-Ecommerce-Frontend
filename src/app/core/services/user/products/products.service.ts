@@ -29,7 +29,15 @@ export class ProductsService {
   }
 
   getProductById(id: string | null): Observable<Product> {
-    return this.httpClient.get<Product>(`${this.PRODUCTS_URL}/${id}`);
+    return this.httpClient.get<Product>(
+      `${this.PRODUCTS_URL}/prod-by-id/${id}`
+    );
+  }
+
+  getProductBySlug(slug: string | null): Observable<Product> {
+    return this.httpClient.get<Product>(
+      `${this.PRODUCTS_URL}/prod-by-slug/${slug}`
+    );
   }
 
   getProductsByCategoryName(

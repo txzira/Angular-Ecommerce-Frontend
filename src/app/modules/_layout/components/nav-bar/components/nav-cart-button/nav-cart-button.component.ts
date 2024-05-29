@@ -16,9 +16,7 @@ export class NavCartButtonComponent {
 
   set cart(cart: Cart) {
     this._cart = cart;
-    this.itemsQuantity = cart.items
-      .map((item) => item.quantity)
-      .reduce((prev, current) => prev + current, 0);
+    this.itemsQuantity = this.cartService.getItemsQuantity(cart);
   }
 
   constructor(private cartService: CartService) {}

@@ -26,7 +26,6 @@ import { AdminEditProductPageComponent } from './pages/admin/products/edit-produ
 import { AdminBrandsPageComponent } from './pages/admin/brands/brands-page.component';
 import { CategoriesPageComponent } from './pages/categories/categories-page/categories-page.component';
 import { CategoryPageComponent } from './pages/categories/category-page/category-page.component';
-import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 import { SiteLayoutComponent } from './_layout/site-layout/site-layout.component';
 import { AdminLayoutComponent } from './_layout/admin-layout/admin-layout.component';
 import { CommerceLayoutComponent } from './_layout/commerce-layout/commerce-layout.component';
@@ -101,7 +100,7 @@ const routes: Routes = [
         component: CategoryNavLayoutComponent,
         children: [
           {
-            path: 'products/:id',
+            path: 'products/:slug',
             component: ProductDetailPageComponent,
           },
           { path: 'about-us', component: AboutUsPageComponent },

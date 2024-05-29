@@ -11,6 +11,7 @@ import { CartService } from 'src/app/core/services/user/cart/cart.service';
 })
 export class CartPageComponent implements OnInit {
   cart!: Cart;
+  itemsQuantity = 0;
 
   constructor(
     private cartService: CartService,
@@ -20,6 +21,7 @@ export class CartPageComponent implements OnInit {
   ngOnInit(): void {
     this.cartService.cart.subscribe((_cart: Cart) => {
       this.cart = _cart;
+      this.itemsQuantity = this.cartService.getItemsQuantity(_cart);
     });
   }
 
