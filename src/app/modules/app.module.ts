@@ -33,8 +33,8 @@ import { LoginRedirectPageComponent } from './pages/auth/login-redirect-page/log
 import { UnauthorizedPageComponent } from './pages/auth/unauthorized-page/unauthorized-page.component';
 import { OrderDetailModalComponent } from './pages/my-account-page/components/order-detail-modal/order-detail-modal.component';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
-import { AdminNavbarComponent } from './pages/admin/components/admin-navbar/admin-navbar.component';
-import { AdminProductsPageComponent } from './pages/admin/products/products.component';
+import { AdminNavbarComponent } from './_layout/admin-layout/components/admin-navbar/admin-navbar.component';
+import { AdminProductsPageComponent } from './pages/admin/products/products-page.component';
 import { AdminOrdersPageComponent } from './pages/admin/orders/orders.component';
 import { AdminCustomersPageComponent } from './pages/admin/customers/customers.component';
 import { AdminCategoriesPageComponent } from './pages/admin/categories/categories-page.component';
@@ -65,6 +65,7 @@ import { CategoryNavComponent } from './_layout/components/category-nav/category
 import { NavCartButtonComponent } from './_layout/components/nav-bar/components/nav-cart-button/nav-cart-button.component';
 import { NavLoginButtonComponent } from './_layout/components/nav-bar/components/nav-login-button/nav-login-button.component';
 import { NavBarComponent } from './_layout/components/nav-bar/nav-bar.component';
+import { AdminShippingMethodsComponent } from './pages/admin/shipping-method/shipping-method-page.component';
 
 @NgModule({
   declarations: [
@@ -120,6 +121,7 @@ import { NavBarComponent } from './_layout/components/nav-bar/nav-bar.component'
     ContactPageComponent,
     AboutUsPageComponent,
     CategoryNavComponent,
+    AdminShippingMethodsComponent,
   ],
   imports: [
     BrowserModule,

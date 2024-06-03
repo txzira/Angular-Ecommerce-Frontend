@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { first } from 'rxjs';
+
 import { CartItem } from 'src/app/core/models/cart.model';
 import {
   Attribute,
@@ -41,10 +41,8 @@ export class ProductDetailPageComponent implements OnInit {
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
-    console.log(slug);
-    console.log(this.route.snapshot.paramMap);
+
     if (slug) {
-      console.log(slug);
       this.productsService.getProductBySlug(slug).subscribe((_product) => {
         this.product = _product;
         this.displayImage = {

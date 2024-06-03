@@ -63,10 +63,10 @@
       >
     </a>
   </mat-toolbar-row>
-  <mat-toolbar-row *ngIf="browserDetectorService.isMobile()">
+  <mat-toolbar-row *ngIf="isMobileDisplay">
     <mat-divider class="w-full"></mat-divider>
   </mat-toolbar-row>
-  <mat-toolbar-row *ngIf="browserDetectorService.isMobile()">
+  <mat-toolbar-row *ngIf="isMobileDisplay">
     <app-nav-login-button></app-nav-login-button>
   </mat-toolbar-row>
 </mat-toolbar>

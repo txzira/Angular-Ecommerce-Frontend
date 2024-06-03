@@ -7,7 +7,7 @@ import { AdminDeleteProductModalComponent } from './components/delete-product-mo
 
 @Component({
   selector: 'app-products',
-  templateUrl: './products.component.html',
+  templateUrl: './products-page.component.html',
 })
 export class AdminProductsPageComponent implements OnInit {
   productSearch = new FormControl('');

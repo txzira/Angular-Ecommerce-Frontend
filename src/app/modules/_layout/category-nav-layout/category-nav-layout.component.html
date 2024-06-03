@@ -5,8 +5,8 @@
     (backdropClick)="onIsOpenUpdated()"
   >
     <mat-drawer
-      [mode]="browserDetectorService.isMobile() ? 'over' : 'side'"
-      [opened]="browserDetectorService.isMobile() ? navBarIsOpen : true"
+      [mode]="isMobileDisplay ? 'over' : 'side'"
+      [opened]="isMobileDisplay ? navBarIsOpen : true"
       class="h-full !bg-[#78866b]"
       disableClose
     >

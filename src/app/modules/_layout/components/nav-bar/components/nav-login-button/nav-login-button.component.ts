@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
@@ -8,9 +8,17 @@ import { UserService } from 'src/app/core/services/user/user/user.service';
   selector: 'app-nav-login-button',
   templateUrl: './nav-login-button.component.html',
 })
-export class NavLoginButtonComponent implements OnInit, OnDestroy {
+export class NavLoginButtonComponent implements OnInit {
   user$ = this.userService.user.asObservable();
   // isAdmin$ = this.userService.isAdmin.asObservable();
+
+  isMobileDisplay: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobileDisplay = this.browserDetectorService.isMobile();
+  }
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -24,6 +32,7 @@ export class NavLoginButtonComponent implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
 
-  ngOnInit(): void {}
-  ngOnDestroy(): void {}
+  ngOnInit(): void {
+    this.isMobileDisplay = this.browserDetectorService.isMobile();
+  }
 }

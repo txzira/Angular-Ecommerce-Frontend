@@ -1,5 +1,5 @@
 <div class="w-full h-full flex flex-col">
-  <ng-container *ngIf="!browserDetectorService.isMobile(); else mobileCart">
+  <ng-container *ngIf="!isMobileDisplay; else mobileCart">
     <ng-container *ngIf="cart.items.length; else emptyCart">
       <div class="flex flex-col mx-auto w-11/12 bg-white">
         <div class="flex flex-row items-center h-14 border-b">
@@ -218,7 +218,7 @@
             <span class="">Subtotal</span
             ><span>{{ getTotal(cart.items) | currency }}</span>
           </p>
-          <div class="flex flex-col w-full items-center gap-2">
+          <div class="flex w-full items-center gap-2">
             <button
               mat-raised-button
               class="!rounded-full !w-2/3"
@@ -227,13 +227,6 @@
             >
               Checkout
             </button>
-            <!-- <button
-                mat-raised-button
-                class="!rounded-full !w-2/3"
-                routerLink="/home"
-              >
-                Continue Shopping
-              </button> -->
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -31,6 +31,12 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   minimumCharged: boolean = false;
   paymentError: any = null;
   checkState = 'contact';
+  isMobileDisplay: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobileDisplay = this.browserDetectorService.isMobile();
+  }
 
   constructor(
     private checkoutService: CheckoutService,
@@ -46,6 +52,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
+    this.isMobileDisplay = this.browserDetectorService.isMobile();
     this.stripe = await loadStripe(
       'pk_test_51JpGR9IZK4v7qkytzmvxTLa0C4AtaOLAaxGxWKBxc5CL1US3qFCf9pWfUPnc6OhkxL2Xv5s97uSjQAgv73KyDTWI006SYC716Q'
     );

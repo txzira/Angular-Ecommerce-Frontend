@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { loadStripe } from '@stripe/stripe-js';
 import { Cart, CartItem } from 'src/app/core/models/cart.model';
 import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
@@ -12,6 +12,12 @@ import { CartService } from 'src/app/core/services/user/cart/cart.service';
 export class CartPageComponent implements OnInit {
   cart!: Cart;
   itemsQuantity = 0;
+  isMobileDisplay: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobileDisplay = this.browserDetectorService.isMobile();
+  }
 
   constructor(
     private cartService: CartService,
@@ -19,6 +25,8 @@ export class CartPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.isMobileDisplay = this.browserDetectorService.isMobile();
+
     this.cartService.cart.subscribe((_cart: Cart) => {
       this.cart = _cart;
       this.itemsQuantity = this.cartService.getItemsQuantity(_cart);

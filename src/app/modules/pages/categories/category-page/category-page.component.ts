@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Observable, debounceTime, map, of, switchMap } from 'rxjs';
@@ -19,6 +19,31 @@ export class CategoryPageComponent implements OnInit {
   rowHeight!: number;
   sort!: string;
   itemsToShowCount!: string;
+  isMobileDisplay: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.isMobileDisplay = this.browserDetectorService.isMobile();
+
+    if (!this.isMobileDisplay) {
+      this.productsFilterService.columns.subscribe(
+        (columns) => (this.columns = columns)
+      );
+      this.productsFilterService.rowHeight.subscribe(
+        (rowHeight) => (this.rowHeight = rowHeight)
+      );
+      this.productsFilterService.itemsToShowCount.subscribe(
+        (itemsToShowCount) => (this.itemsToShowCount = itemsToShowCount)
+      );
+      this.productsFilterService.sort.subscribe((sort) => (this.sort = sort));
+    } else {
+      this.columns = 1;
+      this.rowHeight = 400;
+      this.sort = 'asc';
+      this.itemsToShowCount = '100';
+    }
+  }
+
   constructor(
     private productsService: ProductsService,
     private productsFilterService: ProductsFilterService,
@@ -39,7 +64,9 @@ export class CategoryPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (!this.browserDetectorService.isMobile()) {
+    this.isMobileDisplay = this.browserDetectorService.isMobile();
+
+    if (!this.isMobileDisplay) {
       this.productsFilterService.columns.subscribe(
         (columns) => (this.columns = columns)
       );

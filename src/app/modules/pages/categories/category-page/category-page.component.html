@@ -27,7 +27,7 @@
     <app-product-card
       *ngFor="let product of products"
       class="gap-y"
-      [fullWidthMode]="columns === 1 || browserDetectorService.isMobile()"
+      [fullWidthMode]="columns === 1 || isMobileDisplay"
       [product]="product"
     ></app-product-card>
   </div>
@@ -35,7 +35,7 @@
     <app-product-card
       *ngFor="let product of filteredProducts"
       class="gap-y"
-      [fullWidthMode]="columns === 1 || browserDetectorService.isMobile()"
+      [fullWidthMode]="columns === 1 || isMobileDisplay"
       [product]="product"
     ></app-product-card>
   </div>

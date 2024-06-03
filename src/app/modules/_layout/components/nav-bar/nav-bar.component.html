@@ -13,7 +13,7 @@
     <button
       class="flex items-center pr-4"
       *ngIf="
-        browserDetectorService.isMobile() &&
+        isMobileDisplay &&
         !(router.url.includes('/auth') || router.url.includes('my-account'))
       "
       (click)="onIsOpenUpdated()"
@@ -42,17 +42,11 @@
     </button> -->
   </div>
 
-  <div
-    class="flex flex-row items-center"
-    *ngIf="!browserDetectorService.isMobile()"
-  >
+  <div class="flex flex-row items-center" *ngIf="isMobileDisplay">
     <app-nav-login-button></app-nav-login-button>
     <app-nav-cart-button [cart]="cart"></app-nav-cart-button>
   </div>
-  <div
-    class="flex flex-row items-center"
-    *ngIf="browserDetectorService.isMobile()"
-  >
+  <div class="flex flex-row items-center" *ngIf="isMobileDisplay">
     <app-nav-cart-button [cart]="cart"></app-nav-cart-button>
   </div>
 </mat-toolbar>

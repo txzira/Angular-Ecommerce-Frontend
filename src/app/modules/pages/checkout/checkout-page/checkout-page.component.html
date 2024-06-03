@@ -1,4 +1,4 @@
-<ng-container *ngIf="!browserDetectorService.isMobile(); else mobile">
+<ng-container *ngIf="isMobileDisplay; else mobile">
   <div class="h-full flex flex-row justify-between overflow-y-scroll">
     <form
       [formGroup]="checkoutForm"

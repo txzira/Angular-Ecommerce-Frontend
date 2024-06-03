@@ -15,7 +15,7 @@ import { AuthGuard } from '../core/guards/auth/auth.guard';
 import { NotLoginedGuard } from '../core/guards/notlogined/notlogined.guard';
 import { AdminDashboardComponent } from './pages/admin/admin-dashboard/admin-dashboard.component';
 import { AdminGuard } from '../core/guards/admin/admin.guard';
-import { AdminProductsPageComponent } from './pages/admin/products/products.component';
+import { AdminProductsPageComponent } from './pages/admin/products/products-page.component';
 import { AdminCustomersPageComponent } from './pages/admin/customers/customers.component';
 import { AdminOrdersPageComponent } from './pages/admin/orders/orders.component';
 import { AdminCategoriesPageComponent } from './pages/admin/categories/categories-page.component';
@@ -32,6 +32,7 @@ import { CommerceLayoutComponent } from './_layout/commerce-layout/commerce-layo
 import { CategoryNavLayoutComponent } from './_layout/category-nav-layout/category-nav-layout.component';
 import { AboutUsPageComponent } from './pages/about-us-page/about-us-page.component';
 import { ContactPageComponent } from './pages/contact-page/contact-page.component';
+import { AdminShippingMethodsComponent } from './pages/admin/shipping-method/shipping-method-page.component';
 
 const routes: Routes = [
   {
@@ -88,6 +89,10 @@ const routes: Routes = [
                 component: AdminEditCategoryPageComponent,
               },
             ],
+          },
+          {
+            path: 'shipping-methods',
+            component: AdminShippingMethodsComponent,
           },
           {
             path: 'brands',
