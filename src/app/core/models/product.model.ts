@@ -29,7 +29,7 @@ export interface ProductVariant {
   quantity: number;
   available: boolean;
   productVariantAttributes: Array<ProductVariantAttribute>;
-  variantImages: Array<{ url: string }>;
+  variantImages: Array<Image>;
   sku?: string;
   description?: string;
 }

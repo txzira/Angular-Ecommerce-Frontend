@@ -1,0 +1,30 @@
+<div>
+  <div class="flex flex-row items-center justify-between">
+    <h1 class="!m-0">Edit Shipping Method</h1>
+    <button (click)="closeModal()">
+      <mat-icon class="!align-middle" fontIcon="close"></mat-icon>
+    </button>
+  </div>
+  <form class="flex flex-col" [formGroup]="shippingMethodForm">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Price</mat-label>
+      <input matInput formControlName="price" />
+    </mat-form-field>
+    <mat-checkbox formControlName="active"> Active </mat-checkbox>
+    <mat-form-field>
+      <mat-select formControlName="countries" placeholder="--Select--" multiple>
+        <mat-option *ngFor="let country of countries" [value]="country.code">{{
+          country.name
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    {{ shippingMethodForm.value | json }}
+    <button mat-raised-button color="primary" (click)="editShippingMethod()">
+      Save Shipping Method
+    </button>
+  </form>
+</div>

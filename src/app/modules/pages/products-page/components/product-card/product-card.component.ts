@@ -9,32 +9,87 @@ import { Attribute, Product } from 'src/app/core/models/product.model';
 export class ProductCardComponent implements OnInit {
   @Input() fullWidthMode = false;
   @Input() product: Product | undefined;
-  displayImage: string | undefined;
 
+  displayImage: string | undefined;
   colors!: Attribute[];
-  queryParams: any;
+  available: boolean | undefined;
+  price: number | undefined;
+  queryParams: any = {};
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     console.log(this.product);
-    if (this.product && this.product.attributeGroups) {
+    if (this.product) {
+      this.available = this.product.available;
+      this.price = this.product.price;
       this.displayImage = this.product?.images?.[0]?.url;
-      for (let i = 0; i < this.product.attributeGroups.length; i++) {
-        if (
-          this.product.attributeGroups[i].name.toLowerCase() === 'colors' ||
-          this.product.attributeGroups[i].name.toLowerCase() === 'styles'
-        ) {
-          this.colors = this.product.attributeGroups[i].attributes!;
+      if (this.product.productVariants.length) {
+        for (let i = 0; i < this.product.attributeGroups.length; i++) {
+          if (
+            this.product.attributeGroups[i].name.toLowerCase() === 'colors' ||
+            this.product.attributeGroups[i].name.toLowerCase() === 'styles'
+          ) {
+            this.colors = this.product.attributeGroups[i].attributes!;
+          }
+        }
+        for (let i = 0; i < this.product.productVariants.length; i++) {
+          const productVariant = this.product.productVariants[i];
+          if (productVariant.available) {
+            productVariant.variantImages[0]?.url
+              ? (this.displayImage = productVariant.variantImages[0]?.url)
+              : (this.displayImage = this.product.images?.[0]?.url);
+            this.price = productVariant.price;
+            this.available = true;
+            break;
+          }
         }
       }
     }
   }
 
-  hoverImg(imageUrl: string, color: string): void {
-    if (this.product && this.product.images) {
-      this.displayImage = imageUrl;
+  hoverImg(color: Attribute): void {
+    // color.images![0].url, color.name
+
+    if (this.product) {
+      this.displayImage = color.images?.[0]?.url;
+      this.queryParams.color = color.name;
+
+      const available = this.product?.productVariants.find((productVariant) => {
+        const productVariantAttributes =
+          productVariant.productVariantAttributes;
+        let found = false;
+        for (let i = 0; i < productVariantAttributes.length; i++) {
+          if (
+            productVariantAttributes[i].attribute.id === color.id &&
+            productVariant.available
+          ) {
+            if (this.product?.managedStock) {
+              if (productVariant.quantity > 0) {
+                found = true;
+                break;
+              } else {
+                found = false;
+                break;
+              }
+            } else {
+              found = true;
+              break;
+            }
+          }
+        }
+        return found;
+      });
+      if (available) {
+        console.log('sfa');
+        this.available = true;
+        this.price = available.price;
+      } else {
+        console.log('eas');
+        this.available = false;
+        // setPrice(available.price);
+      }
+      return;
     }
-    this.queryParams = { color };
   }
 }

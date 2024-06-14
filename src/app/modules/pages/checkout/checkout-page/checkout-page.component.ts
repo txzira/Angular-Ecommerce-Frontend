@@ -5,9 +5,11 @@ import { Router } from '@angular/router';
 import { Stripe, StripeElements, loadStripe } from '@stripe/stripe-js';
 import { Subscription } from 'rxjs';
 import { Cart, CartItem } from 'src/app/core/models/cart.model';
+import { ShippingMethod } from 'src/app/core/models/shippingMethod.model';
 import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
 import { CartService } from 'src/app/core/services/user/cart/cart.service';
 import { CheckoutService } from 'src/app/core/services/user/checkout/checkout.service';
+import { ShippingMethodsService } from 'src/app/core/services/user/shipping-methods/shipping-methods.service';
 import env from 'src/environments/environment';
 
 @Component({
@@ -20,18 +22,21 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   private orderSubscription: Subscription | undefined;
   private clientSecret: any;
   private elements: StripeElements | undefined;
-  checkoutForm!: FormGroup;
+  private paymentIntent: string = '';
+  private taxCalculatedFlag = false;
 
-  billingForm: any | undefined;
+  checkoutForm!: FormGroup;
   shippingSameAsBilling = false;
   disablePaymentButton = true;
   cart!: Cart;
-  cartTotal: number = 0;
   stripeOrderTotal: number = 0;
   minimumCharged: boolean = false;
   paymentError: any = null;
-  checkState = 'contact';
   isMobileDisplay: boolean = false;
+  shippingMethods: ShippingMethod[] = [];
+  selectedShippingMethod: ShippingMethod | undefined;
+  calculatedTax: number | undefined;
+  cartTotal: number = 0;
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -41,6 +46,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   constructor(
     private checkoutService: CheckoutService,
     private cartService: CartService,
+    private shippingMethodService: ShippingMethodsService,
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private router: Router,
@@ -59,6 +65,14 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     this.checkoutForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
     });
+  }
+
+  receiveCountrySelection(country: string): void {
+    this.shippingMethodService
+      .getShippingMethods(country)
+      .subscribe((shippingMethods) => {
+        this.shippingMethods = shippingMethods;
+      });
   }
 
   receiveShippingForm(form: FormGroup): void {
@@ -91,8 +105,29 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  setCheckoutState(state: string) {
-    this.checkState = state;
+  setShippingMethod(event: any) {
+    this.selectedShippingMethod = event.value;
+  }
+
+  checkStep(event: any) {
+    if (
+      event.selectedIndex === 3 ||
+      (event.selectedIndex !== 0 &&
+        event.selectedIndex <= 3 &&
+        this.taxCalculatedFlag)
+    )
+      this.checkoutService
+        .calculateOrderTax(
+          this.cart.items,
+          this.paymentIntent,
+          this.selectedShippingMethod,
+          this.checkoutForm.value.shipping
+        )
+        .subscribe((response) => {
+          this.stripeOrderTotal = Number(response.orderTotal) / 100;
+          this.calculatedTax = Number(response.calculatedTax) / 100;
+          this.taxCalculatedFlag = true;
+        });
   }
 
   submitPaymentForm(): void {
@@ -159,7 +194,8 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
                 this.checkoutService
                   .createOrder(
                     { ...form.shipping, email: form.email },
-                    this.cart.items
+                    this.cart.items,
+                    this.selectedShippingMethod!
                   )
                   .subscribe();
                 this.cartService.clearCartFromCheckout();
@@ -203,6 +239,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
 
             this.stripeOrderTotal = Number(response.orderTotal) / 100;
             this.minimumCharged = response.minimumCharged;
+            this.paymentIntent = response.paymentIntent;
 
             const payment = this.elements.create('payment', {
               layout: 'tabs',

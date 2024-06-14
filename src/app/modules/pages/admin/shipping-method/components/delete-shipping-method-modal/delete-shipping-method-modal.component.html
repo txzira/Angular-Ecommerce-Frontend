@@ -1,0 +1,13 @@
+<div class="flex flex-col items-center w-[500px] h-[200px] justify-center">
+  <p>
+    Are you sure you want to delete shipping method '{{ shippingMethod.name }}'
+    ?
+  </p>
+  <p>This action is irreversible.</p>
+  <div class="flex flex-row gap-5">
+    <button mat-raised-button (click)="closeModal()">No</button>
+    <button mat-raised-button color="warn" (click)="deleteShippingMethod()">
+      Yes
+    </button>
+  </div>
+</div>

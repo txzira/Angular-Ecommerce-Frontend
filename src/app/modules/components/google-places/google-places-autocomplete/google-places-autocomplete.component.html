@@ -22,14 +22,34 @@
         <input matInput formControlName="lastName" placeholder="Doe" />
       </mat-form-field>
     </div>
+    <ng-container *ngIf="isShipping; else countryIsBilling">
+      <mat-form-field class="w-full">
+        <mat-label>Country</mat-label>
+        <mat-select
+          formControlName="country"
+          (selectionChange)="selectCountry($event)"
+        >
+          <ng-container *ngFor="let country of countriesList">
+            <mat-option [value]="country.code" *ngIf="country.shipping">{{
+              country.name
+            }}</mat-option>
+          </ng-container>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+    <ng-template #countryIsBilling>
+      <mat-form-field class="w-full">
+        <mat-label>Country</mat-label>
+        <mat-select formControlName="country">
+          <mat-option
+            [value]="country.code"
+            *ngFor="let country of countriesList"
+            >{{ country.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </ng-template>
 
-    <mat-form-field class="w-full">
-      <mat-label>Country</mat-label>
-      <mat-select formControlName="country">
-        <mat-option value="US">United States</mat-option>
-        <!-- <mat-option value="CA">Canda</mat-option> -->
-      </mat-select>
-    </mat-form-field>
     <div class="flex flex-row justify-between">
       <mat-form-field class="w-2/3">
         <mat-label>Address 1</mat-label>
@@ -54,16 +74,25 @@
         <mat-label>City</mat-label>
         <input matInput formControlName="city" />
       </mat-form-field>
-      <mat-form-field class="w-[49%]">
-        <mat-label>State</mat-label>
-        <mat-select matInput formControlName="state">
-          <mat-option
-            *ngFor="let state of statesList.states"
-            [value]="state.abbreviation"
-            >{{ state.name }}</mat-option
-          >
-        </mat-select>
-      </mat-form-field>
+      <ng-container *ngIf="isShipping; else stateIsBilling">
+        <mat-form-field class="w-[49%]">
+          <mat-label>State/Province</mat-label>
+          <mat-select formControlName="state">
+            <mat-option
+              *ngFor="let state of statesList"
+              [value]="state.abbreviation"
+              >{{ state.name }}</mat-option
+            >
+          </mat-select>
+          <mat-hint>*Select country first</mat-hint>
+        </mat-form-field>
+      </ng-container>
+      <ng-template #stateIsBilling>
+        <mat-form-field class="w-[49%]">
+          <mat-label>State/Province</mat-label>
+          <input matInput formControlName="state" />
+        </mat-form-field>
+      </ng-template>
     </div>
     <div class="flex flex-row justify-between">
       <mat-form-field class="w-[49%]">

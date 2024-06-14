@@ -1,252 +1,184 @@
-<ng-container *ngIf="isMobileDisplay; else mobile">
-  <div class="h-full flex flex-row justify-between overflow-y-scroll">
-    <form
-      [formGroup]="checkoutForm"
-      id="payment-form"
-      class="w-3/5 mx-auto"
-      (ngSubmit)="submitPaymentForm()"
-    >
-      <!-- Contact Form -->
-      <h1>Contact Information</h1>
-      <mat-divider></mat-divider>
-      <p>Required Fields *</p>
-      <mat-form-field class="p-3 w-full">
-        <mat-label>Email</mat-label>
-        <input matInput required="true" formControlName="email" name="email" />
-      </mat-form-field>
-
-      <!-- Shipping Address Form -->
-      <app-google-places-autocomplete
-        title="Shipping"
-        [checkoutForm]="checkoutForm"
-        (formEvent)="receiveShippingForm($event)"
-      ></app-google-places-autocomplete>
-
-      <div>
-        <mat-checkbox
-          (change)="toggleBillingAddress()"
-          checked="shippingSameAsBilling"
+<ng-container *ngIf="cart.items.length; else emptyCart">
+  <ng-container *ngIf="!isMobileDisplay; else mobile">
+    <div class="h-full flex flex-row justify-between overflow-y-scroll p-10">
+      <section class="w-3/5 mx-auto">
+        <form
+          [formGroup]="checkoutForm"
+          class="bg-white"
+          id="payment-form"
+          (ngSubmit)="submitPaymentForm()"
         >
-          Same as my Shipping Address
-        </mat-checkbox>
-        <!-- Billing Address Form -->
-        <app-google-places-autocomplete
-          *ngIf="!shippingSameAsBilling"
-          title="Billing"
-          [phoneRequired]="false"
-          (formEvent)="receiveBillingForm($event)"
-        ></app-google-places-autocomplete>
-        <div>
-          <h1>Payment</h1>
-        </div>
-        <div *ngIf="paymentError">
-          <p>{{ paymentError.message }}</p>
-          <ul class="list-disc text-red-600">
-            <li *ngFor="let item of paymentError.products">
-              {{ item.productName
-              }}{{ item.isVariant ? ": " + item.variantName : null }}
-            </li>
-          </ul>
-        </div>
-        <div id="payment-element">
-          <!--Stripe.js injects the Payment Element-->
-        </div>
-      </div>
-      <button
-        id="submit"
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="checkoutForm.invalid || disablePaymentButton"
-      >
-        <div class="spinner hidden" id="spinner"></div>
-        Pay now
-      </button>
-      <div id="payment-message" class="hidden"></div>
-    </form>
-
-    <mat-divider [vertical]="true"></mat-divider>
-
-    <div class="w-1/5 mx-auto">
-      <div>
-        <h1 class="font-bold">Order Summary</h1>
-        <mat-divider></mat-divider>
-        <div *ngFor="let item of cart.items" class="flex flex-row">
-          <div class="flex justify-center w-28 h-28">
-            <img
-              [src]="item.image"
-              alt="cart item image"
-              class="max-w-28 max-h-28"
-            />
-          </div>
-          <div class="w-[calc(100%-112px)]">
-            <p class="font-semibold">{{ item.productName }}</p>
-            <!-- <p>{{ item.sku }}</p> -->
-            <p *ngIf="item.variant">
-              <span
-                *ngFor="
-                  let attribute of item.variant.productVariantAttributes;
-                  index as i
-                "
-              >
-                {{ attribute.attribute.name | uppercase }}
-                {{
-                  i < item.variant.productVariantAttributes.length - 1
-                    ? "-"
-                    : ""
-                }}
-              </span>
-            </p>
-            <p class="flex justify-between">
-              <span> Qty: {{ item.quantity }} </span>
-              <span class="font-semibold">
-                {{ item.price * item.quantity | currency }}
-              </span>
-            </p>
-          </div>
-        </div>
-        <mat-divider></mat-divider>
-        <p class="flex justify-between">
-          <span>Subtotal</span>
-          <span>{{ cartTotal | currency }}</span>
-        </p>
-        <p class="flex justify-between">
-          <span>Shipping</span> <span>{{ 0 | currency }}</span>
-        </p>
-        <p class="flex justify-between">
-          <span>Estimated Tax</span>
-          <span>{{ 0 | currency }}</span>
-        </p>
-        <p class="flex justify-between" *ngIf="minimumCharged">
-          <span>Minimum Charge</span>
-          <span>
-            {{ 1 | currency }}
-          </span>
-        </p>
-        <mat-divider></mat-divider>
-        <p class="font-semibold flex justify-between">
-          <span>Total</span>
-          <span>{{ stripeOrderTotal | currency }}</span>
-        </p>
-      </div>
-    </div>
-  </div>
-</ng-container>
-<ng-template #mobile>
-  <div class="w-full h-full py-3">
-    <form
-      [formGroup]="checkoutForm"
-      id="payment-form"
-      class="w-[95%] mx-auto overflow-y-scroll h-full"
-      (ngSubmit)="submitPaymentForm()"
-    >
-      <mat-stepper [formGroup]="checkoutForm" linear orientation="vertical">
-        <mat-step
-          formControlName="email"
-          [stepControl]="checkoutForm.get('email')!"
-          label="Contact Information"
-        >
-          <!-- Contact Form -->
-          <p>Required Fields *</p>
-          <mat-form-field class="p-3 w-full">
-            <mat-label>Email</mat-label>
-            <input
-              matInput
-              required="true"
+          <mat-stepper
+            [formGroup]="checkoutForm"
+            orientation="horizontal"
+            linear
+            (selectionChange)="checkStep($event)"
+          >
+            <!-- Contact Form -->
+            <mat-step
               formControlName="email"
-              name="email"
-            />
-          </mat-form-field>
-          <div class="w-full flex justify-end">
-            <button
-              mat-button
-              matStepperNext
-              [disabled]="checkoutForm.get('email')!.invalid"
+              [stepControl]="checkoutForm.get('email')!"
+              label="Contact Information"
             >
-              Next
-            </button>
-          </div>
-        </mat-step>
-        <mat-step
-          formGroupName="shipping"
-          [stepControl]="checkoutForm.get('shipping')!"
-          label="Shipping Address"
-        >
-          <!-- Shipping Address Form -->
-          <app-google-places-autocomplete
-            title=""
-            [checkoutForm]="checkoutForm"
-            (formEvent)="receiveShippingForm($event)"
-          ></app-google-places-autocomplete>
+              <p>Required Fields *</p>
+              <mat-form-field class="p-3 w-full">
+                <mat-label>Email</mat-label>
+                <input
+                  matInput
+                  required="true"
+                  formControlName="email"
+                  name="email"
+                />
+              </mat-form-field>
+              <div class="w-full flex justify-end">
+                <button
+                  mat-button
+                  matStepperNext
+                  [disabled]="checkoutForm.get('email')!.invalid"
+                >
+                  Next
+                </button>
+              </div>
+            </mat-step>
+            <!-- Shipping Address Form -->
+            <mat-step
+              formGroupName="shipping"
+              [stepControl]="checkoutForm.get('shipping')!"
+              label="Shipping Address"
+            >
+              <p>Required Fields *</p>
+              <app-google-places-autocomplete
+                title=""
+                [checkoutForm]="checkoutForm"
+                (formEvent)="receiveShippingForm($event)"
+                (selectCountryEvent)="receiveCountrySelection($event)"
+              ></app-google-places-autocomplete>
+              <div class="flex flex-row justify-between">
+                <button mat-button matStepperPrevious>Back</button>
+                <button
+                  mat-button
+                  matStepperNext
+                  [disabled]="checkoutForm.get('shipping')!.invalid"
+                >
+                  Next
+                </button>
+              </div>
+            </mat-step>
+            <!-- Shipping Method -->
+            <mat-step
+              label="Shipping Method"
+              [completed]="!!selectedShippingMethod"
+            >
+              <div *ngIf="!shippingMethods.length">
+                <mat-progress-spinner
+                  mode="indeterminate"
+                ></mat-progress-spinner>
+              </div>
+              <div *ngIf="shippingMethods.length">
+                <mat-radio-group
+                  aria-label="Select an option"
+                  (change)="selectedShippingMethod = $event.value"
+                  name="shippingMethod"
+                  class="flex flex-col"
+                >
+                  <mat-radio-button
+                    *ngFor="let shippingMethod of shippingMethods"
+                    [value]="shippingMethod"
+                    name="shippingMethod"
+                  >
+                    <span
+                      >{{ shippingMethod.name }}&nbsp;-&nbsp;{{
+                        shippingMethod.price | currency
+                      }}</span
+                    >
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+              <div class="flex flex-row justify-between">
+                <button mat-button matStepperPrevious>Back</button>
+                <button
+                  mat-button
+                  matStepperNext
+                  [disabled]="!selectedShippingMethod"
+                >
+                  Next
+                </button>
+              </div>
+            </mat-step>
+            <mat-step
+              formGroupName="billing"
+              [stepControl]="checkoutForm.get('billing')!"
+              label="Billing Address"
+            >
+              <mat-checkbox
+                (change)="toggleBillingAddress()"
+                [checked]="shippingSameAsBilling"
+              >
+                Same as my Shipping Address
+              </mat-checkbox>
+              <!-- Billing Address Form -->
+              <app-google-places-autocomplete
+                *ngIf="!shippingSameAsBilling"
+                title=""
+                [isShipping]="false"
+                [phoneRequired]="false"
+                (formEvent)="receiveBillingForm($event)"
+              ></app-google-places-autocomplete>
+              <div class="flex flex-row justify-between">
+                <button mat-button matStepperPrevious>Back</button>
+                <button
+                  mat-button
+                  matStepperNext
+                  [disabled]="checkoutForm.get('billing')?.invalid"
+                >
+                  Next
+                </button>
+              </div>
+            </mat-step>
+            <mat-step label="Payment">
+              <div *ngIf="paymentError">
+                <p>{{ paymentError.message }}</p>
+                <ul class="list-disc text-red-600">
+                  <li *ngFor="let item of paymentError.products">
+                    {{ item.productName
+                    }}{{ item.isVariant ? ": " + item.variantName : null }}
+                  </li>
+                </ul>
+              </div>
+              <div id="payment-element">
+                <!--Stripe.js injects the Payment Element-->
+              </div>
+              <div class="flex flex-row justify-between">
+                <button mat-button matStepperPrevious>Back</button>
 
-          <div class="flex flex-row justify-between">
-            <button mat-button matStepperPrevious>Back</button>
-            <button
-              mat-button
-              matStepperNext
-              [disabled]="checkoutForm.get('shipping')!.invalid"
-            >
-              Next
-            </button>
-          </div>
-        </mat-step>
-        <mat-step
-          formGroupName="billing"
-          [stepControl]="checkoutForm.get('billing')!"
-          label="Billing Address"
-        >
-          <div>
-            <mat-checkbox
-              (change)="toggleBillingAddress()"
-              [checked]="shippingSameAsBilling"
-            >
-              Same as my Shipping Address
-            </mat-checkbox>
-            <!-- Billing Address Form -->
-            <app-google-places-autocomplete
-              *ngIf="!shippingSameAsBilling"
-              title=""
-              [phoneRequired]="false"
-              (formEvent)="receiveBillingForm($event)"
-            ></app-google-places-autocomplete>
-          </div>
-          <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button
-              mat-button
-              matStepperNext
-              [disabled]="checkoutForm.get('billing')?.invalid"
-            >
-              Next
-            </button>
-          </div>
-        </mat-step>
-        <mat-step label="Payment" [completed]="!disablePaymentButton">
-          <div *ngIf="paymentError">
-            <p>{{ paymentError.message }}</p>
-            <ul class="list-disc text-red-600">
-              <li *ngFor="let item of paymentError.products">
-                {{ item.productName
-                }}{{ item.isVariant ? ": " + item.variantName : null }}
-              </li>
-            </ul>
-          </div>
-          <div id="payment-element">
-            <!--Stripe.js injects the Payment Element-->
-          </div>
-          <div class="flex flex-row justify-between">
-            <button mat-button matStepperPrevious>Back</button>
-            <button
-              mat-button
-              matStepperNext
-              type="button"
-              [disabled]="disablePaymentButton"
-            >
-              Next
-            </button>
-          </div>
-        </mat-step>
-        <mat-step label="Order Summary">
+                <button
+                  id="submit"
+                  mat-raised-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="
+                    checkoutForm.invalid ||
+                    disablePaymentButton ||
+                    !selectedShippingMethod ||
+                    calculatedTax === undefined
+                  "
+                >
+                  <div class="spinner hidden" id="spinner"></div>
+                  Pay now
+                </button>
+              </div>
+              <div id="payment-message" class="hidden"></div>
+            </mat-step>
+          </mat-stepper>
+        </form>
+      </section>
+
+      <mat-divider [vertical]="true"></mat-divider>
+      <section class="w-1/5 mx-auto">
+        <h1 class="font-bold">Order Summary</h1>
+
+        <div>
+          <mat-divider></mat-divider>
           <div *ngFor="let item of cart.items" class="flex flex-row">
             <div class="flex justify-center w-28 h-28">
               <img
@@ -256,7 +188,8 @@
               />
             </div>
             <div class="w-[calc(100%-112px)]">
-              <p class="font-semibold truncate">{{ item.productName }}</p>
+              <p class="font-semibold">{{ item.productName }}</p>
+              <!-- <p>{{ item.sku }}</p> -->
               <p *ngIf="item.variant">
                 <span
                   *ngFor="
@@ -286,11 +219,18 @@
             <span>{{ cartTotal | currency }}</span>
           </p>
           <p class="flex justify-between">
-            <span>Shipping</span> <span>{{ 0 | currency }}</span>
+            <span>Shipping</span>
+            <span *ngIf="selectedShippingMethod">{{
+              selectedShippingMethod.price | currency
+            }}</span>
+            <span *ngIf="!selectedShippingMethod">To be calculated</span>
           </p>
           <p class="flex justify-between">
-            <span>Estimated Tax</span>
-            <span>{{ 0 | currency }}</span>
+            <span>Tax</span>
+            <span *ngIf="calculatedTax || calculatedTax === 0">{{
+              calculatedTax | currency
+            }}</span>
+            <span *ngIf="calculatedTax === undefined">To be calculated</span>
           </p>
           <p class="flex justify-between" *ngIf="minimumCharged">
             <span>Minimum Charge</span>
@@ -301,26 +241,291 @@
           <mat-divider></mat-divider>
           <p class="font-semibold flex justify-between">
             <span>Total</span>
-            <span>{{ stripeOrderTotal | currency }}</span>
-          </p>
-
-          <div class="flex flex-row justify-between">
-            <button mat-button matStepperPrevious>Back</button>
-
-            <button
-              id="submit"
-              mat-raised-button
-              color="primary"
-              type="submit"
-              [disabled]="checkoutForm.invalid || disablePaymentButton"
+            <span *ngIf="!selectedShippingMethod">{{
+              stripeOrderTotal | currency
+            }}</span>
+            <span
+              *ngIf="selectedShippingMethod && calculatedTax === undefined"
+              >{{
+                stripeOrderTotal + selectedShippingMethod.price | currency
+              }}</span
             >
-              <div class="spinner hidden" id="spinner"></div>
-              Pay now
+            <span
+              *ngIf="
+                selectedShippingMethod && (calculatedTax === 0 || calculatedTax)
+              "
+            >
+              {{ stripeOrderTotal | currency }}
+            </span>
+          </p>
+        </div>
+      </section>
+    </div>
+  </ng-container>
+  <ng-template #mobile>
+    <div class="w-full h-full py-3">
+      <form
+        [formGroup]="checkoutForm"
+        id="payment-form"
+        class="w-[95%] mx-auto overflow-y-scroll h-full"
+        (ngSubmit)="submitPaymentForm()"
+      >
+        <mat-stepper
+          [formGroup]="checkoutForm"
+          linear
+          orientation="vertical"
+          (selectionChange)="checkStep($event)"
+        >
+          <mat-step
+            formControlName="email"
+            [stepControl]="checkoutForm.get('email')!"
+            label="Contact Information"
+          >
+            <!-- Contact Form -->
+            <p>Required Fields *</p>
+            <mat-form-field class="p-3 w-full">
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                required="true"
+                formControlName="email"
+                name="email"
+              />
+            </mat-form-field>
+            <div class="w-full flex justify-end">
+              <button
+                mat-button
+                matStepperNext
+                [disabled]="checkoutForm.get('email')!.invalid"
+              >
+                Next
+              </button>
+            </div>
+          </mat-step>
+          <mat-step
+            formGroupName="shipping"
+            [stepControl]="checkoutForm.get('shipping')!"
+            label="Shipping Address"
+          >
+            <!-- Shipping Address Form -->
+            <app-google-places-autocomplete
+              title=""
+              [checkoutForm]="checkoutForm"
+              (formEvent)="receiveShippingForm($event)"
+              (selectCountryEvent)="receiveCountrySelection($event)"
+            ></app-google-places-autocomplete>
+
+            <div class="flex flex-row justify-between">
+              <button mat-button matStepperPrevious>Back</button>
+              <button
+                mat-button
+                matStepperNext
+                [disabled]="checkoutForm.get('shipping')!.invalid"
+              >
+                Next
+              </button>
+            </div>
+          </mat-step>
+          <mat-step
+            label="Shipping Method"
+            [completed]="!!selectedShippingMethod"
+          >
+            <div *ngIf="!shippingMethods.length">
+              <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+            </div>
+            <div *ngIf="shippingMethods.length">
+              <mat-radio-group
+                aria-label="Select an option"
+                (change)="selectedShippingMethod = $event.value"
+                name="shippingMethod"
+                class="flex flex-col"
+              >
+                <mat-radio-button
+                  *ngFor="let shippingMethod of shippingMethods"
+                  [value]="shippingMethod"
+                  name="shippingMethod"
+                >
+                  <span
+                    >{{ shippingMethod.name }}&nbsp;-&nbsp;{{
+                      shippingMethod.price | currency
+                    }}</span
+                  >
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button
+              mat-button
+              matStepperNext
+              [disabled]="!selectedShippingMethod"
+            >
+              Next
             </button>
-          </div>
-          <div id="payment-message" class="hidden"></div>
-        </mat-step>
-      </mat-stepper>
-    </form>
-  </div>
+          </mat-step>
+          <mat-step
+            formGroupName="billing"
+            [stepControl]="checkoutForm.get('billing')!"
+            label="Billing Address"
+          >
+            <div>
+              <mat-checkbox
+                (change)="toggleBillingAddress()"
+                [checked]="shippingSameAsBilling"
+              >
+                Same as my Shipping Address
+              </mat-checkbox>
+              <!-- Billing Address Form -->
+              <app-google-places-autocomplete
+                *ngIf="!shippingSameAsBilling"
+                title=""
+                [isShipping]="false"
+                [phoneRequired]="false"
+                (formEvent)="receiveBillingForm($event)"
+              ></app-google-places-autocomplete>
+            </div>
+            <div>
+              <button mat-button matStepperPrevious>Back</button>
+              <button
+                mat-button
+                matStepperNext
+                [disabled]="checkoutForm.get('billing')?.invalid"
+              >
+                Next
+              </button>
+            </div>
+          </mat-step>
+          <mat-step label="Payment" [completed]="!disablePaymentButton">
+            <div *ngIf="paymentError">
+              <p>{{ paymentError.message }}</p>
+              <ul class="list-disc text-red-600">
+                <li *ngFor="let item of paymentError.products">
+                  {{ item.productName
+                  }}{{ item.isVariant ? ": " + item.variantName : null }}
+                </li>
+              </ul>
+            </div>
+            <div id="payment-element">
+              <!--Stripe.js injects the Payment Element-->
+            </div>
+            <div class="flex flex-row justify-between">
+              <button mat-button matStepperPrevious>Back</button>
+              <button
+                mat-button
+                matStepperNext
+                type="button"
+                [disabled]="disablePaymentButton"
+              >
+                Next
+              </button>
+            </div>
+          </mat-step>
+          <mat-step label="Order Summary">
+            <div *ngFor="let item of cart.items" class="flex flex-row">
+              <div class="flex justify-center w-28 h-28">
+                <img
+                  [src]="item.image"
+                  alt="cart item image"
+                  class="max-w-28 max-h-28"
+                />
+              </div>
+              <div class="w-[calc(100%-112px)]">
+                <p class="font-semibold truncate">{{ item.productName }}</p>
+                <p *ngIf="item.variant">
+                  <span
+                    *ngFor="
+                      let attribute of item.variant.productVariantAttributes;
+                      index as i
+                    "
+                  >
+                    {{ attribute.attribute.name | uppercase }}
+                    {{
+                      i < item.variant.productVariantAttributes.length - 1
+                        ? "-"
+                        : ""
+                    }}
+                  </span>
+                </p>
+                <p class="flex justify-between">
+                  <span> Qty: {{ item.quantity }} </span>
+                  <span class="font-semibold">
+                    {{ item.price * item.quantity | currency }}
+                  </span>
+                </p>
+              </div>
+            </div>
+            <mat-divider></mat-divider>
+            <p class="flex justify-between">
+              <span>Subtotal</span>
+              <span>{{ cartTotal | currency }}</span>
+            </p>
+            <p class="flex justify-between">
+              <span>Shipping</span>
+              <span *ngIf="selectedShippingMethod">{{
+                selectedShippingMethod.price | currency
+              }}</span>
+              <span *ngIf="!selectedShippingMethod">To be calculated</span>
+            </p>
+            <p class="flex justify-between">
+              <span>Tax</span>
+              <span *ngIf="calculatedTax || calculatedTax === 0">{{
+                calculatedTax | currency
+              }}</span>
+              <span *ngIf="calculatedTax === undefined">To be calculated</span>
+            </p>
+            <p class="flex justify-between" *ngIf="minimumCharged">
+              <span>Minimum Charge</span>
+              <span>
+                {{ 1 | currency }}
+              </span>
+            </p>
+            <mat-divider></mat-divider>
+            <p class="font-semibold flex justify-between">
+              <span>Total</span>
+              <span *ngIf="!selectedShippingMethod">{{
+                stripeOrderTotal | currency
+              }}</span>
+              <span
+                *ngIf="selectedShippingMethod && calculatedTax === undefined"
+                >{{
+                  stripeOrderTotal + selectedShippingMethod.price | currency
+                }}</span
+              >
+              <span
+                *ngIf="
+                  selectedShippingMethod &&
+                  (calculatedTax === 0 || calculatedTax)
+                "
+              >
+                {{ stripeOrderTotal | currency }}
+              </span>
+            </p>
+
+            <div class="flex flex-row justify-between">
+              <button mat-button matStepperPrevious>Back</button>
+
+              <button
+                id="submit"
+                mat-raised-button
+                color="primary"
+                type="submit"
+                [disabled]="checkoutForm.invalid || disablePaymentButton"
+              >
+                <div class="spinner hidden" id="spinner"></div>
+                Pay now
+              </button>
+            </div>
+            <div id="payment-message" class="hidden"></div>
+          </mat-step>
+        </mat-stepper>
+      </form>
+    </div>
+  </ng-template>
+</ng-container>
+<ng-template #emptyCart>
+  <section>
+    <h2>Checkout</h2>
+    <div>
+      <p>Cart is empty. Nothing to checkout.</p>
+    </div>
+  </section>
 </ng-template>

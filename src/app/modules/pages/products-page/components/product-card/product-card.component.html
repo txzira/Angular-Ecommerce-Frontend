@@ -1,40 +1,56 @@
 <mat-card
-  class="flex items-center p-3 w-[300px] !h-[400px] cursor-pointer !shadow-2xl"
+  class="flex w-[300px] !min-h-[365px] cursor-pointer bg-white shadow-lg"
   *ngIf="product"
-  [ngClass]="{ 'text-center': !fullWidthMode, flex: fullWidthMode }"
 >
   <div
-    class="flex justify-center h-[75%] w-full"
-    [routerLink]="'/products/' + this.product.slug.toString()"
-    [queryParams]="queryParams"
+    class="group absolute h-full w-full cursor-pointer hover:z-10 hover:h-max hover:min-h-[365px] hover:border hover:border-black bg-inherit"
   >
-    <img
-      mat-card-image
-      class="mx-auto !max-w-full !max-h-full self-center object-cover"
-      [src]="displayImage"
-    />
-  </div>
-
-  <mat-card-actions class="!min-h-8">
-    <button
-      *ngFor="let color of colors"
-      class="z-20"
-      (click)="hoverImg(color.images![0].url, color.name)"
+    <div
+      [id]="'image-wrapper-' + this.product.id"
+      class="relative h-[300px] w-full bg-gradient-to-b from-gray-300 to-gray-100"
+      [routerLink]="'/products/' + this.product.slug.toString()"
+      [queryParams]="queryParams"
     >
       <img
-        name="option"
-        [src]="color.images?.[0]?.url"
-        [alt]="color.name"
-        class="w-7 h-7"
+        matCardImage
+        class="w-full h-full object-contain"
+        [src]="displayImage"
+        alt="card image"
       />
-    </button>
-  </mat-card-actions>
-  <div class="text-center h-[15%]">
+      <p class="absolute bottom-0 left-1 bg-white text-xs group-hover:bottom-1">
+        {{ available ? (price | currency) : "Sold Out" }}
+      </p>
+    </div>
+
+    <div
+      class="h-auto w-full items-center hidden group-hover:flex gap-5 px-2 pt-2"
+      *ngIf="colors"
+    >
+      <ng-container *ngFor="let color of colors; index as i">
+        <button
+          *ngIf="i < 4"
+          class="h-10 w-10 border-black bg-gradient-to-b from-gray-300 to-gray-100 hover:border-b"
+          (mouseover)="hoverImg(color)"
+          [routerLink]="'/products/' + this.product.slug.toString()"
+          [queryParams]="queryParams"
+        >
+          <img
+            name="option"
+            [src]="color.images?.[0]?.url"
+            [alt]="color.name"
+            class="w-full h-full object-contain"
+          />
+        </button>
+        <button *ngIf="i === 4" class="h-10 w-10 bg-gray-300 hover:border-b">
+          +{{ colors.length - i }}
+        </button>
+      </ng-container>
+    </div>
     <p class="truncate hover:whitespace-normal">
       {{ product.name | uppercase }}
     </p>
-    <p class="text-sm">
-      {{ product.price | currency }}
+    <p *ngIf="colors" class="text-sm text-gray-400">
+      {{ colors.length }} colors
     </p>
   </div>
 </mat-card>

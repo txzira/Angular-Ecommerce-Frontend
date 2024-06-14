@@ -5,19 +5,21 @@
 
   <div class="flex flex-col md:flex-row md:justify-between" *ngIf="product">
     <div class="md:hidden">
-      <h4 class="text" *ngIf="product.brand">{{ product.brand.name }}</h4>
-      <h2 class="!font-medium !text-3xl">{{ product.name }}</h2>
-      <p
-        class="font-medium text-base"
-        *ngIf="!selectedProductVariant; else variantPrice"
-      >
-        {{ product.price | currency }}
-      </p>
-      <ng-template #variantPrice>
-        <p class="font-medium text-base">
-          {{ selectedProductVariant?.price | currency }}
+      <section>
+        <h4 class="text-sm" *ngIf="product.brand">{{ product.brand.name }}</h4>
+        <h2 class="!font-medium !text-3xl">{{ product.name }}</h2>
+        <p
+          class="font-medium text-base"
+          *ngIf="!selectedProductVariant; else variantPrice"
+        >
+          {{ product.price | currency }}
         </p>
-      </ng-template>
+        <ng-template #variantPrice>
+          <p class="font-medium text-base">
+            {{ selectedProductVariant?.price | currency }}
+          </p>
+        </ng-template>
+      </section>
     </div>
     <div
       class="flex flex-col w-full md:w-[49%] h-auto md:items-center md:justify-center"
@@ -32,12 +34,7 @@
           [alt]="'Image of ' + product.name"
         />
         <div
-          *ngIf="
-            (selectedProductVariant &&
-              selectedProductVariant.variantImages &&
-              selectedProductVariant.variantImages.length > 1) ||
-            (product.images && product.images.length > 1)
-          "
+          *ngIf="displayImages?.length"
           class="flex flex-row justify-between absolute w-full top-1/2 md:invisible group-hover:visible z-50"
         >
           <button
@@ -54,53 +51,15 @@
           </button>
         </div>
       </div>
-      <div class="flex flex-row gap-4 py-3" *ngIf="!selectedProductVariant">
-        <button
-          class="w-20 h-20 rounded-md"
-          [ngClass]="{
-            'border border-black': displayImage.index === index
-          }"
-          *ngFor="let image of product.images; index as index"
-          (click)="setDisplayImage(image.url, index)"
-        >
-          <img
-            [src]="image.url"
-            class="w-full h-full object-cover rounded-md"
-          />
-        </button>
-      </div>
-      <div *ngIf="selectedProductVariant">
-        <div
-          class="flex flex-row gap-4 py-3"
-          *ngIf="selectedProductVariant.variantImages.length"
-        >
+
+      <div>
+        <div class="flex flex-row gap-4 py-3">
           <button
             class="w-20 h-20 rounded-md"
             [ngClass]="{
               'border border-black': displayImage.index === index
             }"
-            *ngFor="
-              let image of selectedProductVariant.variantImages;
-              index as index
-            "
-            (click)="setDisplayImage(image.url, index)"
-          >
-            <img
-              [src]="image.url"
-              class="h-full w-full object-cover rounded-md"
-            />
-          </button>
-        </div>
-        <div
-          class="flex flex-row gap-4 py-3"
-          *ngIf="!selectedProductVariant.variantImages.length"
-        >
-          <button
-            class="w-20 h-20 rounded-md"
-            [ngClass]="{
-              'border border-black': displayImage.index === index
-            }"
-            *ngFor="let image of product.images; index as index"
+            *ngFor="let image of displayImages; index as index"
             (click)="setDisplayImage(image.url, index)"
           >
             <img
@@ -151,7 +110,7 @@
             <div class="flex flex-row items-center w-min h-10">
               <button
                 class="flex items-center border border-slate-400 rounded-l-full w-full h-full px-2 hover:bg-[#3f51b5] hover:text-white"
-                (click)="onRemoveQuantity()"
+                (click)="onDecrementQuantity()"
               >
                 <mat-icon class="">remove</mat-icon>
               </button>
@@ -161,7 +120,7 @@
               >
               <button
                 class="flex items-center border border-slate-400 rounded-r-full w-full h-full px-2 hover:bg-[#3f51b5] hover:text-white"
-                (click)="onAddQuantity()"
+                (click)="onIncrementQuantity()"
               >
                 <mat-icon>add</mat-icon>
               </button>
@@ -191,3 +150,5 @@
     </div>
   </div>
 </div>
+{{ displayImage | json }}
+{{ selectedProductVariant | json }}

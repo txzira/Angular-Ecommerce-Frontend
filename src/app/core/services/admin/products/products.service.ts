@@ -29,37 +29,36 @@ export class AdminProductsService {
     withCredentials: true,
   };
 
-  getAllProducts(): Observable<Product[]> {
-    return this.httpClient.get<Product[]>(
-      `${this.ADMIN_PRODUCTS_URL}/get-all-products`
-    );
-  }
+  // CRUD Operations
 
-  addProduct(product: any, productImages: any): Observable<Product> {
+  // Create
+  addProduct(productForm: any, productImages: any): Observable<Product> {
     return this.httpClient.post<Product>(
       this.ADMIN_PRODUCTS_URL + '/add-product',
-      { product, productImages },
+      { productForm, productImages },
       this.httpOptions
     );
   }
 
-  editProduct(
-    productId: string,
-    product: any,
-    productImages: any
-  ): Observable<Product> {
-    return this.httpClient.post<Product>(
-      `${this.ADMIN_PRODUCTS_URL}/edit-product/${productId}`,
-      { product, productImages },
+  saveAndGenerateVariants(
+    productId: string | null,
+    attributeGroups: any,
+    attributeGroupsToDelete: any,
+    attributesToDelete: any
+  ): Observable<any> {
+    return this.httpClient.post<any>(
+      `${this.ADMIN_PRODUCTS_URL}/save-and-generate-variants`,
+      {
+        productId,
+        attributeGroups,
+        attributeGroupsToDelete,
+        attributesToDelete,
+      },
       this.httpOptions
     );
   }
-  deleteProduct(productId: string): Observable<Array<Product>> {
-    return this.httpClient.delete<Array<Product>>(
-      `${this.ADMIN_PRODUCTS_URL}/delete-product/${productId}`,
-      this.httpOptions
-    );
-  }
+
+  // Read
   getAttrGroupByProdId(
     productId: string | null
   ): Observable<Array<AttributeGroup>> {
@@ -72,6 +71,34 @@ export class AdminProductsService {
   getProductImages(productId: string | null): Observable<Array<Image>> {
     return this.httpClient.get<Array<Image>>(
       `${this.ADMIN_PRODUCTS_URL}/get-product-images/${productId}`,
+      this.httpOptions
+    );
+  }
+
+  getAllProducts(): Observable<Product[]> {
+    return this.httpClient.get<Product[]>(
+      `${this.ADMIN_PRODUCTS_URL}/get-all-products`
+    );
+  }
+
+  getVariantsByProductId(
+    productId: string | null
+  ): Observable<Array<ProductVariant>> {
+    return this.httpClient.get<Array<ProductVariant>>(
+      `${this.ADMIN_PRODUCTS_URL}/get-variants-by-prod-id/${productId}`,
+      this.httpOptions
+    );
+  }
+
+  // Update
+  editProduct(
+    productId: string,
+    product: Product,
+    productImages: any
+  ): Observable<Product> {
+    return this.httpClient.post<Product>(
+      `${this.ADMIN_PRODUCTS_URL}/edit-product/${productId}`,
+      { product, productImages },
       this.httpOptions
     );
   }
@@ -102,29 +129,10 @@ export class AdminProductsService {
     );
   }
 
-  getVariantsByProductId(
-    productId: string | null
-  ): Observable<Array<ProductVariant>> {
-    return this.httpClient.get<Array<ProductVariant>>(
-      `${this.ADMIN_PRODUCTS_URL}/get-variants-by-prod-id/${productId}`,
-      this.httpOptions
-    );
-  }
-
-  saveAndGenerateVariants(
-    productId: string | null,
-    attributeGroups: any,
-    attributeGroupsToDelete: any,
-    attributesToDelete: any
-  ): Observable<any> {
-    return this.httpClient.post<any>(
-      `${this.ADMIN_PRODUCTS_URL}/save-and-generate-variants`,
-      {
-        productId,
-        attributeGroups,
-        attributeGroupsToDelete,
-        attributesToDelete,
-      },
+  // Delete
+  deleteProduct(productId: string): Observable<Array<Product>> {
+    return this.httpClient.delete<Array<Product>>(
+      `${this.ADMIN_PRODUCTS_URL}/delete-product/${productId}`,
       this.httpOptions
     );
   }

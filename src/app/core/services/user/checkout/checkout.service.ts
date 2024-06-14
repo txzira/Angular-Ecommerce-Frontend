@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { ShippingMethod } from 'src/app/core/models/shippingMethod.model';
 import env from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CheckoutService {
-  private BASE_BACKEND_URL = !env.production
-    ? 'http://localhost:4000'
-    : `${env.express_server_url}`;
+  private CHECKOUT_URL = !env.production
+    ? 'http://localhost:4000/checkout'
+    : `${env.express_server_url}/checkout`;
 
   // private BASE_BACKEND_URL = process.env['production']
   //   ? 'http://localhost:4000'
@@ -18,18 +19,37 @@ export class CheckoutService {
   constructor(private http: HttpClient) {}
 
   getClientSecret(items: any): Observable<any> {
-    return this.http.post<any>(
-      `${this.BASE_BACKEND_URL}/create-payment-intent`,
-      {
-        items,
-      }
-    );
+    return this.http.post<any>(`${this.CHECKOUT_URL}/create-payment-intent`, {
+      items,
+    });
   }
 
-  createOrder(requestShippingForm: any, requestCart: any): Observable<any> {
-    return this.http.post<any>(`${this.BASE_BACKEND_URL}/create-order`, {
+  createOrder(
+    requestShippingForm: any,
+    requestCart: any,
+    shippingMethod: ShippingMethod
+  ): Observable<any> {
+    return this.http.post<any>(`${this.CHECKOUT_URL}/create-order`, {
       requestShippingForm,
       requestCart,
+      shippingMethod,
     });
+  }
+
+  calculateOrderTax(
+    items: any,
+    paymentIntent: any,
+    shippingMethod: any,
+    shippingAddress: any
+  ): Observable<any> {
+    return this.http.post<any>(
+      `${this.CHECKOUT_URL}/add-order-tax-and-shipping`,
+      {
+        items,
+        paymentIntent,
+        shippingMethod,
+        shippingAddress,
+      }
+    );
   }
 }

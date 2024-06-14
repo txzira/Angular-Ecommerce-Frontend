@@ -14,7 +14,7 @@
   <div [ngStyle]="getStyle()" *ngIf="!filteredProducts">
     <app-product-card
       *ngFor="let product of products"
-      class="gap-y"
+      class=""
       [fullWidthMode]="columns === 1 || isMobileDisplay"
       [product]="product"
     ></app-product-card>

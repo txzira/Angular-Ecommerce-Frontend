@@ -22,6 +22,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [],
@@ -47,6 +48,7 @@ import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
     MatDialogModule,
     MatProgressSpinnerModule,
     MatStepperModule,
+    MatRadioModule,
     CdkDrag,
     CdkDropList,
   ],

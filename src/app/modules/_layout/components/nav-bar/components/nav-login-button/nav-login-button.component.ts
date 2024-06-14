@@ -23,7 +23,7 @@ export class NavLoginButtonComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private userService: UserService,
-    public browserDetectorService: BrowserDetectorService
+    private browserDetectorService: BrowserDetectorService
   ) {}
 
   logout(): void {

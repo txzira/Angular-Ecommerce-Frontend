@@ -42,7 +42,7 @@
     </button> -->
   </div>
 
-  <div class="flex flex-row items-center" *ngIf="isMobileDisplay">
+  <div class="flex flex-row items-center" *ngIf="!isMobileDisplay">
     <app-nav-login-button></app-nav-login-button>
     <app-nav-cart-button [cart]="cart"></app-nav-cart-button>
   </div>

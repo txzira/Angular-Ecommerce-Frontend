@@ -13,7 +13,8 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import states from '../../../../../assets/states.json';
+import countries from '../../../../../assets/countries.json';
+import { ShippingMethod } from 'src/app/core/models/shippingMethod.model';
 
 @Component({
   selector: 'app-google-places-autocomplete',
@@ -26,11 +27,14 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
   @Input() placeholder = '';
   @Input() title = '';
   @Input() phoneRequired = true;
+  @Input() isShipping = true;
   @Output() formEvent = new EventEmitter<FormGroup>();
+  @Output() selectCountryEvent = new EventEmitter<string>();
 
   form!: FormGroup;
   autocomplete: google.maps.places.Autocomplete | undefined;
-  statesList = states;
+  countriesList = countries;
+  statesList: any[] = [];
 
   constructor(private formBuilder: FormBuilder) {}
 
@@ -56,6 +60,19 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
     // this.form.valueChanges.subscribe((_form) => {
     //   this.formEvent.emit(_form);
     // });
+  }
+
+  showStates(event: any) {
+    for (let i = 0; i < countries.length; i++) {
+      if (event.value === countries[i].code) {
+        this.statesList = countries[i].states;
+      }
+    }
+  }
+
+  selectCountry(event: any) {
+    this.showStates(event);
+    this.selectCountryEvent.emit(event.value);
   }
 
   ngAfterViewInit(): void {

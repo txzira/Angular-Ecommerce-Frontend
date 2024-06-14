@@ -66,6 +66,9 @@ import { NavCartButtonComponent } from './_layout/components/nav-bar/components/
 import { NavLoginButtonComponent } from './_layout/components/nav-bar/components/nav-login-button/nav-login-button.component';
 import { NavBarComponent } from './_layout/components/nav-bar/nav-bar.component';
 import { AdminShippingMethodsComponent } from './pages/admin/shipping-method/shipping-method-page.component';
+import { AdminAddShippingMethodModalComponent } from './pages/admin/shipping-method/components/add-shipping-method-modal/add-shipping-method-modal.component';
+import { AdminEditShippingMethodModalComponent } from './pages/admin/shipping-method/components/edit-shipping-method-modal/edit-shipping-method-modal.component';
+import { AdminDeleteShippingMethodModalComponent } from './pages/admin/shipping-method/components/delete-shipping-method-modal/delete-shipping-method-modal.component';
 
 @NgModule({
   declarations: [
@@ -122,6 +125,9 @@ import { AdminShippingMethodsComponent } from './pages/admin/shipping-method/shi
     AboutUsPageComponent,
     CategoryNavComponent,
     AdminShippingMethodsComponent,
+    AdminAddShippingMethodModalComponent,
+    AdminEditShippingMethodModalComponent,
+    AdminDeleteShippingMethodModalComponent,
   ],
   imports: [
     BrowserModule,
