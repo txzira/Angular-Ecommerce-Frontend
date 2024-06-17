@@ -53,7 +53,8 @@ export class ProductCardComponent implements OnInit {
 
     if (this.product) {
       this.displayImage = color.images?.[0]?.url;
-      this.queryParams.color = color.name;
+      this.queryParams.colorId = color.id;
+      this.queryParams.attrGroupId = color.attributeGroupId;
 
       const available = this.product?.productVariants.find((productVariant) => {
         const productVariantAttributes =

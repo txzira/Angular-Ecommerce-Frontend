@@ -43,6 +43,8 @@ export class ProductDetailPageComponent implements OnInit {
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
+    const queryParams = this.route.snapshot.queryParams;
+    console.log(queryParams);
 
     if (slug) {
       this.productsService.getProductBySlug(slug).subscribe((_product) => {
@@ -55,7 +57,15 @@ export class ProductDetailPageComponent implements OnInit {
         if (_product.images) this.displayImages = _product.images;
 
         this.setColorAsFirstAttributeGroup();
-        this.setDefaultSelectedOptions(_product);
+
+        if (queryParams['colorId'] && queryParams['attrGroupId']) {
+          this.findFirstAvailProdVariant(
+            Number(queryParams['attrGroupId']),
+            Number(queryParams['colorId'])
+          );
+        } else {
+          this.setDefaultSelectedOptions(_product);
+        }
       });
     }
   }
@@ -283,7 +293,11 @@ export class ProductDetailPageComponent implements OnInit {
 
   private setColorAsFirstAttributeGroup(): void {
     if (this.product) {
-      const attributeGroups = this.product.attributeGroups;
+      const attributeGroups = this.product.attributeGroups.map(
+        (attributeGroup) => {
+          return { ...attributeGroup };
+        }
+      );
       for (let i = 0; i < attributeGroups.length; i++) {
         if (
           ['style', 'styles', 'color', 'colors'].includes(
