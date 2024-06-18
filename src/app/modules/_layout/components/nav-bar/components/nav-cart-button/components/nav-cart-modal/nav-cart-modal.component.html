@@ -1,0 +1,70 @@
+<div class="p-3 overflow-y-scroll h-full">
+  <div class="flex flex-row justify-between items-center">
+    <h1 class="!font-medium">
+      Your Cart&nbsp;<span>({{ itemsQuantity }})</span>
+    </h1>
+    <button type="button" (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-divider />
+  <div *ngIf="cart.items.length" class="p-3">
+    <div
+      *ngFor="let item of cart.items; let lastCartItem = last"
+      class="flex flex-col items-center mb-2"
+    >
+      <div class="flex flex-row w-full items-center gap-5">
+        <div class="w-32 h-32">
+          <img class="object-contain w-full h-full" [src]="item.image" />
+        </div>
+        <div class="flex flex-col">
+          <p class="text-lg font-medium">{{ item.productName }}</p>
+          <div *ngIf="item.variant">
+            <p
+              *ngFor="
+                let attribute of item.variant.productVariantAttributes;
+                let lastAttribute = last
+              "
+            >
+              {{ capitalizeFirstLetter(attribute.attributeGroup.name) }}:
+              {{ attribute.attribute.name | uppercase }}
+            </p>
+          </div>
+          <p class="text-xs">Qty: {{ item.quantity }}</p>
+          <p class="">{{ item.price | currency }}</p>
+        </div>
+        <button class="ml-auto" type="button" (click)="onRemoveFromCart(item)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <mat-divider class="w-full" />
+    </div>
+  </div>
+
+  <div>
+    <h1 class="!font-medium">Summary</h1>
+    <p>Shipping and taxes calculated at checkout.</p>
+    <p class="flex justify-between font-medium text-base">
+      <span>Total:</span>
+      <span class="font-bold">{{ getTotal(cart.items) | currency }}</span>
+    </p>
+  </div>
+  <mat-divider />
+  <div class="flex flex-col gap-3">
+    <button
+      (click)="closeModal()"
+      routerLink="cart"
+      class="bg-gray-400 text-white rounded-full text-base font-medium py-2 flex items-center justify-center"
+    >
+      <mat-icon>shopping_cart</mat-icon>
+      <span>View Cart</span>
+    </button>
+    <button
+      (click)="closeModal()"
+      routerLink="checkout"
+      class="bg-black text-white rounded-full text-base font-medium py-2 flex items-center justify-center"
+    >
+      <mat-icon>shopping_cart_checkout</mat-icon><span>Checkout</span>
+    </button>
+  </div>
+</div>

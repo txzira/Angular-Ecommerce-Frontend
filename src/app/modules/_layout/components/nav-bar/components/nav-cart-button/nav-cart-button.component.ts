@@ -1,6 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { Cart, CartItem } from 'src/app/core/models/cart.model';
 import { CartService } from 'src/app/core/services/user/cart/cart.service';
+import { NavCartModalComponent } from './components/nav-cart-modal/nav-cart-modal.component';
+import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
 
 @Component({
   selector: 'app-nav-cart-button',
@@ -19,13 +22,19 @@ export class NavCartButtonComponent {
     this.itemsQuantity = this.cartService.getItemsQuantity(cart);
   }
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private dialog: MatDialog,
+    private browserDetectorService: BrowserDetectorService
+  ) {}
 
-  getTotal(items: Array<CartItem>): number {
-    return this.cartService.getTotal(items);
-  }
-
-  onClearCart(): void {
-    this.cartService.clearCartFromNav();
+  openCartDialog(): void {
+    this.dialog.open(NavCartModalComponent, {
+      position: { right: 'true' },
+      height: '100%',
+      ...(!this.browserDetectorService.isMobile()
+        ? { width: '25%' }
+        : { width: '40%' }),
+    });
   }
 }

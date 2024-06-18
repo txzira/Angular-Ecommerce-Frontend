@@ -69,6 +69,7 @@ import { AdminShippingMethodsComponent } from './pages/admin/shipping-method/shi
 import { AdminAddShippingMethodModalComponent } from './pages/admin/shipping-method/components/add-shipping-method-modal/add-shipping-method-modal.component';
 import { AdminEditShippingMethodModalComponent } from './pages/admin/shipping-method/components/edit-shipping-method-modal/edit-shipping-method-modal.component';
 import { AdminDeleteShippingMethodModalComponent } from './pages/admin/shipping-method/components/delete-shipping-method-modal/delete-shipping-method-modal.component';
+import { NavCartModalComponent } from './_layout/components/nav-bar/components/nav-cart-button/components/nav-cart-modal/nav-cart-modal.component';
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import { AdminDeleteShippingMethodModalComponent } from './pages/admin/shipping-
     AdminAddShippingMethodModalComponent,
     AdminEditShippingMethodModalComponent,
     AdminDeleteShippingMethodModalComponent,
+    NavCartModalComponent,
   ],
   imports: [
     BrowserModule,

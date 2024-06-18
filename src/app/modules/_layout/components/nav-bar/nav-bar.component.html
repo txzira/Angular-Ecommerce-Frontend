@@ -33,20 +33,15 @@
         alt="Logo"
       />
     </button>
-    <!-- <button
-      class="text-xl tracking-[0.0125em] px-2"
-      mat-button
-      routerLink="products"
-    >
-      Products
-    </button> -->
   </div>
 
-  <div class="flex flex-row items-center" *ngIf="!isMobileDisplay">
-    <app-nav-login-button></app-nav-login-button>
-    <app-nav-cart-button [cart]="cart"></app-nav-cart-button>
+  <div class="flex flex-row items-center">
+    <ng-container *ngIf="!isMobileDisplay; else mobile">
+      <app-nav-login-button></app-nav-login-button>
+      <app-nav-cart-button [cart]="cart"></app-nav-cart-button>
+    </ng-container>
   </div>
-  <div class="flex flex-row items-center" *ngIf="isMobileDisplay">
+  <ng-template #mobile>
     <app-nav-cart-button [cart]="cart"></app-nav-cart-button>
-  </div>
+  </ng-template>
 </mat-toolbar>

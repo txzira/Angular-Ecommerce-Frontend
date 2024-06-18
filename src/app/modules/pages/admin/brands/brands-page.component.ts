@@ -19,6 +19,7 @@ export class AdminBrandsPageComponent implements OnInit {
     private brandsService: BrandsService,
     private dialog: MatDialog
   ) {}
+
   ngOnInit(): void {
     this.brandsService
       .getAllBrands()
