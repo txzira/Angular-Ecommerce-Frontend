@@ -70,6 +70,8 @@ import { AdminAddShippingMethodModalComponent } from './pages/admin/shipping-met
 import { AdminEditShippingMethodModalComponent } from './pages/admin/shipping-method/components/edit-shipping-method-modal/edit-shipping-method-modal.component';
 import { AdminDeleteShippingMethodModalComponent } from './pages/admin/shipping-method/components/delete-shipping-method-modal/delete-shipping-method-modal.component';
 import { NavCartModalComponent } from './_layout/components/nav-bar/components/nav-cart-button/components/nav-cart-modal/nav-cart-modal.component';
+import { CapitalizeFirstLetterPipe } from '../shared/pipes/capitalize-first-letter/capitalize-first-letter.pipe';
+import { ColorFirstAttributePipe } from '../shared/pipes/color-first-attribute/color-first-attribute.pipe';
 
 @NgModule({
   declarations: [
@@ -130,6 +132,8 @@ import { NavCartModalComponent } from './_layout/components/nav-bar/components/n
     AdminEditShippingMethodModalComponent,
     AdminDeleteShippingMethodModalComponent,
     NavCartModalComponent,
+    CapitalizeFirstLetterPipe,
+    ColorFirstAttributePipe,
   ],
   imports: [
     BrowserModule,

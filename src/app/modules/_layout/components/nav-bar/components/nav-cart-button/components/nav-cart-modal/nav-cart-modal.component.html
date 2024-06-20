@@ -22,11 +22,12 @@
           <div *ngIf="item.variant">
             <p
               *ngFor="
-                let attribute of item.variant.productVariantAttributes;
+                let attribute of item.variant.productVariantAttributes
+                  | colorFirstAttribute;
                 let lastAttribute = last
               "
             >
-              {{ capitalizeFirstLetter(attribute.attributeGroup.name) }}:
+              {{ attribute.attributeGroup.name | capitalizeFirstLetter }}:
               {{ attribute.attribute.name | uppercase }}
             </p>
           </div>
@@ -50,7 +51,7 @@
     </p>
   </div>
   <mat-divider />
-  <div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-3 pt-5">
     <button
       (click)="closeModal()"
       routerLink="cart"

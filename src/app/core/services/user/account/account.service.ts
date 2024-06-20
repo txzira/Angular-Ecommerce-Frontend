@@ -20,8 +20,20 @@ export class AccountService {
   getAccountInformation(): Observable<any> {
     return this.http.get<any>(`${this.BACKEND_URL}/account-information`);
   }
-  getAccountOrders(): Observable<any> {
-    return this.http.get<any>(`${this.BACKEND_URL}/account-orders`);
+  getInitialAccountOrders(limit: number): Observable<any> {
+    return this.http.get<any>(`${this.BACKEND_URL}/account-initial-orders`, {
+      params: {
+        limit,
+      },
+    });
+  }
+  getAccountOrders(limit: number, page: number): Observable<any> {
+    return this.http.get<any>(`${this.BACKEND_URL}/account-orders`, {
+      params: {
+        limit,
+        page,
+      },
+    });
   }
   changeAccountPassword(oldPassword: any, newPassword: any): Observable<any> {
     return this.http.post<any>(

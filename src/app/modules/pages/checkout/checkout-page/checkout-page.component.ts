@@ -195,7 +195,9 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
                   .createOrder(
                     { ...form.shipping, email: form.email },
                     this.cart.items,
-                    this.selectedShippingMethod!
+                    this.selectedShippingMethod!,
+                    this.calculatedTax,
+                    this.stripeOrderTotal
                   )
                   .subscribe();
                 this.cartService.clearCartFromCheckout();

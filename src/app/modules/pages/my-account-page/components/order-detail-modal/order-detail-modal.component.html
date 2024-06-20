@@ -1,58 +1,62 @@
-<div class="w-[1100px] h-[600px]">
-  <div class="w-[90%] mx-auto">
-    <h1 class="!font-semibold">Receipt</h1>
+<div class="h-[600px] sm:w-[1100px] sm:h-[600px] m-3">
+  <h1 class="!font-semibold">Receipt</h1>
+  <div>
+    <h3 class="!m-0 !font-medium">Email</h3>
+    <p>{{ order.customerEmail }}</p>
+  </div>
+  <div class="flex flex-row gap-6">
     <div>
-      <h3 class="!m-0 !font-medium">Email</h3>
-      <p>{{ order.customerEmail }}</p>
-    </div>
-    <div class="flex flex-row gap-6">
-      <div>
-        <h3 class="!m-0 !font-medium">Date Ordered</h3>
-        <p>{{ order.date | date }}</p>
-      </div>
-      <div>
-        <h3 class="!m-0 !font-medium">Order Status</h3>
-        <p>{{ order.status }}</p>
-      </div>
+      <h3 class="!m-0 !font-medium">Date Ordered</h3>
+      <p>{{ order.date | date }}</p>
     </div>
     <div>
-      <h1 class="!font-semibold">Shipping Details</h1>
-      <div class="flex flex-row gap-6">
-        <div>
-          <h3 class="!m-0 !font-medium">Full Name</h3>
-          <p>
-            {{
-              order.shippingAddress.firstName +
-                " " +
-                order.shippingAddress.lastName
-            }}
-          </p>
-        </div>
-        <div>
-          <h3 class="!m-0 !font-medium">Address</h3>
-          <p>
-            {{ order.shippingAddress.streetAddress }},
-            {{
-              order.shippingAddress.streetAddress2
-                ? order.shippingAddress.streetAddress2 + ", "
-                : ""
-            }}
-            {{ order.shippingAddress.city }}, {{ order.shippingAddress.state }},
-            {{ order.shippingAddress.country }},
-            {{ order.shippingAddress.zipCode }}
-          </p>
-        </div>
+      <h3 class="!m-0 !font-medium">Order Status</h3>
+      <p>{{ order.status }}</p>
+    </div>
+  </div>
+  <div>
+    <h1 class="!font-semibold">Shipping Details</h1>
+    <div class="flex flex-col sm:flex-row sm:gap-6">
+      <div>
+        <h3 class="!m-0 !font-medium">Full Name</h3>
+        <p>
+          {{
+            order.shippingAddress.firstName +
+              " " +
+              order.shippingAddress.lastName
+          }}
+        </p>
       </div>
       <div>
-        <h3 class="!m-0 !font-medium">Tracking #</h3>
-        <p>{{ order.trackingNumber ? order.trackingNumber : "Pending" }}</p>
+        <h3 class="!m-0 !font-medium">Address</h3>
+        <p>
+          {{ order.shippingAddress.streetAddress }},
+          {{
+            order.shippingAddress.streetAddress2
+              ? order.shippingAddress.streetAddress2 + ", "
+              : ""
+          }}
+          {{ order.shippingAddress.city }}, {{ order.shippingAddress.state }},
+          {{ order.shippingAddress.country }},
+          {{ order.shippingAddress.zipCode }}
+        </p>
       </div>
     </div>
     <div>
-      <h1 class="!font-semibold">Order Details</h1>
-      <!-- table -->
-      <div class="mx-auto border rounded-xl shadow-lg">
-        <div class="flex flex-row w-full">
+      <h3 class="!m-0 !font-medium">Tracking #</h3>
+      <p>{{ order.trackingNumber ? order.trackingNumber : "Pending" }}</p>
+    </div>
+  </div>
+  <div>
+    <h1 class="!font-semibold">Order Details</h1>
+    <!-- table -->
+    <div class="mx-auto border rounded-xl shadow-lg">
+      <ng-container
+        *ngIf="!browserDetectorService.isMobile(); else mobileOrderHistory"
+      >
+        <div
+          class="flex flex-row w-full font-medium text-lg bg-black text-white"
+        >
           <div class="w-20 mx-auto"></div>
           <div class="w-40 mx-auto"><h2>Product</h2></div>
           <div class="w-40 mx-auto"><h2>Variant</h2></div>
@@ -61,37 +65,110 @@
           <div class="w-20 mx-auto"><h2>Total</h2></div>
         </div>
         <div
-          class="flex flex-row w-full items-center h-12"
-          *ngFor="let item of order.cart.cartItems"
+          class="flex flex-row w-full items-center h-20"
+          *ngFor="let item of cart.cartItems"
         >
           <div class="w-20 mx-auto">
             <img
-              class="w-10 h-10"
+              class="w-16 h-16 object-contain"
               [src]="
-                item.variant.variantImages.length !== 0
-                  ? item.variant.variantImages[0].url
-                  : item.product.image.url
+                item.variant
+                  ? item.variant?.variantImages?.length !== 0
+                    ? item.variant.variantImages[0]?.url
+                    : ''
+                  : item.product.images[0]?.url
               "
             />
           </div>
-          <div class="w-40 mx-auto">{{ item.productName }}</div>
+          <div class="w-40 mx-auto font-medium">{{ item.productName }}</div>
           <div class="w-40 mx-auto">{{ item.variantName }}</div>
           <div class="w-20 mx-auto">x{{ item.quantity }}</div>
           <div class="w-20 mx-auto">{{ item.price | currency }}</div>
           <div class="w-20 mx-auto">
             {{ item.quantity * item.price | currency }}
           </div>
+          <mat-divider class="w-[95%] !mx-auto" />
         </div>
-        <mat-divider class="w-[95%] !mx-auto"></mat-divider>
-        <div class="flex flex-row w-full items-center h-12">
-          <div class="w-20 mx-auto">Total</div>
-          <div class="w-40 mx-auto"></div>
-          <div class="w-40 mx-auto"></div>
-          <div class="w-20 mx-auto"></div>
-          <div class="w-20 mx-auto"></div>
-          <div class="w-20 mx-auto">{{ order.amount | currency }}</div>
+      </ng-container>
+
+      <!-- <mat-divider class="w-[95%] !mx-auto"></mat-divider> -->
+      <div
+        class="flex flex-row sm:w-full items-center h-12 font-medium justify-between sm:justify-normal mx-2 sm:mx-0"
+      >
+        <div class="sm:w-20 sm:mx-auto">Sub-Total</div>
+        <div class="hidden sm:block w-40 mx-auto"></div>
+        <div class="hidden sm:block w-40 mx-auto"></div>
+        <div class="hidden sm:block w-20 mx-auto"></div>
+        <div class="hidden sm:block w-20 mx-auto"></div>
+        <div class="sm:w-20 sm:mx-auto">{{ order.cartTotal | currency }}</div>
+      </div>
+      <div
+        class="flex flex-row sm:w-full items-center h-12 font-medium justify-between sm:justify-normal mx-2 sm:mx-0"
+      >
+        <div class="sm:w-20 sm:mx-auto">Shipping</div>
+        <div class="hidden sm:block w-40 mx-auto"></div>
+        <div class="hidden sm:block w-40 mx-auto"></div>
+        <div class="hidden sm:block w-20 mx-auto"></div>
+        <div class="hidden sm:block w-20 mx-auto"></div>
+        <div class="sm:w-20 sm:mx-auto">
+          {{ order.shippingTotal | currency }}
+        </div>
+      </div>
+      <div
+        class="flex flex-row sm:w-full items-center h-12 font-medium justify-between sm:justify-normal mx-2 sm:mx-0"
+      >
+        <div class="sm:w-20 sm:mx-auto">Taxes</div>
+        <div class="hidden sm:blockw-40 mx-auto"></div>
+        <div class="hidden sm:block w-40 mx-auto"></div>
+        <div class="hidden sm:block w-20 mx-auto"></div>
+        <div class="hidden sm:block w-20 mx-auto"></div>
+        <div class="sm:w-20 sm:mx-auto">{{ order.taxTotal | currency }}</div>
+      </div>
+      <mat-divider class="w-[95%] !mx-auto" />
+      <div
+        class="flex flex-row sm:w-full items-center h-12 font-medium justify-between sm:justify-normal mx-2 sm:mx-0"
+      >
+        <div class="sm:w-20 sm:mx-auto">Total</div>
+        <div class="hidden sm:block w-40 mx-auto"></div>
+        <div class="hidden sm:block w-40 mx-auto"></div>
+        <div class="hidden sm:block w-20 mx-auto"></div>
+        <div class="hidden sm:block w-20 mx-auto"></div>
+        <div class="sm:w-20 sm:mx-auto">
+          {{ order.orderTotal | currency }}
         </div>
       </div>
     </div>
+    <ng-template #mobileOrderHistory>
+      <div *ngFor="let item of cart.cartItems" class="flex flex-col">
+        <div class="flex flex-row items-center m-2 w-full">
+          <img
+            class="w-12 h-12 object-contain mr-2"
+            [src]="
+              item.variant
+                ? item.variant?.variantImages?.length !== 0
+                  ? item.variant.variantImages[0]?.url
+                  : ''
+                : item.product.images[0]?.url
+            "
+          />
+          <div class="flex flex-col w-[60%]">
+            <p
+              class="!m-0 font-medium text-base truncate hover:overflow-visible"
+            >
+              {{ item.productName }}
+            </p>
+            <p class="!m-0 text-gray-400" *ngIf="item.variantName">
+              {{ item.variantName }}
+            </p>
+            <p class="!m-0">{{ item.price | currency }}</p>
+            <p class="!m-0">Qty: {{ item.quantity }}</p>
+          </div>
+          <div class="font-medium flex-1">
+            {{ item.price * item.quantity | currency }}
+          </div>
+        </div>
+        <mat-divider class="w-[95%] !mx-auto" />
+      </div>
+    </ng-template>
   </div>
 </div>

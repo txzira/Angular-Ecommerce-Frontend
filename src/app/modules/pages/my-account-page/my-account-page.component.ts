@@ -15,6 +15,8 @@ import { AccountService } from 'src/app/core/services/user/account/account.servi
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { UserService } from 'src/app/core/services/user/user/user.service';
 import { OrderDetailModalComponent } from './components/order-detail-modal/order-detail-modal.component';
+import { Order } from 'src/app/core/models/order.model';
+import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
 
 @Component({
   selector: 'app-my-account-page',
@@ -23,11 +25,12 @@ import { OrderDetailModalComponent } from './components/order-detail-modal/order
 })
 export class MyAccountPageComponent implements OnInit {
   accountInformation: any = null;
-  accountOrders: any = null;
-  ordersToShow: any[] = [];
+  accountOrders: Order[] = [];
   changePasswordForm!: FormGroup;
-  itemsPerPage = new FormControl<number>(3);
+  itemsPerPage = new FormControl<number>(10);
 
+  currentPage = 1;
+  totalPages = 1;
   totalOrders!: number;
   itemCursor = 0;
   nextItemCursor!: number;
@@ -39,12 +42,13 @@ export class MyAccountPageComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private browserDetectorService: BrowserDetectorService
   ) {}
 
   ngOnInit(): void {
     this.getAccountInformation();
-    this.getAccountOrders();
+    this.getInitialAccountOrders();
     this.changePasswordForm = this.formBuilder.group(
       {
         oldPassword: new FormControl('', [Validators.required]),
@@ -69,83 +73,48 @@ export class MyAccountPageComponent implements OnInit {
         this.accountInformation = _accountInformation.account;
       });
   }
-  getAccountOrders(): void {
-    this.accountService.getAccountOrders().subscribe((_accountOrders) => {
-      this.accountOrders = _accountOrders.orders;
-      this.totalOrders = this.accountOrders.length;
-
-      if (this.accountOrders.length > this.itemsPerPage.value!) {
-        this.nextItemCursor = this.itemsPerPage.value!;
-      } else {
-        if (this.accountOrders.length === 0) {
-          this.itemCursor = 0;
-          this.nextItemCursor = 0;
-          return;
-        } else {
-          this.nextItemCursor = this.accountOrders.length;
-        }
-      }
-      this.ordersToShow = this.accountOrders.slice(
-        this.itemCursor,
-        this.nextItemCursor
-      );
-    });
+  getInitialAccountOrders(): void {
+    this.accountService
+      .getInitialAccountOrders(Number(this.itemsPerPage.value))
+      .subscribe((_accountOrders) => {
+        this.accountOrders = _accountOrders.orders[1];
+        this.totalOrders = _accountOrders.orders[0];
+        this.totalPages = Math.ceil(
+          _accountOrders.orders[0] / this.itemsPerPage.value!
+        );
+      });
   }
 
   nextOrderPage(): void {
-    if (this.accountOrders.length > this.nextItemCursor) {
-      this.itemCursor += this.itemsPerPage.value!;
-
-      if (
-        this.nextItemCursor + this.itemsPerPage.value! >
-        this.accountOrders.length
-      ) {
-        this.nextItemCursor =
-          this.nextItemCursor +
-          (this.accountOrders.length - this.nextItemCursor);
-      } else {
-        this.nextItemCursor += this.itemsPerPage.value!;
-      }
-      this.ordersToShow = this.accountOrders.slice(
-        this.itemCursor,
-        this.nextItemCursor
-      );
+    if (this.currentPage < this.totalPages) {
+      this.currentPage += 1;
+      this.accountService
+        .getAccountOrders(this.itemsPerPage.value!, this.currentPage)
+        .subscribe((_accountOrders) => {
+          this.accountOrders = _accountOrders.orders;
+        });
     }
   }
   prevOrderPage(): void {
-    if (this.itemCursor - this.itemsPerPage.value! >= 0) {
-      this.itemCursor -= this.itemsPerPage.value!;
-      if (this.nextItemCursor === this.totalOrders) {
-        this.nextItemCursor = this.itemCursor + this.itemsPerPage.value!;
-      } else {
-        this.nextItemCursor -= this.itemsPerPage.value!;
-      }
-      this.ordersToShow = this.accountOrders.slice(
-        this.itemCursor,
-        this.nextItemCursor
-      );
-      // this.nextItemCursor = this.itemsPerPage.value!;
+    if (this.currentPage > 1) {
+      this.currentPage -= 1;
+      this.accountService
+        .getAccountOrders(this.itemsPerPage.value!, this.currentPage)
+        .subscribe((_accountOrders) => {
+          this.accountOrders = _accountOrders.orders;
+        });
     }
   }
 
   changeItemsPerPage(): void {
-    this.itemCursor = 0;
-    if (this.accountOrders.length > this.itemsPerPage.value!) {
-      this.nextItemCursor = this.itemsPerPage.value!;
-    } else {
-      if (this.accountOrders.length === 0) {
-        this.itemCursor = 0;
-        this.nextItemCursor = 0;
-        return;
-      } else {
-        this.nextItemCursor = this.accountOrders.length;
-      }
-    }
+    this.currentPage = 1;
 
-    this.ordersToShow = this.accountOrders.slice(
-      this.itemCursor,
-      this.nextItemCursor
-    );
+    this.totalPages = Math.ceil(this.totalOrders / this.itemsPerPage.value!);
+    this.accountService
+      .getAccountOrders(this.itemsPerPage.value!, this.currentPage)
+      .subscribe((_accountOrders) => {
+        this.accountOrders = _accountOrders.orders;
+      });
   }
 
   changePassword(): void {

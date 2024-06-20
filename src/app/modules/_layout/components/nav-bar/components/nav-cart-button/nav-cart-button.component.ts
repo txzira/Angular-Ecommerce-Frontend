@@ -34,7 +34,7 @@ export class NavCartButtonComponent {
       height: '100%',
       ...(!this.browserDetectorService.isMobile()
         ? { width: '25%' }
-        : { width: '40%' }),
+        : { width: '75%' }),
     });
   }
 }

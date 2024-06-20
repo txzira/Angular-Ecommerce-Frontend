@@ -3,7 +3,10 @@ import { Cart } from './cart.model';
 export interface Order {
   id: number;
   customerEmail: string;
-  amount: number;
+  shippingTotal: number;
+  taxTotal: number;
+  cartTotal: number;
+  orderTotal: number;
   date: string;
   status: string;
   tracking?: string;

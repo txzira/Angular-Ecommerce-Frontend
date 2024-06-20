@@ -27,12 +27,16 @@ export class CheckoutService {
   createOrder(
     requestShippingForm: any,
     requestCart: any,
-    shippingMethod: ShippingMethod
+    shippingMethod: ShippingMethod,
+    calculatedTax: any,
+    orderTotal: any
   ): Observable<any> {
     return this.http.post<any>(`${this.CHECKOUT_URL}/create-order`, {
       requestShippingForm,
       requestCart,
       shippingMethod,
+      calculatedTax,
+      orderTotal,
     });
   }
 
