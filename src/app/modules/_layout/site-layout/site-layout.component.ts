@@ -7,7 +7,7 @@ import { CartService } from 'src/app/core/services/user/cart/cart.service';
   templateUrl: './site-layout.component.html',
 })
 export class SiteLayoutComponent implements OnInit {
-  cart: Cart = { items: [] };
+  cart: Cart = { cartItems: [] };
 
   constructor(private cartService: CartService) {}
   ngOnInit(): void {

@@ -33,6 +33,9 @@ import { CategoryNavLayoutComponent } from './_layout/category-nav-layout/catego
 import { AboutUsPageComponent } from './pages/about-us-page/about-us-page.component';
 import { ContactPageComponent } from './pages/contact-page/contact-page.component';
 import { AdminShippingMethodsComponent } from './pages/admin/shipping-method/shipping-method-page.component';
+import { OrderConfirmationPageComponent } from './pages/checkout/order-confirmation-page/order-confirmation-page.component';
+import { ResetPasswordPageComponent } from './pages/auth/reset-password-page/reset-password-page.component';
+import { ForgotPasswordPageComponent } from './pages/auth/forgot-password-page/forgot-password-page.component';
 
 const routes: Routes = [
   {
@@ -155,9 +158,23 @@ const routes: Routes = [
           { path: 'verify', component: VerifyEmailPageComponent },
           { path: 'login-redirect', component: LoginRedirectPageComponent },
           { path: 'unauthorized', component: UnauthorizedPageComponent },
+          {
+            path: 'forgot-your-password',
+            component: ForgotPasswordPageComponent,
+          },
+          { path: 'reset-password', component: ResetPasswordPageComponent },
         ],
       },
-      { path: 'checkout', component: CheckoutPageComponent },
+      {
+        path: 'checkout',
+        children: [
+          { path: '', component: CheckoutPageComponent },
+          {
+            path: 'order-confirmation',
+            component: OrderConfirmationPageComponent,
+          },
+        ],
+      },
 
       { path: 'cart', component: CartPageComponent },
     ],

@@ -10,7 +10,7 @@ import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detec
   templateUrl: './nav-cart-button.component.html',
 })
 export class NavCartButtonComponent {
-  private _cart: Cart = { items: [] };
+  private _cart: Cart = { cartItems: [] };
   itemsQuantity = 0;
   @Input()
   get cart(): Cart {

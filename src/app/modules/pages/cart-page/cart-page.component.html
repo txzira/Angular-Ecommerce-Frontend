@@ -1,6 +1,6 @@
 <div class="w-full h-full flex flex-col">
   <ng-container *ngIf="!isMobileDisplay; else mobileCart">
-    <ng-container *ngIf="cart.items.length; else emptyCart">
+    <ng-container *ngIf="cart.cartItems.length; else emptyCart">
       <div class="flex flex-col mx-auto w-11/12 bg-white">
         <div
           class="flex flex-row items-center h-14 border-b font-medium text-lg"
@@ -25,7 +25,7 @@
         </div>
         <div
           class="flex flex-row items-center min-h-16 border-b text-sm md:text-base"
-          *ngFor="let cartItem of cart.items"
+          *ngFor="let cartItem of cart.cartItems"
         >
           <div class="w-1/12 h-full px-2">
             <img
@@ -96,7 +96,7 @@
           <div class="w-1/6"></div>
           <div class="w-1/6">
             <span class="font-bold py-5 block">
-              {{ getTotal(cart.items) | currency }}
+              {{ getTotal(cart.cartItems) | currency }}
             </span>
           </div>
           <div class="flex-1 px-2">
@@ -121,7 +121,7 @@
     </ng-template>
   </ng-container>
   <ng-template #mobileCart>
-    <ng-container *ngIf="cart.items.length; else emptyCart">
+    <ng-container *ngIf="cart.cartItems.length; else emptyCart">
       <div
         class="w-full flex flex-col justify-end items-center bg-white h-20 px-2"
       >
@@ -150,7 +150,7 @@
       >
         <div
           class="flex flex-row items-center py-2 h-32 w-full mx-auto rounded-lg bg-white relative px-2 shadow-md"
-          *ngFor="let cartItem of cart.items; let lastItem = last"
+          *ngFor="let cartItem of cart.cartItems; let lastItem = last"
         >
           <div class="flex flex-col h-full justify-center pr-2">
             <button
@@ -217,7 +217,7 @@
         <div class="flex flex-col py-3">
           <p class="flex flex-row justify-between text-xl font-semibold">
             <span class="">Subtotal</span
-            ><span>{{ getTotal(cart.items) | currency }}</span>
+            ><span>{{ getTotal(cart.cartItems) | currency }}</span>
           </p>
           <div class="flex w-full items-center justify-center gap-2">
             <button

@@ -72,6 +72,7 @@ import { AdminDeleteShippingMethodModalComponent } from './pages/admin/shipping-
 import { NavCartModalComponent } from './_layout/components/nav-bar/components/nav-cart-button/components/nav-cart-modal/nav-cart-modal.component';
 import { CapitalizeFirstLetterPipe } from '../shared/pipes/capitalize-first-letter/capitalize-first-letter.pipe';
 import { ColorFirstAttributePipe } from '../shared/pipes/color-first-attribute/color-first-attribute.pipe';
+import { ResetPasswordPageComponent } from './pages/auth/reset-password-page/reset-password-page.component';
 
 @NgModule({
   declarations: [
@@ -134,6 +135,7 @@ import { ColorFirstAttributePipe } from '../shared/pipes/color-first-attribute/c
     NavCartModalComponent,
     CapitalizeFirstLetterPipe,
     ColorFirstAttributePipe,
+    ResetPasswordPageComponent,
   ],
   imports: [
     BrowserModule,

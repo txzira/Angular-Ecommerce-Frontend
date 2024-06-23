@@ -83,6 +83,30 @@ export class AuthService {
     });
   }
 
+  sendForgotPasswordEmail(email: string): Observable<any> {
+    return this.http.post<any>(`${this.AUTH_URL}/forgot-password`, {
+      email,
+    });
+  }
+
+  verifyPasswordReset(userId: string, tokenId: string): Observable<any> {
+    return this.http.post<any>(`${this.AUTH_URL}/verify-password-reset `, {
+      userId,
+      tokenId,
+    });
+  }
+  resetPassword(
+    newPassword: any,
+    userId: string,
+    tokenId: string
+  ): Observable<any> {
+    return this.http.post<any>(`${this.AUTH_URL}/reset-password`, {
+      newPassword,
+      userId,
+      tokenId,
+    });
+  }
+
   logout(): Observable<any> {
     return this.http.get<any>(`${this.AUTH_URL}/logout`, {
       withCredentials: true,

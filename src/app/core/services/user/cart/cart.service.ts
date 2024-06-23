@@ -8,7 +8,7 @@ import { LocalStorageService } from '../../local/local-storage.service';
   providedIn: 'root',
 })
 export class CartService {
-  cart = new BehaviorSubject<Cart>({ items: [] });
+  cart = new BehaviorSubject<Cart>({ cartItems: [] });
 
   constructor(
     private _snackBar: MatSnackBar,
@@ -25,8 +25,8 @@ export class CartService {
   }
 
   addToCart(item: CartItem): void {
-    const items = [...this.cart.value.items];
-    const itemInCart = items.find((_item) => _item.id === item.id);
+    const cartItems = [...this.cart.value.cartItems];
+    const itemInCart = cartItems.find((_item) => _item.id === item.id);
     const attributes = item.variant?.productVariantAttributes.map(
       (productVariantAttribute) => {
         return productVariantAttribute.attribute.name;
@@ -36,10 +36,13 @@ export class CartService {
     if (itemInCart) {
       itemInCart.quantity += 1;
     } else {
-      items.push(item);
+      cartItems.push(item);
     }
-    this.cart.next({ items });
-    this.localService.saveLocalStorageData('cart', JSON.stringify({ items }));
+    this.cart.next({ cartItems });
+    this.localService.saveLocalStorageData(
+      'cart',
+      JSON.stringify({ cartItems })
+    );
     if (attributes) {
       let variantName = '';
       for (let i = 0; i < attributes.length; i++) {
@@ -64,7 +67,7 @@ export class CartService {
   removeQuantity(item: CartItem): void {
     let itemForRemoval: CartItem | undefined;
 
-    let filteredItems = this.cart.value.items.map((_item) => {
+    let filteredItems = this.cart.value.cartItems.map((_item) => {
       if (_item.id === item.id) {
         _item.quantity--;
         if (_item.quantity === 0) {
@@ -77,7 +80,7 @@ export class CartService {
     if (itemForRemoval) {
       filteredItems = this.removeFromCart(itemForRemoval, false);
     }
-    this.cart.next({ items: filteredItems });
+    this.cart.next({ cartItems: filteredItems });
     this.localService.saveLocalStorageData(
       'cart',
       JSON.stringify({ items: filteredItems })
@@ -93,23 +96,23 @@ export class CartService {
   }
 
   clearCartFromNav(): void {
-    this.cart.next({ items: [] });
+    this.cart.next({ cartItems: [] });
     this.localService.clearLocalStorageData('cart');
     this._snackBar.open('Cart is cleared.', 'Ok', {
       duration: 3000,
     });
   }
   clearCartFromCheckout(): void {
-    this.cart.next({ items: [] });
+    this.cart.next({ cartItems: [] });
     this.localService.clearLocalStorageData('cart');
   }
 
   removeFromCart(item: CartItem, update = true): Array<CartItem> {
-    const filteredItems = this.cart.value.items.filter(
+    const filteredItems = this.cart.value.cartItems.filter(
       (_item) => _item.id !== item.id
     );
     if (update) {
-      this.cart.next({ items: filteredItems });
+      this.cart.next({ cartItems: filteredItems });
       this.localService.saveLocalStorageData(
         'cart',
         JSON.stringify({ items: filteredItems })
@@ -121,7 +124,7 @@ export class CartService {
     return filteredItems;
   }
   getItemsQuantity(cart: Cart) {
-    return cart.items
+    return cart.cartItems
       .map((item) => item.quantity)
       .reduce((prev, current) => prev + current, 0);
   }

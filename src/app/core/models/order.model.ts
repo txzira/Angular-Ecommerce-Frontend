@@ -1,3 +1,4 @@
+import { Card } from './card.model';
 import { Cart } from './cart.model';
 
 export interface Order {
@@ -12,5 +13,9 @@ export interface Order {
   tracking?: string;
   customer: { firstName: string; lastName: string };
   cart: Cart;
-  shippingAddressId: number;
+  shippingAddress?: any;
+  billingAddress?: any;
+  card?: Card;
+  shippingMethodId: number;
+  shippingMethod?: any;
 }

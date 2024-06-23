@@ -1,1 +1,211 @@
-<p>order-confirmation-page works!</p>
+<ng-container *ngIf="order; else error">
+  <div class="h-full sm:w-[80%] mx-auto sm:my-10">
+    <div class="bg-white w-max flex flex-row items-center mb-3 border p-5">
+      <img src="/assets/images/check_circle.svg" width="25px" height="25px" />
+      <h1 class="!m-0 !font-medium">Thank you for your order</h1>
+    </div>
+    <div class="flex flex-row gap-5">
+      <div class="w-3/4 border bg-white p-5 h-max">
+        <div class="flex flex-row w-full justify-between">
+          <div class="w-1/2">
+            <p class="flex flex-row justify-between">
+              <span class="text-slate-400">Order Number</span>
+              <span>{{ order.id }}</span>
+            </p>
+            <p class="flex flex-row justify-between">
+              <span class="text-slate-400">Order Date</span>
+              <span>{{ order.date | date }}</span>
+            </p>
+            <p class="flex flex-row justify-between">
+              <span class="text-slate-400">Customer</span>
+              <span>{{
+                order.customer
+                  ? order.customer.firstName + " " + order.customer.lastName
+                  : order.shippingAddress.firstName +
+                    " " +
+                    order.shippingAddress.lastName
+              }}</span>
+            </p>
+          </div>
+          <div class="flex items-center">
+            <button
+              type="button"
+              class="flex flex-row items-center border px-4 py-3 border-black gap-2"
+              (click)="print()"
+            >
+              <mat-icon>print</mat-icon>
+              <span> Print </span>
+            </button>
+          </div>
+        </div>
+        <p>
+          Please keep the above numbers for your reference. We'll also send an
+          order confirmation email to `{{ order.customerEmail }}`. Please allow
+          up to 24 hours for us to process your order for shipment.
+        </p>
+        <div>
+          <div class="flex flex-row sm:gap-80">
+            <section>
+              <h2>Shipping Address</h2>
+              <div>
+                <p class="!m-0">
+                  {{
+                    order.shippingAddress.firstName +
+                      " " +
+                      order.shippingAddress.lastName
+                  }}
+                </p>
+                <p class="!m-0">
+                  {{ order.shippingAddress.streetAddress
+                  }}{{
+                    order.shippingAddress.streetAddress2
+                      ? " " + order.shippingAddress.streetAddress2
+                      : null
+                  }}
+                </p>
+                <p class="!m-0">
+                  {{
+                    order.shippingAddress.city +
+                      ", " +
+                      order.shippingAddress.state +
+                      " " +
+                      order.shippingAddress.zipCode +
+                      " " +
+                      order.shippingAddress.country
+                  }}
+                </p>
+                <p class="!m-0">{{ order.shippingAddress.phone }}</p>
+              </div>
+            </section>
+            <section>
+              <h2>Payment Method</h2>
+              <div class="flex flex-row">
+                <img
+                  width="40px"
+                  height="40px"
+                  alt="credit-card"
+                  class="mr-2 mb-auto"
+                  [src]="
+                    '/assets/images/creditcards/' + order.card?.brand + '.svg'
+                  "
+                />
+                <div>
+                  <p>
+                    <span>
+                      {{ order.card?.brand | capitalizeFirstLetter }}
+                    </span>
+                    <span>●●●●●●●●●●●●{{ order.card?.lastFourDigits }}</span>
+                  </p>
+                  <p>
+                    Exp: {{ order.card?.expir_month }}/{{
+                      order.card?.expir_year
+                    }}
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div class="flex flex-row gap-80">
+            <section>
+              <h2>Billing Address</h2>
+              <div>
+                <p class="!m-0">
+                  {{
+                    order.billingAddress.firstName +
+                      " " +
+                      order.billingAddress.lastName
+                  }}
+                </p>
+                <p class="!m-0">
+                  {{ order.billingAddress.streetAddress
+                  }}{{
+                    order.billingAddress.streetAddress2
+                      ? " " + order.billingAddress.streetAddress2
+                      : null
+                  }}
+                </p>
+                <p class="!m-0">
+                  {{
+                    order.billingAddress.city +
+                      ", " +
+                      order.billingAddress.state +
+                      " " +
+                      order.billingAddress.zipCode +
+                      " " +
+                      order.billingAddress.country
+                  }}
+                </p>
+
+                <p class="!m-0">{{ order.billingAddress.phone }}</p>
+              </div>
+            </section>
+            <section>
+              <h2>Shipping Method</h2>
+              <p>
+                {{ order.shippingMethod.name }} -
+                {{ order.shippingMethod.price | currency }}
+              </p>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white flex-1 p-3 border">
+        <h1 class="!font-medium">Order Summary</h1>
+
+        <div>
+          <div *ngFor="let item of order.cart.cartItems">
+            <div class="flex flex-row items-center my-2">
+              <img
+                [src]="item.image"
+                width="50px"
+                height="50px"
+                class="mr-3"
+                alt="cart item image"
+              />
+              <div>
+                <p class="!m-0 font-medium truncate hover:overflow-visible">
+                  {{ item.productName }}
+                </p>
+                <p class="!m-0" *ngIf="item.variantName">
+                  {{ item.variantName }}
+                </p>
+                <p class="!m-0">{{ item.price | currency }}</p>
+                <p class="!m-0">Qty: {{ item.quantity }}</p>
+              </div>
+              <p class="font-medium !ml-auto">
+                {{ item.quantity * item.price | currency }}
+              </p>
+            </div>
+            <mat-divider />
+          </div>
+        </div>
+        <p class="flex flex-row justify-between font-medium !m-0 !my-2">
+          <span>SUBTOTAL:</span>
+          <span>{{ order.cartTotal | currency }}</span>
+        </p>
+        <mat-divider />
+        <p class="flex flex-row justify-between font-medium !m-0 !my-2">
+          <span>SHIPPING:</span>
+          <span>{{ order.shippingTotal | currency }}</span>
+        </p>
+        <mat-divider />
+        <p class="flex flex-row justify-between font-medium !m-0 !my-2">
+          <span>Taxes:</span>
+          <span>{{ order.taxTotal | currency }}</span>
+        </p>
+        <mat-divider />
+
+        <p class="flex flex-row justify-between font-medium !m-0 !my-2">
+          <span>ORDER TOTAL:</span>
+          <span>{{ order.orderTotal | currency }}</span>
+        </p>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #error>
+  <div class="h-full sm:w-[80%] mx-auto sm:my-10">
+    <h1 class="!m-0 !font-medium">Order does not exist.</h1>
+  </div>
+</ng-template>

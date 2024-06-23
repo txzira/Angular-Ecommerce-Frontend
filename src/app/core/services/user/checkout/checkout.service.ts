@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Order } from 'src/app/core/models/order.model';
 import { ShippingMethod } from 'src/app/core/models/shippingMethod.model';
 import env from 'src/environments/environment';
 
@@ -26,17 +27,21 @@ export class CheckoutService {
 
   createOrder(
     requestShippingForm: any,
+    requestBillingForm: any,
     requestCart: any,
     shippingMethod: ShippingMethod,
     calculatedTax: any,
-    orderTotal: any
+    orderTotal: any,
+    paymentIntentId: any
   ): Observable<any> {
     return this.http.post<any>(`${this.CHECKOUT_URL}/create-order`, {
       requestShippingForm,
+      requestBillingForm,
       requestCart,
       shippingMethod,
       calculatedTax,
       orderTotal,
+      paymentIntentId,
     });
   }
 
@@ -55,5 +60,11 @@ export class CheckoutService {
         shippingAddress,
       }
     );
+  }
+
+  getOrderReview(orderNumber: number, email: string): Observable<Order> {
+    return this.http.get<Order>(`${this.CHECKOUT_URL}/order-review`, {
+      params: { orderNumber, email },
+    });
   }
 }

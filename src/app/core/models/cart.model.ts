@@ -1,13 +1,14 @@
 import { ProductVariantAttribute } from './product.model';
 
 export interface Cart {
-  items: Array<CartItem>;
+  cartItems: Array<CartItem>;
 }
 
 export interface CartItem {
   id: string;
   productId: number;
   productName: string;
+  variantName?: string;
   quantity: number;
   price: number;
   image: string;

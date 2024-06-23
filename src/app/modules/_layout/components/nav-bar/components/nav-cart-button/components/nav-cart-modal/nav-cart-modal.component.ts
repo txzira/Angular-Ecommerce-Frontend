@@ -8,7 +8,7 @@ import { CartService } from 'src/app/core/services/user/cart/cart.service';
   templateUrl: './nav-cart-modal.component.html',
 })
 export class NavCartModalComponent {
-  private _cart: Cart = { items: [] };
+  private _cart: Cart = { cartItems: [] };
   itemsQuantity = 0;
 
   get cart(): Cart {

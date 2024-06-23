@@ -94,9 +94,10 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
         for (let i = 0; i < addrComponents.length; i++) {
           switch (addrComponents[i].types[0]) {
             case 'country':
-              this.form.patchValue({
-                country: addrComponents[i].short_name,
-              });
+              if (!this.isShipping)
+                this.form.patchValue({
+                  country: addrComponents[i].short_name,
+                });
               break;
             case 'street_number':
               streetAddressBuilderMap.set(
@@ -116,9 +117,10 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
               });
               break;
             case 'administrative_area_level_1':
-              this.form.patchValue({
-                state: addrComponents[i].short_name,
-              });
+              if (!this.isShipping)
+                this.form.patchValue({
+                  state: addrComponents[i].short_name,
+                });
               break;
             case 'postal_code':
               postalCodeBuilderMap.set(

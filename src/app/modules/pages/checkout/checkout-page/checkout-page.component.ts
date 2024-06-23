@@ -37,6 +37,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
   selectedShippingMethod: ShippingMethod | undefined;
   calculatedTax: number | undefined;
   cartTotal: number = 0;
+  response: any | undefined;
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
@@ -53,8 +54,8 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     public browserDetectorService: BrowserDetectorService
   ) {
     this.cart = this.cartService.getCart();
-    this.cartTotal = this.cartService.getTotal(this.cart.items);
-    this.getClientSecret(this.cart.items);
+    this.cartTotal = this.cartService.getTotal(this.cart.cartItems);
+    this.getClientSecret(this.cart.cartItems);
   }
 
   async ngOnInit(): Promise<void> {
@@ -118,7 +119,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     )
       this.checkoutService
         .calculateOrderTax(
-          this.cart.items,
+          this.cart.cartItems,
           this.paymentIntent,
           this.selectedShippingMethod,
           this.checkoutForm.value.shipping
@@ -194,14 +195,37 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
                 this.checkoutService
                   .createOrder(
                     { ...form.shipping, email: form.email },
-                    this.cart.items,
+                    form.billing,
+                    this.cart.cartItems,
                     this.selectedShippingMethod!,
                     this.calculatedTax,
-                    this.stripeOrderTotal
+                    this.stripeOrderTotal,
+                    result.paymentIntent.id
                   )
-                  .subscribe();
-                this.cartService.clearCartFromCheckout();
-                this.router.navigate(['/']);
+                  .subscribe({
+                    next: (response) => {
+                      this.response = response;
+                      this.cartService.clearCartFromCheckout();
+                      this.router.navigate(['/checkout/order-confirmation'], {
+                        queryParams: {
+                          orderNumber: response.order.id,
+                          email: response.order.email,
+                        },
+                      });
+                    },
+                    complete: () => {
+                      console.log(this.response);
+                      if (this.response.message === 'success') {
+                        this.cartService.clearCartFromCheckout();
+                        this.router.navigate(['/checkout/order-confirmation'], {
+                          queryParams: {
+                            orderNumber: this.response.order.id,
+                            email: this.response.order.email,
+                          },
+                        });
+                      }
+                    },
+                  });
               } else {
                 //failed
                 this.snackBar.open('\u274cPayment Failed.', 'Ok', {

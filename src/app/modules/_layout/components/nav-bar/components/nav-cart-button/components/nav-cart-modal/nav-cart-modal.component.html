@@ -8,9 +8,9 @@
     </button>
   </div>
   <mat-divider />
-  <div *ngIf="cart.items.length" class="p-3">
+  <div *ngIf="cart.cartItems.length" class="p-3">
     <div
-      *ngFor="let item of cart.items; let lastCartItem = last"
+      *ngFor="let item of cart.cartItems; let lastCartItem = last"
       class="flex flex-col items-center mb-2"
     >
       <div class="flex flex-row w-full items-center gap-5">
@@ -47,7 +47,7 @@
     <p>Shipping and taxes calculated at checkout.</p>
     <p class="flex justify-between font-medium text-base">
       <span>Total:</span>
-      <span class="font-bold">{{ getTotal(cart.items) | currency }}</span>
+      <span class="font-bold">{{ getTotal(cart.cartItems) | currency }}</span>
     </p>
   </div>
   <mat-divider />
