@@ -11,7 +11,7 @@
       />
     </mat-form-field>
   </div>
-  <div *ngIf="!filteredProducts">
+  <div [ngStyle]="getStyle()" *ngIf="!filteredProducts">
     <app-product-card
       *ngFor="let product of products"
       class=""
