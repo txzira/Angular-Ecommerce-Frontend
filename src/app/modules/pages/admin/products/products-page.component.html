@@ -1,5 +1,5 @@
-<div class="w-full h-full">
-  <div class="flex flex-row justify-between items-center">
+<div class="flex flex-col w-full h-full max-h-full">
+  <div class="flex flex-row justify-between items-center h-max">
     <h1>Products</h1>
     <button
       mat-raised-button
@@ -11,9 +11,9 @@
       </a>
     </button>
   </div>
-  <div class="w-full">
+  <div class="w-full flex flex-col overflow-hidden flex-1">
     <!-- table of products -->
-    <mat-form-field class="!w-full">
+    <mat-form-field class="!w-full h-max">
       <mat-label>
         <div class="flex flex-row items-center">
           <mat-icon fontIcon="search"></mat-icon>
@@ -23,7 +23,9 @@
       <input matInput [formControl]="productSearch" />
     </mat-form-field>
 
-    <div class="mx-auto border rounded-xl shadow-lg min-h-[616px] relative">
+    <div
+      class="flex flex-col mx-auto border rounded-xl shadow-lg min-h-[616px] w-full bg-white"
+    >
       <div
         class="flex flex-row w-full h-14 items-center bg-black text-white rounded-tr-md rounded-tl-md"
       >
@@ -34,33 +36,35 @@
         <div class="w-32 mx-auto">Stock</div>
         <div class="w-20 mx-auto"></div>
       </div>
-      <div
-        class="flex flex-row w-full h-14 items-center"
-        *ngFor="let product of products"
-      >
-        <div></div>
-        <div class="w-32 mx-auto">
-          {{ product.name }}
-        </div>
-        <div class="w-32 mx-auto">{{ product.slug }}</div>
-        <div class="w-32 mx-auto">{{ product.price }}</div>
-        <div class="w-32 mx-auto">{{ product.quantity }}</div>
+      <div class="overflow-y-scroll">
+        <div
+          class="flex flex-row w-full h-14 items-center"
+          *ngFor="let product of products"
+        >
+          <div></div>
+          <div class="w-32 mx-auto">
+            {{ product.name }}
+          </div>
+          <div class="w-32 mx-auto">{{ product.slug }}</div>
+          <div class="w-32 mx-auto">{{ product.price }}</div>
+          <div class="w-32 mx-auto">{{ product.quantity }}</div>
 
-        <div class="w-20 mx-auto flex flex-row gap-2">
-          <button class="bg-yellow-300 border rounded-lg p-1">
-            <a
-              class="flex justify-center"
-              [routerLink]="'/admin/products/edit/' + product.id"
+          <div class="w-20 mx-auto flex flex-row gap-2">
+            <button class="bg-yellow-300 border rounded-lg p-1">
+              <a
+                class="flex justify-center"
+                [routerLink]="'/admin/products/edit/' + product.id"
+              >
+                <mat-icon fontIcon="edit"></mat-icon>
+              </a>
+            </button>
+            <button
+              class="flex justify-center bg-red-500 border rounded-lg p-1"
+              (click)="openDeleteProductDialog(product)"
             >
-              <mat-icon fontIcon="edit"></mat-icon>
-            </a>
-          </button>
-          <button
-            class="flex justify-center bg-red-500 border rounded-lg p-1"
-            (click)="openDeleteProductDialog(product)"
-          >
-            <mat-icon fontIcon="delete"></mat-icon>
-          </button>
+              <mat-icon fontIcon="delete"></mat-icon>
+            </button>
+          </div>
         </div>
       </div>
     </div>

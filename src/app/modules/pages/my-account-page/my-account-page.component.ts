@@ -42,8 +42,7 @@ export class MyAccountPageComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private router: Router,
-    private dialog: MatDialog,
-    private browserDetectorService: BrowserDetectorService
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {

@@ -1,5 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -13,6 +18,7 @@ import { UserService } from 'src/app/core/services/user/user/user.service';
 export class LoginPageComponent implements OnInit, OnDestroy {
   credentials!: FormGroup;
   credentialValidationSubscription: Subscription | undefined;
+  state = '';
 
   constructor(
     private fb: FormBuilder,
@@ -40,10 +46,26 @@ export class LoginPageComponent implements OnInit, OnDestroy {
         },
         error: (response) => {
           console.log(response.error.message);
-          this.snackBar.open(`\u274c${response.error.message}`, undefined, {
+          this.state = response.error.state;
+          this.snackBar.open(`\u274c${response.error.message}`, 'Ok', {
             duration: 3000,
           });
         },
+      });
+  }
+
+  resendVerificationEmail(): void {
+    const email = this.credentials.value.email;
+    this.authService
+      .resendEmailVerificationLink(email)
+      .subscribe((response) => {
+        if (response.status === 'success') {
+          this.state = '';
+
+          this.snackBar.open(`\u2705Email verification sent.`, 'Ok', {
+            duration: 3000,
+          });
+        }
       });
   }
 

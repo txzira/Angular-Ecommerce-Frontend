@@ -1,5 +1,5 @@
-<div>
-  <section class="flex flex-row justify-between items-center">
+<div class="flex flex-col w-full h-full max-h-full">
+  <section class="flex flex-row justify-between items-center h-max">
     <h1>Shipping Methods</h1>
     <button
       mat-raised-button
@@ -10,9 +10,9 @@
       <mat-icon fontIcon="add"></mat-icon>
     </button>
   </section>
-  <div class="w-full">
+  <div class="w-full flex flex-col overflow-hidden flex-1">
     <!-- table of shipping methods -->
-    <mat-form-field class="!w-full">
+    <mat-form-field class="!w-full h-max">
       <mat-label>
         <div class="flex flex-row items-center">
           <mat-icon fontIcon="search"></mat-icon>
@@ -23,7 +23,7 @@
     </mat-form-field>
 
     <div
-      class="mx-auto border rounded-xl shadow-lg min-h-[616px] relative bg-white"
+      class="flex flex-col w-full mx-auto border rounded-xl shadow-lg min-h-[616px] relative bg-white"
     >
       <div
         class="flex flex-row w-full h-14 items-center bg-black text-white rounded-tr-md rounded-tl-md"
@@ -33,26 +33,28 @@
         <div class="w-30 mx-auto">Active</div>
         <div class="w-30 mx-auto">Actions</div>
       </div>
-      <div
-        class="flex flex-row w-full h-14 items-center rounded-tr-md rounded-tl-md"
-        *ngFor="let shippingMethod of shippingMethods"
-      >
-        <div class="w-32 mx-auto">{{ shippingMethod.name }}</div>
-        <div class="w-30 mx-auto">{{ shippingMethod.price }}</div>
-        <div class="w-30 mx-auto">{{ shippingMethod.active }}</div>
-        <div class="w-30 mx-auto flex flex-row gap-2">
-          <button
-            class="flex justify-center bg-yellow-300 border rounded-lg p-1"
-            (click)="openEditShippingMethodDialog(shippingMethod)"
-          >
-            <mat-icon fontIcon="edit"></mat-icon>
-          </button>
-          <button
-            class="flex justify-center bg-red-500 border rounded-lg p-1"
-            (click)="openDeleteShippingMethodDialog(shippingMethod)"
-          >
-            <mat-icon fontIcon="delete"></mat-icon>
-          </button>
+      <div class="overflow-y-scroll">
+        <div
+          class="flex flex-row w-full h-14 items-center rounded-tr-md rounded-tl-md"
+          *ngFor="let shippingMethod of shippingMethods"
+        >
+          <div class="w-32 mx-auto">{{ shippingMethod.name }}</div>
+          <div class="w-30 mx-auto">{{ shippingMethod.price | currency }}</div>
+          <div class="w-30 mx-auto">{{ shippingMethod.active }}</div>
+          <div class="w-30 mx-auto flex flex-row gap-2">
+            <button
+              class="flex justify-center bg-yellow-300 border rounded-lg p-1"
+              (click)="openEditShippingMethodDialog(shippingMethod)"
+            >
+              <mat-icon fontIcon="edit"></mat-icon>
+            </button>
+            <button
+              class="flex justify-center bg-red-500 border rounded-lg p-1"
+              (click)="openDeleteShippingMethodDialog(shippingMethod)"
+            >
+              <mat-icon fontIcon="delete"></mat-icon>
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -64,28 +64,27 @@
           <div class="w-20 mx-auto"><h2>Price</h2></div>
           <div class="w-20 mx-auto"><h2>Total</h2></div>
         </div>
-        <div
-          class="flex flex-row w-full items-center h-20"
-          *ngFor="let item of cart.cartItems"
-        >
-          <div class="w-20 mx-auto">
-            <img
-              class="w-16 h-16 object-contain"
-              [src]="
-                item.variant
-                  ? item.variant?.variantImages?.length !== 0
-                    ? item.variant.variantImages[0]?.url
-                    : ''
-                  : item.product.images[0]?.url
-              "
-            />
-          </div>
-          <div class="w-40 mx-auto font-medium">{{ item.productName }}</div>
-          <div class="w-40 mx-auto">{{ item.variantName }}</div>
-          <div class="w-20 mx-auto">x{{ item.quantity }}</div>
-          <div class="w-20 mx-auto">{{ item.price | currency }}</div>
-          <div class="w-20 mx-auto">
-            {{ item.quantity * item.price | currency }}
+        <div class="flex flex-col w-full" *ngFor="let item of cart.cartItems">
+          <div class="flex flex-row w-full items-center h-20">
+            <div class="w-20 mx-auto">
+              <img
+                class="w-16 h-16 object-contain"
+                [src]="
+                  item.variant
+                    ? item.variant?.variantImages?.length !== 0
+                      ? item.variant.variantImages[0]?.url
+                      : ''
+                    : item.product.images[0]?.url
+                "
+              />
+            </div>
+            <div class="w-40 mx-auto font-medium">{{ item.productName }}</div>
+            <div class="w-40 mx-auto">{{ item.variantName }}</div>
+            <div class="w-20 mx-auto">x{{ item.quantity }}</div>
+            <div class="w-20 mx-auto">{{ item.price | currency }}</div>
+            <div class="w-20 mx-auto">
+              {{ item.quantity * item.price | currency }}
+            </div>
           </div>
           <mat-divider class="w-[95%] !mx-auto" />
         </div>
@@ -118,7 +117,7 @@
         class="flex flex-row sm:w-full items-center h-12 font-medium justify-between sm:justify-normal mx-2 sm:mx-0"
       >
         <div class="sm:w-20 sm:mx-auto">Taxes</div>
-        <div class="hidden sm:blockw-40 mx-auto"></div>
+        <div class="hidden sm:block w-40 mx-auto"></div>
         <div class="hidden sm:block w-40 mx-auto"></div>
         <div class="hidden sm:block w-20 mx-auto"></div>
         <div class="hidden sm:block w-20 mx-auto"></div>

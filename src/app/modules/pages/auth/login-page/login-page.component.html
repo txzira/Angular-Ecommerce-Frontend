@@ -1,58 +1,77 @@
 <div class="w-full h-full">
   <div class="w-2/3 md:w-1/3 h-full mx-auto flex flex-col justify-center">
-    <h1 class="mx-auto">Login</h1>
-    <form
-      class="flex flex-col w-full mx-auto"
-      [formGroup]="credentials"
-      (ngSubmit)="login()"
-      #formDir="ngForm"
-    >
-      <mat-form-field>
-        <mat-label>Email</mat-label>
-        <input matInput id="email" formControlName="email" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Password</mat-label>
-        <input
-          id="password"
-          matInput
-          formControlName="password"
-          placeholder="*******"
-          type="password"
-        />
-      </mat-form-field>
-      <button
-        type="submit"
-        mat-raised-button
-        color="primary"
-        [disabled]="credentials.invalid"
-      >
-        Login
-      </button>
-      <div class="mx-auto pt-3">
-        <p>
-          <span>
-            Don't have an account?&nbsp;<a
-              href="/auth/signup"
-              class="text-blue-600 underline"
-              >Sign-Up</a
-            >.
-          </span>
-        </p>
-        <p>
-          <span>
-            Forgot your password? Click&nbsp;<a
-              href="/auth/forgot-your-password"
-              class="text-blue-600 underline"
-              >here</a
-            >.
-          </span>
-        </p>
-      </div>
-    </form>
-    <div class="py-5">
-      <mat-divider> </mat-divider>
+    {{ state }}
+    <div class="mx-auto w-full bg-white p-5 border shadow-lg rounded-md">
+      <h1 class="!font-medium">Sign In</h1>
+      <ng-container *ngIf="state !== 'unverified'; else unverified">
+        <form
+          class="flex flex-col w-full mx-auto"
+          [formGroup]="credentials"
+          (ngSubmit)="login()"
+          #formDir="ngForm"
+        >
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput id="email" formControlName="email" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input
+              id="password"
+              matInput
+              formControlName="password"
+              placeholder="*******"
+              type="password"
+            />
+          </mat-form-field>
+          <button
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="credentials.invalid"
+          >
+            Sign In
+          </button>
+          <div class="mx-auto pt-3">
+            <p>
+              <span>
+                Don't have an account?&nbsp;<a
+                  href="/auth/signup"
+                  class="text-blue-600 underline"
+                  >Sign-Up</a
+                >.
+              </span>
+            </p>
+            <p>
+              <span>
+                Forgot your password? Click&nbsp;<a
+                  href="/auth/forgot-your-password"
+                  class="text-blue-600 underline"
+                  >here</a
+                >.
+              </span>
+            </p>
+          </div>
+        </form>
+        <div class="py-5">
+          <mat-divider> </mat-divider>
+        </div>
+        <app-google-button></app-google-button>
+      </ng-container>
     </div>
-    <app-google-button></app-google-button>
   </div>
 </div>
+
+<ng-template #unverified>
+  <div class="flex flex-col w-full mx-auto">
+    <p>Account exist. Resend verification email?</p>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="resendVerificationEmail()"
+    >
+      Resend Email
+    </button>
+  </div>
+</ng-template>

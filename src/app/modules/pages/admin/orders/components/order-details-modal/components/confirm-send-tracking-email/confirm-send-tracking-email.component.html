@@ -1,0 +1,21 @@
+<div class="flex flex-col justify-center p-5">
+  <h1>Notice</h1>
+  <p>
+    &nbsp;&nbsp;&nbsp;&nbsp;It appears that you have already sent a tracking
+    email to this customer. If this is a mistake continue, just note that it is
+    possible that you are resending tracking information to the customer. To
+    limit confusion on the customer's end, it is recommended to send a follow up
+    email clarifying which tracking information to follow.
+  </p>
+  <div class="flex flex-row gap-5 justify-center">
+    <button mat-raised-button type="button">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="sendTrackingEmail()"
+    >
+      Continue
+    </button>
+  </div>
+</div>

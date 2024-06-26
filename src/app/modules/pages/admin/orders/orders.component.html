@@ -1,10 +1,8 @@
-<div class="w-full h-full">
-  <div class="">
-    <h1>Orders</h1>
-  </div>
-  <div class="w-full">
+<div class="flex flex-col w-full h-full max-h-full">
+  <h1>Orders</h1>
+  <div class="w-full flex flex-col overflow-hidden flex-1">
     <!-- table of categories -->
-    <mat-form-field class="!w-full">
+    <mat-form-field class="!w-full h-max">
       <mat-label>
         <div class="flex flex-row items-center">
           <mat-icon fontIcon="search"></mat-icon>
@@ -13,31 +11,51 @@
       </mat-label>
       <input matInput [formControl]="orderSearch" />
     </mat-form-field>
-  </div>
 
-  <div class="mx-auto border rounded-xl shadow-lg min-h-[616px] relative">
     <div
-      class="flex flex-row w-full h-14 items-center bg-black text-white rounded-tr-md rounded-tl-md"
+      class="flex flex-col w-full mx-auto border rounded-xl shadow-lg min-h-[616px] bg-white"
     >
-      <div class="w-32 mx-auto">Email</div>
-      <div class="w-32 mx-auto">First Name</div>
-      <div class="w-32 mx-auto">Last Name</div>
-      <div class="w-32 mx-auto">Order Date</div>
-      <div class="w-32 mx-auto">Order Total($)</div>
-      <div class="w-32 mx-auto">Order Status</div>
-      <div class="w-40 mx-auto"></div>
-    </div>
-    <div
-      class="flex flex-row w-full h-14 items-center"
-      *ngFor="let order of orders"
-    >
-      <div class="w-32 mx-auto">{{ order.customerEmail }}</div>
-      <div class="w-32 mx-auto">{{ order.customer.firstName }}</div>
-      <div class="w-32 mx-auto">{{ order.customer.lastName }}</div>
-      <div class="w-32 mx-auto">{{ order.date | date }}</div>
-      <div class="w-32 mx-auto">{{ order.orderTotal }}</div>
-      <div class="w-32 mx-auto">{{ order.status }}</div>
-      <div class="w-40 mx-auto"></div>
+      <div
+        class="flex flex-row w-full h-14 items-center bg-black text-white rounded-tr-md rounded-tl-md"
+      >
+        <div class="w-32 mx-auto">Email</div>
+        <div class="w-32 mx-auto">First Name</div>
+        <div class="w-32 mx-auto">Last Name</div>
+        <div class="w-32 mx-auto">Order Date</div>
+        <div class="w-32 mx-auto">Order Total($)</div>
+        <div class="w-32 mx-auto">Order Status</div>
+        <div class="w-40 mx-auto">Details</div>
+      </div>
+      <div class="overflow-y-scroll">
+        <div
+          class="flex flex-row w-full h-14 items-center"
+          *ngFor="let order of orders"
+        >
+          <div class="w-32 mx-auto">{{ order.customerEmail }}</div>
+          <div class="w-32 mx-auto">
+            {{
+              order.customer
+                ? order.customer.firstName
+                : order.shippingAddress.firstName
+            }}
+          </div>
+          <div class="w-32 mx-auto">
+            {{
+              order.customer
+                ? order.customer.lastName
+                : order.shippingAddress.lastName
+            }}
+          </div>
+          <div class="w-32 mx-auto">{{ order.date | date }}</div>
+          <div class="w-32 mx-auto">{{ order.orderTotal | currency }}</div>
+          <div class="w-32 mx-auto">{{ order.status }}</div>
+          <div class="w-40 mx-auto">
+            <button type="button" (click)="openOrderDetails(order)">
+              <mat-icon>receipt</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

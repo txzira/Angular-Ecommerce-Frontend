@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Order } from 'src/app/core/models/order.model';
+import { Order, Tracking } from 'src/app/core/models/order.model';
 import env from 'src/environments/environment';
 
 @Injectable({
@@ -31,6 +31,27 @@ export class AdminOrdersService {
   getOrdersByCustomerId(): Observable<Array<Order>> {
     return this.httpClient.get<Array<Order>>(
       `${this.ADMIN_ORDERS_URL}/get-orders-by-customer-id`
+    );
+  }
+
+  getOrderById(orderId: string): Observable<Order> {
+    return this.httpClient.get<Order>(
+      `${this.ADMIN_ORDERS_URL}/get-order-by-id/${orderId}`
+    );
+  }
+
+  setTracking(orderId: string, tracking: Tracking): Observable<any> {
+    return this.httpClient.post<any>(`${this.ADMIN_ORDERS_URL}/set-tracking`, {
+      orderId,
+      tracking,
+    });
+  }
+  sendTrackingEmail(trackingId: string): Observable<any> {
+    return this.httpClient.post<any>(
+      `${this.ADMIN_ORDERS_URL}/send-tracking-email`,
+      {
+        trackingId,
+      }
     );
   }
 }

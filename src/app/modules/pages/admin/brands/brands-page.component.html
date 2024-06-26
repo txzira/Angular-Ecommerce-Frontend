@@ -1,5 +1,5 @@
-<div class="w-full h-full">
-  <div class="flex flex-row justify-between items-center">
+<div class="flex flex-col w-full h-full max-h-full">
+  <div class="flex flex-row justify-between items-center h-max">
     <h1>Brands</h1>
     <button
       mat-raised-button
@@ -10,9 +10,9 @@
       <mat-icon fontIcon="add"></mat-icon>
     </button>
   </div>
-  <div class="w-full">
+  <div class="w-full flex flex-col overflow-hidden flex-1">
     <!-- table of brands -->
-    <mat-form-field class="!w-full">
+    <mat-form-field class="!w-full h-max">
       <mat-label>
         <div class="flex flex-row items-center">
           <mat-icon fontIcon="search"></mat-icon>
@@ -22,7 +22,9 @@
       <input matInput [formControl]="brandSearch" />
     </mat-form-field>
 
-    <div class="mx-auto border rounded-xl shadow-lg min-h-[616px] relative">
+    <div
+      class="flex flex-col w-full mx-auto border rounded-xl shadow-lg min-h-[616px] bg-white"
+    >
       <div
         class="flex flex-row w-full h-14 items-center bg-black text-white rounded-tr-md rounded-tl-md"
       >
@@ -30,27 +32,29 @@
 
         <div class="w-30 mx-auto"></div>
       </div>
-      <div
-        class="flex flex-row w-full h-14 items-center"
-        *ngFor="let brand of brands"
-      >
-        <div class="w-32 mx-auto">
-          {{ brand.name }}
-        </div>
+      <div class="overflow-y-scroll">
+        <div
+          class="flex flex-row w-full h-14 items-center"
+          *ngFor="let brand of brands"
+        >
+          <div class="w-32 mx-auto">
+            {{ brand.name }}
+          </div>
 
-        <div class="w-30 mx-auto flex flex-row gap-2">
-          <button
-            class="flex justify-center bg-yellow-300 border rounded-lg p-1"
-            (click)="openEditBrandDialog(brand)"
-          >
-            <mat-icon fontIcon="edit"></mat-icon>
-          </button>
-          <button
-            class="flex justify-center bg-red-500 border rounded-lg p-1"
-            (click)="openDeleteBrandDialog(brand)"
-          >
-            <mat-icon fontIcon="delete"></mat-icon>
-          </button>
+          <div class="w-30 mx-auto flex flex-row gap-2">
+            <button
+              class="flex justify-center bg-yellow-300 border rounded-lg p-1"
+              (click)="openEditBrandDialog(brand)"
+            >
+              <mat-icon fontIcon="edit"></mat-icon>
+            </button>
+            <button
+              class="flex justify-center bg-red-500 border rounded-lg p-1"
+              (click)="openDeleteBrandDialog(brand)"
+            >
+              <mat-icon fontIcon="delete"></mat-icon>
+            </button>
+          </div>
         </div>
       </div>
     </div>

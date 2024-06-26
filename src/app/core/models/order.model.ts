@@ -10,7 +10,7 @@ export interface Order {
   orderTotal: number;
   date: string;
   status: string;
-  tracking?: string;
+  tracking?: Tracking;
   customer: { firstName: string; lastName: string };
   cart: Cart;
   shippingAddress?: any;
@@ -18,4 +18,11 @@ export interface Order {
   card?: Card;
   shippingMethodId: number;
   shippingMethod?: any;
+}
+
+export interface Tracking {
+  id?: string;
+  tracking_number: string;
+  carrier: 'UPS' | 'USPS' | 'FEDEX';
+  email_sent: boolean;
 }

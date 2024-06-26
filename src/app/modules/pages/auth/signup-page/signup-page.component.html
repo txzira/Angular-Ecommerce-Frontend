@@ -1,70 +1,163 @@
-<div class="w-full h-full" *ngIf="!registrationResponse">
-  <div class="w-2/3 md:w-1/3 h-full mx-auto flex flex-col justify-center">
-    <h1 class="mx-auto">Sign-Up</h1>
-    <form
-      [formGroup]="credentials"
-      class="flex flex-col"
-      (ngSubmit)="register()"
-    >
-      <mat-form-field>
-        <mat-label>Email</mat-label>
-        <input id="email" matInput formControlName="email" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>First Name</mat-label>
-        <input id="firstName" matInput formControlName="firstName" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Last Name</mat-label>
-        <input id="lastName" matInput formControlName="lastName" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Password</mat-label>
-        <input
-          id="password"
-          matInput
-          formControlName="password"
-          placeholder="*******"
-          type="password"
-        />
-      </mat-form-field>
-      <button type="submit" mat-raised-button color="primary">Signup</button>
-      <div class="mx-auto pt-3">
-        <p>
-          <span>
-            Already have an account?&nbsp;<a
-              href="/auth/login"
-              class="text-blue-600 underline"
-              >Log In</a
-            >.
-          </span>
-        </p>
-      </div>
-    </form>
-    <div class="py-5">
-      <mat-divider> </mat-divider>
+<div class="w-full h-full">
+  <div class="w-4/5 sm:w-1/3 h-full mx-auto flex flex-col justify-center">
+    <div class="mx-auto w-full bg-white p-5 border shadow-lg rounded-md">
+      <h1 class="!font-medium">Sign Up</h1>
+      <ng-container *ngIf="!registrationResponse; else registrationMessage">
+        <form
+          [formGroup]="credentials"
+          class="flex flex-col"
+          (ngSubmit)="register()"
+        >
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input id="email" matInput formControlName="email" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>First Name</mat-label>
+            <input id="firstName" matInput formControlName="firstName" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Last Name</mat-label>
+            <input id="lastName" matInput formControlName="lastName" />
+          </mat-form-field>
+          <mat-form-field class="mb-[22px]" subscriptSizing="dynamic">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" />
+            <mat-error
+              *ngIf="credentials.get('password')?.errors"
+              class="flex flex-col"
+            >
+              <ul style="list-style-type: circle">
+                <li
+                  *ngIf="credentials.controls['password']?.hasError('required')"
+                >
+                  Required
+                </li>
+                <li
+                  *ngIf="
+                    credentials.controls['password']?.hasError('minlength')
+                  "
+                >
+                  Minimum password length must be at least 8 characters.
+                </li>
+                <li *ngIf="credentials.get('password')?.hasError('maxlength')">
+                  Maximum password length must be no more than 32 characters.
+                </li>
+                <li
+                  *ngIf="credentials.controls['password']?.hasError('pattern')"
+                >
+                  <ul>
+                    <li
+                      *ngIf="!credentials.get('password')?.errors?.['passwordStrength'].hasUpperCase"
+                    >
+                      Password must contain an uppercase letter.
+                    </li>
+                    <li
+                      *ngIf="!credentials.get('password')?.errors?.['passwordStrength'].hasLowerCase"
+                    >
+                      Password must contain a lowercase letter.
+                    </li>
+                    <li
+                      *ngIf="!credentials.get('password')?.errors?.['passwordStrength'].hasNumeric"
+                    >
+                      Password must contain a number.
+                    </li>
+                    <li
+                      *ngIf="!credentials.get('password')?.errors?.['passwordStrength'].hasSymbol"
+                    >
+                      Password must contain a symbol (E.g. !&#64;#$%^&*( )[ ]).
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="mb-[22px]" subscriptSizing="dynamic">
+            <mat-label>Re-Type Password</mat-label>
+            <input matInput type="password" formControlName="retypedPassword" />
+            <mat-error *ngIf="credentials.controls['retypedPassword']?.errors">
+              <ul style="list-style-type: circle">
+                <li
+                  *ngIf="credentials.controls['password']?.hasError('required')"
+                >
+                  Required
+                </li>
+                <li
+                  *ngIf="
+                    credentials.controls['retypedPassword']?.hasError(
+                      'passwordsNotEquivalent'
+                    )
+                  "
+                >
+                  Passwords mismatch.
+                </li>
+              </ul>
+            </mat-error>
+          </mat-form-field>
+          <button
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="credentials.invalid"
+          >
+            Signup
+          </button>
+          <div class="mx-auto pt-3">
+            <p>
+              <span>
+                Already have an account?&nbsp;<a
+                  href="/auth/login"
+                  class="text-blue-600 underline"
+                  >Log In</a
+                >.
+              </span>
+            </p>
+          </div>
+        </form>
+        <div class="py-5">
+          <mat-divider> </mat-divider>
+        </div>
+        <app-google-button></app-google-button>
+      </ng-container>
     </div>
-    <app-google-button></app-google-button>
   </div>
 </div>
-<div class="w-full h-full" *ngIf="registrationResponse">
-  <div class="flex flex-col w-1/3 mx-auto">
-    {{ registrationResponse.message }}
-    <div *ngIf="!registrationResponse.success">
-      <button mat-raised-button (click)="back()"><-- Back</button>
-      <div>
-        Already have an account?
-        <button mat-raised-button color="primary">
-          <a href="/auth/login">Login</a>
-        </button>
-      </div>
-    </div>
-    <button
-      mat-raised-button
-      color="primary"
-      *ngIf="registrationResponse.success"
-    >
-      <a href="/auth/login">Login</a>
-    </button>
+<ng-template #registrationMessage>
+  <div *ngIf="state === 'failed' || state === 'success'">
+    <p>
+      {{ registrationResponse?.message }}
+    </p>
   </div>
-</div>
+
+  <div *ngIf="state === 'unverified'">
+    <div class="flex flex-col w-full mx-auto">
+      <p>An unverified account exists. Resend verification email?</p>
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="resendVerificationEmail()"
+      >
+        Resend Email
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!registrationResponse?.success">
+    <button mat-raised-button (click)="back()" class="my-2"><-- Back</button>
+    <p class="text-center">
+      Already have an account?&nbsp;<a
+        href="/auth/login"
+        class="text-blue-600 underline"
+        >Sign In</a
+      >.
+    </p>
+  </div>
+  <button
+    mat-raised-button
+    color="primary"
+    *ngIf="registrationResponse?.success"
+  >
+    <a href="/auth/login">Login</a>
+  </button>
+</ng-template>

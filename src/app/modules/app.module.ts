@@ -73,6 +73,8 @@ import { NavCartModalComponent } from './_layout/components/nav-bar/components/n
 import { CapitalizeFirstLetterPipe } from '../shared/pipes/capitalize-first-letter/capitalize-first-letter.pipe';
 import { ColorFirstAttributePipe } from '../shared/pipes/color-first-attribute/color-first-attribute.pipe';
 import { ResetPasswordPageComponent } from './pages/auth/reset-password-page/reset-password-page.component';
+import { AdminOrderDetailsModalComponent } from './pages/admin/orders/components/order-details-modal/order-details-modal.component';
+import { ConfirmSendTrackingEmailComponent } from './pages/admin/orders/components/order-details-modal/components/confirm-send-tracking-email/confirm-send-tracking-email.component';
 
 @NgModule({
   declarations: [
@@ -136,6 +138,8 @@ import { ResetPasswordPageComponent } from './pages/auth/reset-password-page/res
     CapitalizeFirstLetterPipe,
     ColorFirstAttributePipe,
     ResetPasswordPageComponent,
+    AdminOrderDetailsModalComponent,
+    ConfirmSendTrackingEmailComponent,
   ],
   imports: [
     BrowserModule,

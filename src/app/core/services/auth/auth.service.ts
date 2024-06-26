@@ -76,15 +76,21 @@ export class AuthService {
     });
   }
 
-  verifyEmail(token: string): Observable<any> {
-    return this.http.get(`${this.AUTH_URL}/verify`, {
-      observe: 'response',
-      params: { token },
+  verifyEmail(userId: string, tokenId: string): Observable<any> {
+    return this.http.put(`${this.AUTH_URL}/verify-email`, {
+      tokenId,
+      userId,
     });
   }
 
   sendForgotPasswordEmail(email: string): Observable<any> {
     return this.http.post<any>(`${this.AUTH_URL}/forgot-password`, {
+      email,
+    });
+  }
+
+  resendEmailVerificationLink(email: string): Observable<any> {
+    return this.http.put<any>(`${this.AUTH_URL}/resend-email-verification`, {
       email,
     });
   }

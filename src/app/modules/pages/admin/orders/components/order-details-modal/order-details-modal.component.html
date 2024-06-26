@@ -1,0 +1,169 @@
+<div class="w-full h-full p-10 mx-auto overflow-y-scroll" *ngIf="order">
+  <div class="flex flex-row justify-between">
+    <h1>Order No. {{ order.id }}</h1>
+    <button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="flex flex-col gap-5">
+    <div class="flex flex-row gap-36">
+      <section>
+        <h2>Customer Contact</h2>
+        <p>{{ order.customerEmail }}</p>
+      </section>
+      <section>
+        <h2>Order Date</h2>
+        <p>{{ order.date | date }}</p>
+      </section>
+      <section>
+        <h2>Order Status</h2>
+        <p>{{ order.status }}</p>
+      </section>
+    </div>
+    <div class="flex flex-row gap-36">
+      <section>
+        <h2>Shipping Address</h2>
+        <div>
+          <p class="!m-0">
+            {{ order.shippingAddress.firstName }}&nbsp;{{
+              order.shippingAddress.lastName
+            }}
+          </p>
+          <p class="!m-0">
+            {{ order.shippingAddress.streetAddress
+            }}{{
+              order.shippingAddress.streetAddress2
+                ? " " + order.shippingAddress.streetAddress2
+                : ""
+            }}
+          </p>
+          <p class="!m-0">
+            {{ order.shippingAddress.city }}, {{ order.shippingAddress.state }}
+            {{ order.shippingAddress.zipCode }}
+          </p>
+          <p class="!m-0">{{ order.shippingAddress.country }}</p>
+        </div>
+      </section>
+      <section>
+        <h2>Payment Details</h2>
+        <div>
+          <p>
+            {{ order.card?.brand }}&nbsp;●●●●●●●●●●●●{{
+              order.card?.lastFourDigits
+            }}
+          </p>
+        </div>
+      </section>
+    </div>
+    <section>
+      <h2>Tracking</h2>
+      <form [formGroup]="tracking">
+        <div class="flex gap-5">
+          <mat-form-field>
+            <mat-label for="tracking_number">Tracking Number</mat-label>
+            <input
+              matInput
+              id="tracking_number"
+              formControlName="tracking_number"
+            />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label for="carrier">Carrier</mat-label>
+
+            <mat-select id="carrier" formControlName="carrier">
+              <option value="UPS">UPS</option>
+              <option value="USPS">USPS</option>
+              <option value="FEDEX">FedEx</option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="flex flex-row gap-5">
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="sendTracking()"
+          >
+            Send Tracking
+          </button>
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            [disabled]="!trackingExist"
+            (click)="openConfirmationDialog()"
+          >
+            Send Tracking Email
+          </button>
+        </div>
+      </form>
+    </section>
+    <section>
+      <h2>Order Summary</h2>
+      <div class="flex flex-col">
+        <div class="flex flex-row text-xl font-medium items-center">
+          <div class="w-20"></div>
+          <div class="flex-1">Product</div>
+          <div class="w-56">Variant</div>
+          <div class="w-36">Price</div>
+          <div class="w-36">Quantity</div>
+          <div class="w-36">Total</div>
+        </div>
+
+        <div
+          class="flex flex-row items-center text-lg"
+          *ngFor="let cartItem of order.cart.cartItems"
+        >
+          <div class="w-20 h-20">
+            <img
+              [src]="cartItem?.image"
+              alt="cart-item-image"
+              class="object-contain w-full h-full"
+            />
+          </div>
+          <div class="flex-1">{{ cartItem.productName }}</div>
+          <div class="w-56">{{ cartItem.variantName }}</div>
+          <div class="w-36">{{ cartItem.price | currency }}</div>
+          <div class="w-36">{{ cartItem.quantity }}</div>
+          <div class="w-36 font-medium">
+            {{ cartItem.price * cartItem.quantity | currency }}
+          </div>
+        </div>
+        <mat-divider />
+        <div class="flex flex-row text-xl font-medium items-center">
+          <div class="w-20"></div>
+          <div class="flex-1"></div>
+          <div class="w-56"></div>
+          <div class="w-36"></div>
+          <div class="w-36">Sub-total:</div>
+          <div class="w-36">{{ order.cartTotal | currency }}</div>
+        </div>
+        <div class="flex flex-row text-xl font-medium items-center">
+          <div class="w-20"></div>
+          <div class="flex-1"></div>
+          <div class="w-56"></div>
+          <div class="w-36"></div>
+          <div class="w-36">Shipping:</div>
+          <div class="w-36">{{ order.shippingTotal | currency }}</div>
+        </div>
+        <div class="flex flex-row text-xl font-medium items-center">
+          <div class="w-20"></div>
+          <div class="flex-1"></div>
+          <div class="w-56"></div>
+          <div class="w-36"></div>
+          <div class="w-36">Taxes:</div>
+          <div class="w-36">{{ order.taxTotal | currency }}</div>
+        </div>
+        <mat-divider />
+        <div class="flex flex-row text-xl font-medium items-center">
+          <div class="w-20"></div>
+          <div class="flex-1"></div>
+          <div class="w-56"></div>
+          <div class="w-36"></div>
+          <div class="w-36">Total:</div>
+          <div class="w-36">{{ order.orderTotal | currency }}</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
