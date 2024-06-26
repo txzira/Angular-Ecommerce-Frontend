@@ -84,7 +84,7 @@ export class CartService {
     this.cart.next({ cartItems: filteredItems });
     this.localService.saveLocalStorageData(
       'cart',
-      JSON.stringify({ items: filteredItems })
+      JSON.stringify({ cartItems: filteredItems })
     );
 
     this._snackBar.open('1 item removed from cart.', 'Ok', { duration: 3000 });
@@ -116,7 +116,7 @@ export class CartService {
       this.cart.next({ cartItems: filteredItems });
       this.localService.saveLocalStorageData(
         'cart',
-        JSON.stringify({ items: filteredItems })
+        JSON.stringify({ cartItems: filteredItems })
       );
       this._snackBar.open('1 item removed from cart.', 'Ok', {
         duration: 3000,
