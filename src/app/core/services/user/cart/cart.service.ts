@@ -25,7 +25,6 @@ export class CartService {
   }
 
   addToCart(item: CartItem): void {
-    console.log(this.getCart());
     const cartItems = [...this.getCart().cartItems];
     const itemInCart = cartItems.find((_item) => _item.id === item.id);
     const attributes = item.variant?.productVariantAttributes.map(
