@@ -19,7 +19,6 @@ export class ProductCardComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    console.log(this.product);
     if (this.product) {
       this.available = this.product.available;
       this.price = this.product.price;
@@ -27,8 +26,9 @@ export class ProductCardComponent implements OnInit {
       if (this.product.productVariants.length) {
         for (let i = 0; i < this.product.attributeGroups.length; i++) {
           if (
-            this.product.attributeGroups[i].name.toLowerCase() === 'colors' ||
-            this.product.attributeGroups[i].name.toLowerCase() === 'styles'
+            ['colors', 'color', 'styles', 'style'].includes(
+              this.product.attributeGroups[i].name.toLowerCase()
+            )
           ) {
             this.colors = this.product.attributeGroups[i].attributes!;
           }
@@ -49,8 +49,6 @@ export class ProductCardComponent implements OnInit {
   }
 
   hoverImg(color: Attribute): void {
-    // color.images![0].url, color.name
-
     if (this.product) {
       this.displayImage = color.images?.[0]?.url;
       this.queryParams.colorId = color.id;
@@ -82,11 +80,9 @@ export class ProductCardComponent implements OnInit {
         return found;
       });
       if (available) {
-        console.log('sfa');
         this.available = true;
         this.price = available.price;
       } else {
-        console.log('eas');
         this.available = false;
         // setPrice(available.price);
       }
