@@ -1,8 +1,8 @@
-<div class="flex flex-col w-[1000px] h-full overflow-x-hidden">
+<div class="flex flex-col w-[1000px] h-full overflow-x-hidden relative">
   <div class="flex flex-col h-20 shadow-md sticky top-0 p-5 bg-white z-50">
     <div class="flex flex-row items-center justify-between">
       <h1 class="!m-0">Edit Variants</h1>
-      <button class="flex items-center">
+      <button class="flex items-center" (click)="closeModal()">
         <mat-icon class="scale-125" fontIcon="close"></mat-icon>
       </button>
     </div>
@@ -168,11 +168,6 @@
           <mat-divider class="w-full" *ngIf="!lastItem"></mat-divider>
         </div>
       </div>
-
-      <div>
-        {{ attributeGroups | json }}
-      </div>
-      <div>{{ attributesToDelete | json }}</div>
     </div>
     <div class="p-5 flex-grow">
       <div class="flex flex-row justify-between">
@@ -187,7 +182,7 @@
       </div>
       <div class="border shadow-lg rounded-md">
         <div class="flex flex-row items-center p-3 gap-4">
-          <div class="flex items-center h-10 tracking-wider">IMAGE</div>
+          <div class="flex items-center h-10 tracking-wider w-10">IMAGE</div>
           <div class="flex items-center h-10 tracking-wider w-96">OPTIONS</div>
           <div class="flex items-center h-10 tracking-wider w-20">QUANTITY</div>
           <div class="flex items-center h-10 tracking-wider w-20">PRICE</div>
@@ -203,7 +198,14 @@
           *ngFor="let variant of variants"
           class="flex flex-row items-center p-3 gap-4"
         >
-          <div class="flex items-center h-10 tracking-wider">IMAGE</div>
+          <div class="flex items-center h-10 w-10 tracking-wider">
+            <img
+              class="object-contain w-full h-full"
+              [src]="
+                variant.variantImages.length ? variant.variantImages[0].url : ''
+              "
+            />
+          </div>
           <div class="flex items-center h-10 tracking-wider w-96">
             <div
               class="flex flex-row items-center text-xs font-medium"
@@ -263,7 +265,7 @@
   </div>
 
   <div
-    class="flex flex-row justify-end h-20 pr-5 py-5 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] items-center bottom-0 sticky gap-4 bg-white z-50"
+    class="flex flex-row justify-end h-20 pr-5 py-5 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] items-center bottom-0 sticky gap-4 bg-white z-50 mt-auto"
   >
     <button mat-raised-button>Cancel</button>
 

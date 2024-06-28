@@ -188,6 +188,9 @@ export class AdminEditProductPageComponent implements OnInit {
       stock: new FormControl(responseProduct.quantity, [Validators.required]),
       description: new FormControl(responseProduct.description),
       active: new FormControl(responseProduct.active, [Validators.required]),
+      available: new FormControl(responseProduct.available, [
+        Validators.required,
+      ]),
       price: new FormControl(responseProduct.price, [Validators.required]),
       sku: new FormControl(responseProduct.sku),
       brand: new FormControl(

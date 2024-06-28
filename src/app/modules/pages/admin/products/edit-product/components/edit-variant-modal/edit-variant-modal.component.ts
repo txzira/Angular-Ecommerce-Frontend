@@ -5,7 +5,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProductVariant } from 'src/app/core/models/product.model';
 
 @Component({
@@ -15,9 +15,16 @@ import { ProductVariant } from 'src/app/core/models/product.model';
 export class AdminEditVariantModalComponent implements OnInit {
   variant: ProductVariant = this.data.variant;
   variantForm!: FormGroup;
+  images: {
+    id?: number;
+    imageName: string;
+    imagePath?: string | ArrayBuffer | null | undefined;
+    url?: string;
+  }[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
+    private dialogRef: MatDialogRef<AdminEditVariantModalComponent>,
     @Inject(MAT_DIALOG_DATA) private data: any
   ) {}
 
@@ -36,6 +43,19 @@ export class AdminEditVariantModalComponent implements OnInit {
         ])
       );
     }
+    for (let i = 0; i < this.variant.variantImages.length; i++) {
+      let imageName: string[] | string =
+        this.variant.variantImages[i].publicId.split('/');
+      imageName = imageName[imageName.length - 1];
+      this.images.push({
+        id: this.variant.variantImages[i].id,
+        imageName,
+        url: this.variant.variantImages[i].url,
+      });
+    }
     console.log(this.variant);
+  }
+  closeModal() {
+    this.dialogRef.close();
   }
 }

@@ -12,7 +12,7 @@
           }}<span *ngIf="!lastItem">,</span>
         </span>
       </h1>
-      <button class="flex items-center">
+      <button class="flex items-center" (click)="closeModal()">
         <mat-icon class="scale-125" fontIcon="close"></mat-icon>
       </button>
     </div>
@@ -39,7 +39,10 @@
       </mat-form-field>
     </div>
     <h2>Variant Details</h2>
-    <app-images-container></app-images-container>
+    <app-images-container
+      [uniqueId]="'Variant-Image-Container'"
+      [images]="images"
+    ></app-images-container>
     <div class="flex flex-row">
       <mat-form-field>
         <mat-label>SKU</mat-label>
@@ -58,5 +61,4 @@
       <textarea matInput formControlName="description"></textarea>
     </mat-form-field>
   </form>
-  {{ variant | json }}
 </div>

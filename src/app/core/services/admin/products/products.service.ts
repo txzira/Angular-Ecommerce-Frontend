@@ -96,7 +96,7 @@ export class AdminProductsService {
     product: Product,
     productImages: any
   ): Observable<Product> {
-    return this.httpClient.post<Product>(
+    return this.httpClient.put<Product>(
       `${this.ADMIN_PRODUCTS_URL}/edit-product/${productId}`,
       { product, productImages },
       this.httpOptions

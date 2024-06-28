@@ -10,7 +10,9 @@
     class="flex flex-row justify-between w-full"
     [formGroup]="addProductForm"
   >
-    <div class="w-[15%] sticky top-5 h-min border rounded-xl p-3 shadow-md">
+    <div
+      class="w-[15%] sticky top-5 h-min border rounded-xl p-3 shadow-md bg-white"
+    >
       <ul>
         <li class="p-2">
           <a (click)="navigateToSection('details')">Details</a>
@@ -28,7 +30,7 @@
     <div class="flex flex-col gap-5 w-[60%]">
       <div
         id="details"
-        class="w-full flex flex-col border rounded-xl p-3 shadow-md"
+        class="w-full flex flex-col border rounded-xl p-3 shadow-md bg-white"
       >
         <h3
           class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
@@ -70,7 +72,7 @@
       </div>
       <div
         id="price"
-        class="w-full flex flex-col border rounded-xl p-3 shadow-md"
+        class="w-full flex flex-col border rounded-xl p-3 shadow-md bg-white"
       >
         <h3
           class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
@@ -85,7 +87,7 @@
 
       <div
         id="imageGallery"
-        class="w-full flex flex-col border rounded-xl p-3 shadow-md"
+        class="w-full flex flex-col border rounded-xl p-3 shadow-md bg-white"
       >
         <h3
           class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
@@ -100,7 +102,7 @@
       </div>
     </div>
     <div class="flex flex-col gap-5 sticky top-5 h-min w-[20%]">
-      <div class="flex flex-col border rounded-xl p-3 shadow-md">
+      <div class="flex flex-col border rounded-xl p-3 shadow-md bg-white">
         <button
           mat-raised-button
           class="!bg-green-500 !text-white"
@@ -110,9 +112,10 @@
         >
           Save Changes
         </button>
-        <mat-checkbox formControlName="active">Available</mat-checkbox>
+        <mat-checkbox formControlName="active">Active</mat-checkbox>
+        <mat-checkbox formControlName="available">Available</mat-checkbox>
       </div>
-      <div class="flex flex-col border rounded-xl p-3 shadow-md">
+      <div class="flex flex-col border rounded-xl p-3 shadow-md bg-white">
         <h3
           class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
         >
@@ -127,7 +130,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="flex flex-col border rounded-xl p-3 shadow-md">
+      <div class="flex flex-col border rounded-xl p-3 shadow-md bg-white">
         <h3
           class="!text-sm !font-semibold underline underline-offset-8 text-gray-600 !tracking-wider"
         >
