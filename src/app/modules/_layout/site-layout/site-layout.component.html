@@ -1,6 +1,7 @@
 <app-nav-bar [cart]="cart"></app-nav-bar>
+
 <div
-  class="h-[calc(100vh-56px)] md:h-[calc(100vh-80px)]"
+  class="h-[calc(100vh-56px)] md:h-[calc(100vh-80px)] relative"
   id="content-wrap"
   style="
     background-image: linear-gradient(
@@ -10,5 +11,9 @@
       url('/assets/images/mascots.png');
   "
 >
+  <div class="absolute top-0 w-full z-20 text-center bg-red-500 text-white">
+    This is a test site, server may need to cold start, please wait.
+  </div>
+
   <router-outlet></router-outlet>
 </div>
