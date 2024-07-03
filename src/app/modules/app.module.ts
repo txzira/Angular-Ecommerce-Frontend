@@ -75,6 +75,7 @@ import { ColorFirstAttributePipe } from '../shared/pipes/color-first-attribute/c
 import { ResetPasswordPageComponent } from './pages/auth/reset-password-page/reset-password-page.component';
 import { AdminOrderDetailsModalComponent } from './pages/admin/orders/components/order-details-modal/order-details-modal.component';
 import { ConfirmSendTrackingEmailComponent } from './pages/admin/orders/components/order-details-modal/components/confirm-send-tracking-email/confirm-send-tracking-email.component';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -140,6 +141,7 @@ import { ConfirmSendTrackingEmailComponent } from './pages/admin/orders/componen
     ResetPasswordPageComponent,
     AdminOrderDetailsModalComponent,
     ConfirmSendTrackingEmailComponent,
+    LoaderComponent,
   ],
   imports: [
     BrowserModule,

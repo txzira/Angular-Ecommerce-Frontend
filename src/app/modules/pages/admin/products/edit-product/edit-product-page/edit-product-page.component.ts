@@ -35,6 +35,7 @@ export class AdminEditProductPageComponent implements OnInit {
     imagePath?: string | ArrayBuffer | null | undefined;
     url?: string;
   }[] = [];
+  editIsLoading = false;
 
   constructor(
     private productsService: ProductsService,
@@ -60,6 +61,7 @@ export class AdminEditProductPageComponent implements OnInit {
     this.brandsService.getAllBrands().subscribe((_brands) => {
       this.brands = _brands;
     });
+
     this.adminProductsService
       .getAttrGroupByProdId(productId)
       .subscribe(
@@ -83,7 +85,9 @@ export class AdminEditProductPageComponent implements OnInit {
   }
 
   editProduct(): void {
+    this.editIsLoading = true;
     const productId = this.route.snapshot.paramMap.get('productId');
+
     let slug = this.editProductForm.value.slug!;
     if (slug[slug.length - 1] === '-') {
       slug = slug.substring(0, slug.length - 1);
@@ -94,16 +98,19 @@ export class AdminEditProductPageComponent implements OnInit {
       .editProduct(productId!, this.editProductForm.value, this.productImages)
       .subscribe({
         next: (_product) => {
+          this.editIsLoading = false;
           this.product = _product;
           this.snackBar.open(
             `\u2705${_product.name} successfully edited.`,
             'Ok.',
             {
-              duration: 3000,
+              duration: 10000,
             }
           );
         },
         error: (response) => {
+          this.editIsLoading = false;
+
           console.log(response);
           this.snackBar.open(
             `\u274cFailed to edit ${this.product.name} .`,
