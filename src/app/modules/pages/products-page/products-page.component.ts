@@ -1,7 +1,5 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
 import { Category } from 'src/app/core/models/category.model';
 import { Product } from 'src/app/core/models/product.model';
 import { ProductsFilterService } from 'src/app/core/services/filters/products-filter.service';

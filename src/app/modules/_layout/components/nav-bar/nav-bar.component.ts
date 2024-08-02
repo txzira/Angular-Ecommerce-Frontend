@@ -28,11 +28,11 @@ export class NavBarComponent implements OnInit {
   }
   showStaticLogo(): void {
     (document.getElementById('logo') as HTMLImageElement).src =
-      '/assets/images/pseudo-corp.png';
+      '/assets/images/logo.png';
   }
   showLogoAnimation(): void {
     (document.getElementById('logo') as HTMLImageElement).src =
-      '/assets/images/pseudo-corp.gif';
+      '/assets/images/logo.gif';
   }
   onIsOpenUpdated() {
     this.navBarService.changeIsOpen();
