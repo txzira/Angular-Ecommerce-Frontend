@@ -3,20 +3,19 @@
     <div class="h-full flex flex-row justify-between overflow-y-scroll p-10">
       <section class="w-3/5 mx-auto">
         <form
+          *ngIf="checkoutForm"
           [formGroup]="checkoutForm"
           class="bg-white"
           id="payment-form"
           (ngSubmit)="submitPaymentForm()"
         >
           <mat-stepper
-            [formGroup]="checkoutForm"
             orientation="horizontal"
             linear
             (selectionChange)="checkStep($event)"
           >
             <!-- Contact Form -->
             <mat-step
-              formControlName="email"
               [stepControl]="checkoutForm.get('email')!"
               label="Contact Information"
             >
@@ -34,7 +33,8 @@
                 <button
                   mat-button
                   matStepperNext
-                  [disabled]="checkoutForm.get('email')!.invalid"
+                  type="button"
+                  [disabled]="checkoutForm.get('email')?.invalid"
                 >
                   Next
                 </button>
@@ -42,23 +42,24 @@
             </mat-step>
             <!-- Shipping Address Form -->
             <mat-step
-              formGroupName="shipping"
               [stepControl]="checkoutForm.get('shipping')!"
               label="Shipping Address"
             >
               <p>Required Fields *</p>
               <app-google-places-autocomplete
+                controlKey="shipping"
                 title=""
-                [checkoutForm]="checkoutForm"
-                (formEvent)="receiveShippingForm($event)"
                 (selectCountryEvent)="receiveCountrySelection($event)"
               ></app-google-places-autocomplete>
               <div class="flex flex-row justify-between">
-                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperPrevious type="button">
+                  Back
+                </button>
                 <button
                   mat-button
                   matStepperNext
-                  [disabled]="checkoutForm.get('shipping')!.invalid"
+                  type="button"
+                  [disabled]="checkoutForm.get('shipping')?.invalid"
                 >
                   Next
                 </button>
@@ -95,18 +96,20 @@
                 </mat-radio-group>
               </div>
               <div class="flex flex-row justify-between">
-                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperPrevious type="button">
+                  Back
+                </button>
                 <button
                   mat-button
                   matStepperNext
                   [disabled]="!selectedShippingMethod"
+                  type="button"
                 >
                   Next
                 </button>
               </div>
             </mat-step>
             <mat-step
-              formGroupName="billing"
               [stepControl]="checkoutForm.get('billing')!"
               label="Billing Address"
             >
@@ -118,11 +121,11 @@
               </mat-checkbox>
               <!-- Billing Address Form -->
               <app-google-places-autocomplete
-                *ngIf="!shippingSameAsBilling"
+                [ngClass]="{ hidden: shippingSameAsBilling }"
+                controlKey="billing"
                 title=""
                 [isShipping]="false"
                 [phoneRequired]="false"
-                (formEvent)="receiveBillingForm($event)"
               ></app-google-places-autocomplete>
               <div class="flex flex-row justify-between">
                 <button mat-button matStepperPrevious>Back</button>
@@ -170,6 +173,7 @@
               <div id="payment-message" class="hidden"></div>
             </mat-step>
           </mat-stepper>
+          <pre>{{ checkoutForm.value | json }}</pre>
         </form>
       </section>
 
@@ -296,22 +300,20 @@
               <button
                 mat-button
                 matStepperNext
-                [disabled]="checkoutForm.get('email')!.invalid"
+                [disabled]="checkoutForm.get('email')?.invalid"
               >
                 Next
               </button>
             </div>
           </mat-step>
           <mat-step
-            formGroupName="shipping"
             [stepControl]="checkoutForm.get('shipping')!"
             label="Shipping Address"
           >
             <!-- Shipping Address Form -->
             <app-google-places-autocomplete
               title=""
-              [checkoutForm]="checkoutForm"
-              (formEvent)="receiveShippingForm($event)"
+              controlKey="shipping"
               (selectCountryEvent)="receiveCountrySelection($event)"
             ></app-google-places-autocomplete>
 
@@ -320,7 +322,7 @@
               <button
                 mat-button
                 matStepperNext
-                [disabled]="checkoutForm.get('shipping')!.invalid"
+                [disabled]="checkoutForm.get('shipping')?.invalid"
               >
                 Next
               </button>
@@ -363,7 +365,6 @@
             </button>
           </mat-step>
           <mat-step
-            formGroupName="billing"
             [stepControl]="checkoutForm.get('billing')!"
             label="Billing Address"
           >
@@ -376,11 +377,11 @@
               </mat-checkbox>
               <!-- Billing Address Form -->
               <app-google-places-autocomplete
-                *ngIf="!shippingSameAsBilling"
+                [ngClass]="{ hidden: shippingSameAsBilling }"
                 title=""
+                controlKey="billing"
                 [isShipping]="false"
                 [phoneRequired]="false"
-                (formEvent)="receiveBillingForm($event)"
               ></app-google-places-autocomplete>
             </div>
             <div>

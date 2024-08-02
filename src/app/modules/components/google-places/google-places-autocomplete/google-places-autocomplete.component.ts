@@ -6,57 +6,68 @@ import {
   OnInit,
   ViewChild,
   EventEmitter,
+  inject,
+  OnDestroy,
 } from '@angular/core';
 import {
-  FormBuilder,
+  ControlContainer,
   FormControl,
   FormGroup,
   Validators,
 } from '@angular/forms';
 import countries from '../../../../../assets/countries.json';
-import { ShippingMethod } from 'src/app/core/models/shippingMethod.model';
 
 @Component({
   selector: 'app-google-places-autocomplete',
   templateUrl: './google-places-autocomplete.component.html',
   styleUrls: ['./google-places-autocomplete.component.css'],
+  viewProviders: [
+    {
+      provide: ControlContainer,
+      useFactory: () => inject(ControlContainer, { skipSelf: true }),
+    },
+  ],
 })
-export class GooglePlacesAutocompleteComponent implements OnInit {
-  @ViewChild('inputField') inputField!: ElementRef;
-  @Input() checkoutForm!: FormGroup;
+export class GooglePlacesAutocompleteComponent implements OnInit, OnDestroy {
+  @ViewChild('map', { static: false }) mapElement!: ElementRef;
   @Input() placeholder = '';
   @Input() title = '';
   @Input() phoneRequired = true;
   @Input() isShipping = true;
-  @Output() formEvent = new EventEmitter<FormGroup>();
+  @Input({ required: true }) controlKey = '';
   @Output() selectCountryEvent = new EventEmitter<string>();
+  parentContainer = inject(ControlContainer);
+  get parentFormGroup() {
+    return this.parentContainer.control as FormGroup;
+  }
 
-  form!: FormGroup;
   autocomplete: google.maps.places.Autocomplete | undefined;
   countriesList = countries;
   statesList: any[] = [];
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      firstName: ['', [Validators.required]],
-      middleName: [''],
-      lastName: ['', [Validators.required]],
-      ...(this.phoneRequired
-        ? { phone: ['', [Validators.required]] }
-        : { phone: [''] }),
-      country: ['', [Validators.required]],
-      address1: ['', [Validators.required]],
-      address2: [''],
-      city: ['', [Validators.required]],
-      state: ['', [Validators.required]],
-      postalCode: ['', [Validators.required]],
-    });
-    this.formEvent.emit(this.form);
+    this.parentFormGroup.addControl(
+      this.controlKey,
+      new FormGroup({
+        firstName: new FormControl('', Validators.required),
+        middleName: new FormControl(''),
+        lastName: new FormControl('', Validators.required),
+        ...(this.phoneRequired
+          ? { phone: new FormControl('', Validators.required) }
+          : { phone: new FormControl('') }),
+        country: new FormControl('', Validators.required),
+        address1: new FormControl('', Validators.required),
+        address2: new FormControl(''),
+        city: new FormControl('', Validators.required),
+        state: new FormControl('', Validators.required),
+        postalCode: new FormControl('', Validators.required),
+      })
+    );
 
     this.autocomplete = new google.maps.places.Autocomplete(
-      this.inputField.nativeElement,
+      this.mapElement.nativeElement,
       {
         componentRestrictions: { country: 'us' },
         fields: ['address_component', 'adr_address', 'formatted_address'],
@@ -74,7 +85,7 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
           switch (addrComponents[i].types[0]) {
             case 'country':
               if (!this.isShipping)
-                this.form.patchValue({
+                this.parentFormGroup.get(this.controlKey)?.patchValue({
                   country: addrComponents[i].short_name,
                 });
               break;
@@ -91,13 +102,13 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
               );
               break;
             case 'locality':
-              this.form.patchValue({
+              this.parentFormGroup.get(this.controlKey)?.patchValue({
                 city: addrComponents[i].short_name,
               });
               break;
             case 'administrative_area_level_1':
               if (!this.isShipping)
-                this.form.patchValue({
+                this.parentFormGroup.get(this.controlKey)?.patchValue({
                   state: addrComponents[i].short_name,
                 });
               break;
@@ -118,39 +129,32 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
         }
 
         if (streetAddressBuilderMap.size > 1) {
-          this.form.patchValue({
+          this.parentFormGroup.get(this.controlKey)?.patchValue({
             address1:
               streetAddressBuilderMap.get('street_number') +
               ' ' +
               streetAddressBuilderMap.get('route'),
           });
         } else {
-          this.form.patchValue({
+          this.parentFormGroup.get(this.controlKey)?.patchValue({
             address1: streetAddressBuilderMap.get('route'),
           });
         }
 
         if (postalCodeBuilderMap.size > 1) {
-          this.form.patchValue({
+          this.parentFormGroup.get(this.controlKey)?.patchValue({
             postalCode:
               postalCodeBuilderMap.get('postal_code') +
               '-' +
               postalCodeBuilderMap.get('postal_code_suffix'),
           });
         } else {
-          this.form.patchValue({
+          this.parentFormGroup.get(this.controlKey)?.patchValue({
             postalCode: postalCodeBuilderMap.get('postal_code'),
           });
         }
       }
-      this.formEvent.emit(this.form);
     });
-    // this.checkoutForm.addControl('shipping', this.form);
-    // this.form.setParent(this.checkoutForm);
-    // this.formEvent.emit(this.form);
-    // this.form.valueChanges.subscribe((_form) => {
-    //   this.formEvent.emit(_form);
-    // });
   }
 
   showStates(event: any) {
@@ -168,7 +172,7 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.autocomplete = new google.maps.places.Autocomplete(
-      this.inputField.nativeElement,
+      this.mapElement.nativeElement,
       {
         componentRestrictions: { country: 'us' },
         fields: ['address_component', 'adr_address', 'formatted_address'],
@@ -181,12 +185,11 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
 
         const streetAddressBuilderMap = new Map();
         const postalCodeBuilderMap = new Map();
-        console.log(place.address_components);
         for (let i = 0; i < addrComponents.length; i++) {
           switch (addrComponents[i].types[0]) {
             case 'country':
               if (!this.isShipping)
-                this.form.patchValue({
+                this.parentFormGroup.get(this.controlKey)?.patchValue({
                   country: addrComponents[i].short_name,
                 });
               break;
@@ -203,13 +206,13 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
               );
               break;
             case 'locality':
-              this.form.patchValue({
+              this.parentFormGroup.get(this.controlKey)?.patchValue({
                 city: addrComponents[i].short_name,
               });
               break;
             case 'administrative_area_level_1':
               if (!this.isShipping)
-                this.form.patchValue({
+                this.parentFormGroup.get(this.controlKey)?.patchValue({
                   state: addrComponents[i].short_name,
                 });
               break;
@@ -230,32 +233,35 @@ export class GooglePlacesAutocompleteComponent implements OnInit {
         }
 
         if (streetAddressBuilderMap.size > 1) {
-          this.form.patchValue({
+          this.parentFormGroup.get(this.controlKey)?.patchValue({
             address1:
               streetAddressBuilderMap.get('street_number') +
               ' ' +
               streetAddressBuilderMap.get('route'),
           });
         } else {
-          this.form.patchValue({
+          this.parentFormGroup.get(this.controlKey)?.patchValue({
             address1: streetAddressBuilderMap.get('route'),
           });
         }
 
         if (postalCodeBuilderMap.size > 1) {
-          this.form.patchValue({
+          this.parentFormGroup.get(this.controlKey)?.patchValue({
             postalCode:
               postalCodeBuilderMap.get('postal_code') +
               '-' +
               postalCodeBuilderMap.get('postal_code_suffix'),
           });
         } else {
-          this.form.patchValue({
+          this.parentFormGroup.get(this.controlKey)?.patchValue({
             postalCode: postalCodeBuilderMap.get('postal_code'),
           });
         }
       }
-      this.formEvent.emit(this.form);
     });
+  }
+
+  ngOnDestroy() {
+    this.parentFormGroup.removeControl(this.controlKey);
   }
 }

@@ -1,9 +1,9 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Stripe, StripeElements, loadStripe } from '@stripe/stripe-js';
-import { Subscription } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { Cart, CartItem } from 'src/app/core/models/cart.model';
 import { ShippingMethod } from 'src/app/core/models/shippingMethod.model';
 import { BrowserDetectorService } from 'src/app/core/services/user/broswer-detector/browser-detector.service';
@@ -48,7 +48,6 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     private checkoutService: CheckoutService,
     private cartService: CartService,
     private shippingMethodService: ShippingMethodsService,
-    private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private router: Router,
     public browserDetectorService: BrowserDetectorService
@@ -63,8 +62,8 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
     this.stripe = await loadStripe(
       'pk_test_51JpGR9IZK4v7qkytzmvxTLa0C4AtaOLAaxGxWKBxc5CL1US3qFCf9pWfUPnc6OhkxL2Xv5s97uSjQAgv73KyDTWI006SYC716Q'
     );
-    this.checkoutForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+    this.checkoutForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
     });
   }
 
@@ -76,14 +75,6 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  receiveShippingForm(form: FormGroup): void {
-    this.checkoutForm.setControl('shipping', this.fb.group(form.controls));
-  }
-
-  receiveBillingForm(form: FormGroup): void {
-    this.checkoutForm.setControl('billing', this.fb.group(form.controls));
-  }
-
   toggleBillingAddress(): void {
     this.shippingSameAsBilling = !this.shippingSameAsBilling;
 
@@ -91,16 +82,22 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       const shippingForm = this.checkoutForm.get('shipping');
       this.checkoutForm.setControl(
         'billing',
-        this.fb.group({
-          firstName: shippingForm?.get('firstName')?.value,
-          middleName: shippingForm?.get('middleName')?.value,
-          lastName: shippingForm?.get('lastName')?.value,
-          country: shippingForm?.get('country')?.value,
-          address1: shippingForm?.get('address1')?.value,
-          address2: shippingForm?.get('address2')?.value,
-          city: shippingForm?.get('city')?.value,
-          state: shippingForm?.get('state')?.value,
-          postalCode: shippingForm?.get('postalCode')?.value,
+        this.checkoutForm.get('shipping')
+      );
+    } else {
+      this.checkoutForm.setControl(
+        'billing',
+        new FormGroup({
+          firstName: new FormControl('', Validators.required),
+          middleName: new FormControl(''),
+          lastName: new FormControl('', Validators.required),
+          phone: new FormControl(''),
+          country: new FormControl('', Validators.required),
+          address1: new FormControl('', Validators.required),
+          address2: new FormControl(''),
+          city: new FormControl('', Validators.required),
+          state: new FormControl('', Validators.required),
+          postalCode: new FormControl('', Validators.required),
         })
       );
     }
@@ -122,7 +119,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
           this.cart.cartItems,
           this.paymentIntent,
           this.selectedShippingMethod,
-          this.checkoutForm.value.shipping
+          this.checkoutForm.value?.shipping
         )
         .subscribe((response) => {
           this.stripeOrderTotal = Number(response.orderTotal) / 100;
@@ -131,7 +128,7 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
         });
   }
 
-  submitPaymentForm(): void {
+  async submitPaymentForm() {
     if (this.checkoutForm.valid && !this.disablePaymentButton) {
       let form: { email: string; shipping: any; billing: any };
       form = this.checkoutForm.value;
@@ -141,6 +138,18 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
       }
 
       if (this.stripe) {
+        const data = await firstValueFrom(
+          this.checkoutService.createOrder(
+            form.email,
+            this.cart.cartItems,
+            this.selectedShippingMethod!,
+            this.calculatedTax,
+            this.stripeOrderTotal,
+            this.paymentIntent
+          )
+        );
+        const orderId = data.order.id;
+
         this.stripe
           .confirmPayment({
             elements: this.elements,
@@ -193,13 +202,10 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
                 result.paymentIntent.status === 'processing'
               ) {
                 this.checkoutService
-                  .createOrder(
-                    { ...form.shipping, email: form.email },
+                  .updateOrder(
+                    orderId,
+                    form.shipping,
                     form.billing,
-                    this.cart.cartItems,
-                    this.selectedShippingMethod!,
-                    this.calculatedTax,
-                    this.stripeOrderTotal,
                     result.paymentIntent.id
                   )
                   .subscribe({
@@ -212,18 +218,6 @@ export class CheckoutPageComponent implements OnInit, OnDestroy {
                           email: response.order.email,
                         },
                       });
-                    },
-                    complete: () => {
-                      console.log(this.response);
-                      if (this.response.message === 'success') {
-                        this.cartService.clearCartFromCheckout();
-                        this.router.navigate(['/checkout/order-confirmation'], {
-                          queryParams: {
-                            orderNumber: this.response.order.id,
-                            email: this.response.order.email,
-                          },
-                        });
-                      }
                     },
                   });
               } else {

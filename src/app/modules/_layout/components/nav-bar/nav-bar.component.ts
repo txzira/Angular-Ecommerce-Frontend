@@ -32,7 +32,7 @@ export class NavBarComponent implements OnInit {
   }
   showLogoAnimation(): void {
     (document.getElementById('logo') as HTMLImageElement).src =
-      '/assets/images/pseudo-corp2.gif';
+      '/assets/images/pseudo-corp.gif';
   }
   onIsOpenUpdated() {
     this.navBarService.changeIsOpen();

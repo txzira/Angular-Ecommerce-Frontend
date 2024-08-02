@@ -26,8 +26,7 @@ export class CheckoutService {
   }
 
   createOrder(
-    requestShippingForm: any,
-    requestBillingForm: any,
+    email: any,
     requestCart: any,
     shippingMethod: ShippingMethod,
     calculatedTax: any,
@@ -35,12 +34,25 @@ export class CheckoutService {
     paymentIntentId: any
   ): Observable<any> {
     return this.http.post<any>(`${this.CHECKOUT_URL}/create-order`, {
-      requestShippingForm,
-      requestBillingForm,
+      email,
       requestCart,
       shippingMethod,
       calculatedTax,
       orderTotal,
+      paymentIntentId,
+    });
+  }
+
+  updateOrder(
+    orderId: number,
+    requestShippingForm: any,
+    requestBillingForm: any,
+    paymentIntentId: any
+  ): Observable<any> {
+    return this.http.post<any>(`${this.CHECKOUT_URL}/update-order`, {
+      orderId,
+      requestShippingForm,
+      requestBillingForm,
       paymentIntentId,
     });
   }
