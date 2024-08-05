@@ -1,5 +1,5 @@
 const env = {
   production: true,
-  express_server_url: 'https://54.219.133.14.nip.io',
+  express_server_url: 'https://backend.ecommerce-webapp.store',
 };
 export default env;
